@@ -1,6 +1,9 @@
 package tn.esprit.pi.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tn.esprit.pi.entities.User;
 import tn.esprit.pi.entities.Patient;
@@ -15,7 +18,9 @@ import java.util.List;
 
 @Service
 public class UserService implements IUserService {
-
+    @Qualifier("bCryptPasswordEncoder")
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -27,6 +32,9 @@ public class UserService implements IUserService {
 
     @Override
     public User createUser(User user) {
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+
         return userRepository.save(user);
     }
 
@@ -52,6 +60,8 @@ public class UserService implements IUserService {
 
     @Override
     public Patient createPatient(Patient patient) {
+        String hashedPassword = passwordEncoder.encode(patient.getPassword());
+        patient.setPassword(hashedPassword);
         return patientRepository.save(patient);
     }
 
@@ -62,6 +72,9 @@ public class UserService implements IUserService {
 
     @Override
     public Chauffeur createChauffeur(Chauffeur chauffeur) {
+        String hashedPassword = passwordEncoder.encode(chauffeur.getPassword());
+        chauffeur.setPassword(hashedPassword);
+
         return chauffeurRepository.save(chauffeur);
     }
 
@@ -72,6 +85,8 @@ public class UserService implements IUserService {
 
     @Override
     public Medecin createMedecin(Medecin medecin) {
+        String hashedPassword = passwordEncoder.encode(medecin.getPassword());
+        medecin.setPassword(hashedPassword);
         return medecinRepository.save(medecin);
     }
 
