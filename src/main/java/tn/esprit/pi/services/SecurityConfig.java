@@ -19,12 +19,12 @@ public class SecurityConfig {
     @Bean
     @Primary
     public PasswordEncoder noOpPasswordEncoder() {
-        return NoOpPasswordEncoder.getInstance(); // Pour l'authentification de base
+        return NoOpPasswordEncoder.getInstance();
     }
 
     @Bean
     public PasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder(); // Pour hacher les mots de passe des utilisateurs
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -43,4 +43,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }
