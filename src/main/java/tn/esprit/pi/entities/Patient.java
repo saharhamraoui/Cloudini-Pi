@@ -25,6 +25,7 @@ public class Patient extends User {
         return medicalRecordNumber;
     }
 
+
     public void setMedicalRecordNumber(String medicalRecordNumber) {
         this.medicalRecordNumber = medicalRecordNumber;
     }

@@ -4,12 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.management.relation.Role;
-
 @Getter
 @Setter
-
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -27,8 +23,16 @@ public class User {
 
 
     private String address;
-    /*@Enumerated(EnumType.STRING)
-    private Role role;*/
+    @Enumerated(EnumType.STRING)
+     private Role role;
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public long getIdUser() {
         return idUser;
@@ -85,4 +89,5 @@ public class User {
     public void setAddress(String address) {
         this.address = address;
     }
+
 }

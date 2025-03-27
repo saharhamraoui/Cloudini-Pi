@@ -1,5 +1,6 @@
 package tn.esprit.pi.controllers;
 
+import jakarta.persistence.DiscriminatorValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.pi.entities.User;
@@ -71,5 +72,11 @@ public class UserController {
     @GetMapping("/getMedecins")
     public List<Medecin> getAllMedecins() {
         return userService.getAllMedecins();
+    }
+
+    @PostMapping("/create-admin")
+    public User createAdmin(@RequestParam String firstName, @RequestParam String lastName,
+                            @RequestParam String email, @RequestParam String password) {
+        return userService.createAdmin(firstName, lastName, email, password);
     }
 }
