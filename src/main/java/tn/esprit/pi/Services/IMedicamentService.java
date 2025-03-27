@@ -15,4 +15,6 @@ public interface IMedicamentService  {
     List<Medicament> getAllMedicament();
 
     Medicament getMedicament(Long idMedicament);
+
+    Medicament affecterMedicament(Long idMedicament, Long idFournisseur);
 }

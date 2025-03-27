@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class LigneCommande {
@@ -22,4 +20,36 @@ public class LigneCommande {
 
     @ManyToOne
     private Medicament medicament;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getQuantite() {
+        return quantite;
+    }
+
+    public void setQuantite(int quantite) {
+        this.quantite = quantite;
+    }
+
+    public Commande getCommande() {
+        return commande;
+    }
+
+    public void setCommande(Commande commande) {
+        this.commande = commande;
+    }
+
+    public Medicament getMedicament() {
+        return medicament;
+    }
+
+    public void setMedicament(Medicament medicament) {
+        this.medicament = medicament;
+    }
 }

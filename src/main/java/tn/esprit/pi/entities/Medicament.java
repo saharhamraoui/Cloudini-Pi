@@ -1,5 +1,6 @@
 package tn.esprit.pi.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -17,6 +18,7 @@ public class Medicament {
     private String nom;
     private String description;
     private int quantite;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateExpiration;
     private double prix;
 
