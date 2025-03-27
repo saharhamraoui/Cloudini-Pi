@@ -2,13 +2,10 @@ package tn.esprit.pi.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import tn.esprit.pi.entities.User;
-import tn.esprit.pi.entities.Patient;
-import tn.esprit.pi.entities.Chauffeur;
-import tn.esprit.pi.entities.Medecin;
+import tn.esprit.pi.Security.JwtUtil;
+import tn.esprit.pi.entities.*;
 import tn.esprit.pi.repositories.UserRepository;
 import tn.esprit.pi.repositories.PatientRepository;
 import tn.esprit.pi.repositories.ChauffeurRepository;
@@ -29,6 +26,10 @@ public class UserService implements IUserService {
     private ChauffeurRepository chauffeurRepository;
     @Autowired
     private MedecinRepository medecinRepository;
+    @Autowired
+
+    private JwtUtil jwtUtil;
+
 
     @Override
     public User createUser(User user) {
@@ -62,6 +63,8 @@ public class UserService implements IUserService {
     public Patient createPatient(Patient patient) {
         String hashedPassword = passwordEncoder.encode(patient.getPassword());
         patient.setPassword(hashedPassword);
+        patient.setRole(Role.PATIENT);
+
         return patientRepository.save(patient);
     }
 
@@ -73,6 +76,8 @@ public class UserService implements IUserService {
     @Override
     public Chauffeur createChauffeur(Chauffeur chauffeur) {
         String hashedPassword = passwordEncoder.encode(chauffeur.getPassword());
+        chauffeur.setRole(Role.CHAUFFEUR);
+
         chauffeur.setPassword(hashedPassword);
 
         return chauffeurRepository.save(chauffeur);
@@ -87,11 +92,33 @@ public class UserService implements IUserService {
     public Medecin createMedecin(Medecin medecin) {
         String hashedPassword = passwordEncoder.encode(medecin.getPassword());
         medecin.setPassword(hashedPassword);
+        medecin.setRole(Role.MEDECIN);
+
         return medecinRepository.save(medecin);
     }
 
     @Override
     public List<Medecin> getAllMedecins() {
         return medecinRepository.findAll();
+    }
+    public User createAdmin(String firstName, String lastName, String email, String password) {
+        User admin = new User();
+        admin.setFirstName(firstName);
+        admin.setLastName(lastName);
+        admin.setEmail(email);
+        admin.setPassword(passwordEncoder.encode(password));
+        admin.setRole(Role.ADMIN);
+        return userRepository.save(admin);
+    }
+
+    public User authenticate(String email, String rawPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("Utilisateur non trouvé");
+        }        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new RuntimeException("Mot de passe incorrect !");
+        }
+
+        return user;
     }
 }

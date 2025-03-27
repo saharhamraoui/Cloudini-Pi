@@ -1,4 +1,82 @@
 package tn.esprit.pi.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import tn.esprit.pi.Security.JwtResponse;
+import tn.esprit.pi.entities.*;
+import tn.esprit.pi.repositories.UserRepository;
+import tn.esprit.pi.services.TokenService;
+import tn.esprit.pi.services.UserService;
+
+@RestController
+@RequestMapping("/api/auth")
 public class AuthController {
+
+
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+
+    @PostMapping("/register-patient")
+    public ResponseEntity<?> registerPatient(@RequestBody Patient patient) {
+        try {
+            Patient registeredPatient = userService.createPatient(patient);
+            return ResponseEntity.ok("Patient enregistré avec succès");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/register-medecin")
+    public ResponseEntity<?> registerMedecin(@RequestBody Medecin medecin) {
+        try {
+            Medecin registeredMedecin = userService.createMedecin(medecin);
+            return ResponseEntity.ok("Médecin enregistré avec succès");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/register-chauffeur")
+    public ResponseEntity<?> registerChauffeur(@RequestBody Chauffeur chauffeur) {
+        try {
+            Chauffeur registeredChauffeur = userService.createChauffeur(chauffeur);
+            return ResponseEntity.ok("Chauffeur enregistré avec succès");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/create-admin")
+    public ResponseEntity<User> createAdmin(@RequestParam String firstName,
+                                            @RequestParam String lastName,
+                                            @RequestParam String email,
+                                            @RequestParam String password) {
+        try {
+            User createdAdmin = userService.createAdmin(firstName, lastName, email, password);
+            return ResponseEntity.ok(createdAdmin);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
+        try {
+            User user = userService.authenticate(email, password);
+
+            // ngeneriw token
+            String token = tokenService.generateToken(user);
+
+            String username = user.getEmail();
+            Role role = user.getRole();
+
+            return ResponseEntity.ok(new JwtResponse(token, username,role));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

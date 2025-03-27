@@ -1,4 +1,4 @@
-package tn.esprit.pi;
+package tn.esprit.pi.services;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +42,4 @@ public class SecurityConfig {
                 .httpBasic(withDefaults());
 
         return http.build();
-    }
-
-}
+    }}

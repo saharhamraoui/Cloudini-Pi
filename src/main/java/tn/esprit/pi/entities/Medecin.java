@@ -17,6 +17,7 @@ public class Medecin extends User {
     private String licenseNumber;
     private String availability;
 
+
     public String getSpeciality() {
         return speciality;
     }
@@ -40,4 +41,5 @@ public class Medecin extends User {
     public void setAvailability(String availability) {
         this.availability = availability;
     }
+
 }
