@@ -48,6 +48,8 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/users/**"
                         ).permitAll()
+                        .requestMatchers("/users/banned-users", "/users/toggle-ban").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());

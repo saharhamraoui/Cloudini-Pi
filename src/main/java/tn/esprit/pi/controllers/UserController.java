@@ -2,6 +2,7 @@ package tn.esprit.pi.controllers;
 
 import jakarta.persistence.DiscriminatorValue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.pi.entities.User;
 import tn.esprit.pi.entities.Patient;
@@ -78,5 +79,22 @@ public class UserController {
     public User createAdmin(@RequestParam String firstName, @RequestParam String lastName,
                             @RequestParam String email, @RequestParam String password) {
         return userService.createAdmin(firstName, lastName, email, password);
+    }
+    @GetMapping("/banned-users")
+    public ResponseEntity<List<User>> getBannedUsers() {
+        return ResponseEntity.ok(userService.getAllBannedUsers());
+    }
+
+    @PostMapping("/toggle-ban")
+    public ResponseEntity<User> toggleBan(
+            @RequestParam Long userId,
+            @RequestParam boolean status) {
+
+        try {
+            User user = userService.toggleBan(userId, status);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }
