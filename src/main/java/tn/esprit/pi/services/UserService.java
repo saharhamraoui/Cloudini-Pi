@@ -101,6 +101,16 @@ public class UserService implements IUserService {
     public List<Medecin> getAllMedecins() {
         return medecinRepository.findAll();
     }
+    public List<User> getAllBannedUsers() {
+        return userRepository.findByBannedTrue();
+    }
+
+    public User toggleBan(Long userId, boolean status) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        user.setBanned(status);
+        return userRepository.save(user);
+    }
     public User createAdmin(String firstName, String lastName, String email, String password) {
         User admin = new User();
         admin.setFirstName(firstName);
@@ -117,6 +127,9 @@ public class UserService implements IUserService {
             throw new RuntimeException("Utilisateur non trouvé");
         }        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
             throw new RuntimeException("Mot de passe incorrect !");
+        }
+        if (user.isBanned()) {
+            throw new RuntimeException("Ce compte est banni");
         }
 
         return user;

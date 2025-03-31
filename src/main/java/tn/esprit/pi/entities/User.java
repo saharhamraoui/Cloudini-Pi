@@ -89,5 +89,15 @@ public class User {
     public void setAddress(String address) {
         this.address = address;
     }
+    @Column(name = "is_banned", columnDefinition = "boolean default false")
+    private boolean banned = false;
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
+    }
 
 }

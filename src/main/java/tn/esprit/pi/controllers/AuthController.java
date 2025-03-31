@@ -1,6 +1,7 @@
 package tn.esprit.pi.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.pi.Security.JwtResponse;
@@ -70,9 +71,12 @@ public class AuthController {
         try {
             User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
 
-            // Générer le token
-            String token = tokenService.generateToken(user);
+            if (user.isBanned()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Ce compte est banni");
+            }
 
+            String token = tokenService.generateToken(user);
             return ResponseEntity.ok(new JwtResponse(token, user.getEmail(), user.getRole()));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
