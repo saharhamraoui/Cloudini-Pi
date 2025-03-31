@@ -1,9 +1,11 @@
 package esprit.tn.pidev.entities;
-
 import jakarta.persistence.*;
+import esprit.tn.pidev.entities.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+@Data
 @Getter
 @Setter
 @NoArgsConstructor

@@ -5,8 +5,16 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import java.util.Date;
 
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.*;
+
 @Entity
 @Data
+@NoArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
