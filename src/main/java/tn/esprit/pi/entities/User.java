@@ -24,7 +24,7 @@ public class User {
 
     private String address;
     @Enumerated(EnumType.STRING)
-     private Role role;
+    private Role role;
 
     public Role getRole() {
         return role;
