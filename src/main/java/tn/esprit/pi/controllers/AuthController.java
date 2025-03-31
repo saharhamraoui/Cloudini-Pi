@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.pi.Security.JwtResponse;
+import tn.esprit.pi.controllers.LoginRequest;
 import tn.esprit.pi.entities.*;
 import tn.esprit.pi.repositories.UserRepository;
 import tn.esprit.pi.services.TokenService;
@@ -11,6 +12,7 @@ import tn.esprit.pi.services.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
 
@@ -64,19 +66,17 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            User user = userService.authenticate(email, password);
+            User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
 
-            // ngeneriw token
+            // Générer le token
             String token = tokenService.generateToken(user);
 
-            String username = user.getEmail();
-            Role role = user.getRole();
-
-            return ResponseEntity.ok(new JwtResponse(token, username,role));
+            return ResponseEntity.ok(new JwtResponse(token, user.getEmail(), user.getRole()));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 }
