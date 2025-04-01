@@ -1,12 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MedicamentComponent } from './components/medicament/medicament.component';
-import { FournisseursComponent } from './components/fournisseurs/fournisseurs.component';
+import { FournisseurListComponent } from './components/fournisseur-list/fournisseur-list.component';
+import { FournisseurDetailComponent } from './components/fournisseur-detail/fournisseur-detail.component';
+import { MedicamentListComponent } from './components/medicament-list/medicament-list.component';
+import { CommandeListComponent } from './components/commande-list/commande-list.component';
 
 const routes: Routes = [
-  { path: 'medicaments', component: MedicamentComponent },
-  { path: 'fournisseurs', component: FournisseursComponent },
-  { path: '', redirectTo: '/fournisseurs', pathMatch: 'full' }
+  { path: '', component: FournisseurListComponent },  // Default route
+  { path: 'fournisseur/:id', component: FournisseurDetailComponent },
+  { path: 'medicaments/:id', component: MedicamentListComponent },
+  { path: 'commandes', component: CommandeListComponent }
+
+
 ];
 
 @NgModule({

@@ -1,0 +1,14 @@
+/* Exemple de style pour le modal ou la fenêtre de saisie de quantité */
+button {
+    margin-left: 10px;
+  }
+  
+  input[type="number"] {
+    width: 60px;
+    margin-left: 10px;
+  }
+  
+  div {
+    margin-top: 10px;
+  }
+  

@@ -1,0 +1,27 @@
+<div class="fournisseur-detail">
+    <h2>Fournisseur Details</h2>
+  
+    <!-- Error message if any -->
+    <div *ngIf="errorMessage" class="error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
+  
+    <!-- Display fournisseur details if available -->
+    <div *ngIf="fournisseur">
+      <p><strong>Name:</strong> {{ fournisseur.nom }}</p>
+      <p><strong>Email:</strong> {{ fournisseur.adresse }}</p>
+      <p><strong>Phone:</strong> {{ fournisseur.contact }}</p>
+      <p><strong>Address:</strong> {{ fournisseur.adresse }}</p>
+  
+      <!-- Display medicaments if any -->
+      <div *ngIf="fournisseur.medicaments && fournisseur.medicaments.length > 0">
+        <h3>Medicaments Provided:</h3>
+        <ul>
+          <li *ngFor="let medicament of fournisseur.medicaments">
+            {{ medicament.nom }} ({{ medicament.prix }})
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  

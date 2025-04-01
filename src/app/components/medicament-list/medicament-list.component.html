@@ -1,0 +1,33 @@
+<h2>Liste des Médicaments</h2>
+
+<!-- Liste des médicaments -->
+<ul *ngIf="medicaments && medicaments.length > 0; else noMedicament">
+  <li *ngFor="let medicament of medicaments">
+    {{ medicament.nom }} - Prix: {{ medicament.prix }}€
+    
+    <!-- Formulaire de quantité -->
+    <button (click)="ouvrirFenetreQuantite(medicament)">
+      Commander
+    </button>
+
+    <!-- Fenêtre pour saisir la quantité -->
+    <div *ngIf="selectedMedicament && selectedMedicament.idmedicament == medicament.idmedicament">
+      <input 
+        type="number" 
+        [(ngModel)]="quantiteCommande" 
+        min="1" 
+        max="{{ medicament.quantite }}" 
+        placeholder="Quantité"
+        (input)="verifierQuantite(medicament)">
+      <button (click)="passerCommande(medicament)">Confirmer Commande</button>
+      <p *ngIf="quantiteCommande > medicament.quantite" style="color: red;">
+        Quantité demandée dépasse le stock disponible ({{ medicament.quantite }} disponibles).
+      </p>
+    </div>
+  </li>
+</ul>
+
+<!-- Message lorsque aucun médicament n'est trouvé -->
+<ng-template #noMedicament>
+  <p>Aucun médicament disponible pour ce fournisseur.</p>
+</ng-template>

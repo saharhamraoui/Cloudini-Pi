@@ -1,0 +1,43 @@
+<div class="container">
+    <h2 class="text-center">Suivi des Commandes</h2>
+  
+    <div *ngIf="commandes.length === 0" class="alert alert-info">
+      Aucune commande disponible.
+    </div>
+  
+    <div *ngFor="let commande of commandes" class="card mb-3">
+      <div class="card-header">
+        <h4>Commande #{{ commande.idcommande }} - {{ commande.status }}</h4>
+      </div>
+      <div class="card-body">
+        <p><strong>Fournisseur :</strong> {{ commande.fournisseur.nom }}</p>
+        <p><strong>Contact :</strong> {{ commande.fournisseur.contact }}</p>
+        <p><strong>Adresse :</strong> {{ commande.fournisseur.adresse }}</p>
+  
+        <h5>Médicaments commandés :</h5>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Description</th>
+              <th>Quantité</th>
+              <th>Prix unitaire</th>
+              <th>Prix tot</th>
+              <th>Date d'Expiration</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ligne of commande.lignesCommande">
+              <td>{{ ligne.medicament.nom }}</td>
+              <td>{{ ligne.medicament.description }}</td>
+              <td>{{ ligne.quantite }}</td>
+              <td>{{ ligne.medicament.prix | currency:'EUR' }}</td>
+              <td>{{ ligne.medicament.prix | currency:'EUR' }}*{{ ligne.quantite }}</td>
+              <td>{{ ligne.medicament.dateExpiration }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  

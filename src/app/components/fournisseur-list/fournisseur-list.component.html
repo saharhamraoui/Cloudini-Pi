@@ -1,0 +1,18 @@
+<div class="search-bar">
+    <input type="text" [(ngModel)]="searchTerm" (input)="searchFournisseursByMedicament()" placeholder="Rechercher un médicament" />
+  </div>
+  
+  <h2>Liste des Fournisseurs</h2>
+  <ul>
+    <li *ngFor="let item of filteredFournisseurs">
+      <a [routerLink]="['/fournisseur', item.idfournisseur]">
+        {{ item.nom }} ({{ item.contact }})
+      </a>
+      <!-- Use getMedicamentPrice method to display the price -->
+      <p *ngIf="searchTerm">
+        Prix de {{ searchTerm }}: {{ getMedicamentPrice(item) }}€
+      </p>
+      <button [routerLink]="['/medicaments', item.idfournisseur]">Voir Médicaments</button>
+    </li>
+  </ul>
+  
