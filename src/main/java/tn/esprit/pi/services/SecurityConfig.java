@@ -22,16 +22,15 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
+    //@Bean
+    //public PasswordEncoder noOpPasswordEncoder() {
+    //    return NoOpPasswordEncoder.getInstance();
+    //}
     @Primary
-    public PasswordEncoder noOpPasswordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-    }
 
-    @Bean
+    @Bean(name = "bCryptPasswordEncoder")
     public PasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        return new BCryptPasswordEncoder(12);    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,10 +41,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register/**",
-
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/api/auth/**",
+                                "/api/auth/**",                                "/api/auth/forgot-password",
                                 "/users/**"
                         ).permitAll()
                         .requestMatchers("/users/banned-users", "/users/toggle-ban").hasRole("ADMIN")
