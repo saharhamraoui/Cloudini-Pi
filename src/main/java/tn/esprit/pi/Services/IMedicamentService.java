@@ -17,4 +17,7 @@ public interface IMedicamentService  {
     Medicament getMedicament(Long idMedicament);
 
     Medicament affecterMedicament(Long idMedicament, Long idFournisseur);
+
+    Medicament ajouterMedicamentEtAffecterFournisseur(Long idFournisseur, Medicament medicament);
+    List<Medicament> getMedicamentsProchesExpiration();
 }

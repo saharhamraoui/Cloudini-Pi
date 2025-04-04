@@ -7,7 +7,9 @@ import tn.esprit.pi.Repositories.MedicamentRepository;
 import tn.esprit.pi.entities.Fournisseur;
 import tn.esprit.pi.entities.Medicament;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FournisseurService implements IFournisseurService {
@@ -15,6 +17,7 @@ public class FournisseurService implements IFournisseurService {
     private FournisseurRepository fournisseurRepository;
     @Autowired
     private MedicamentRepository medicamentRepository;
+
     @Override
     public Fournisseur addFournisseur(Fournisseur Fournisseur) {
         return fournisseurRepository.save(Fournisseur);
@@ -39,6 +42,7 @@ public class FournisseurService implements IFournisseurService {
     public Fournisseur getFournisseur(Long idFournisseur) {
         return fournisseurRepository.findById(idFournisseur).get();
     }
+
     @Override
     public Fournisseur affecterMedicaments(Long idFournisseur, List<Long> idMedicaments) {
         Fournisseur fournisseur = fournisseurRepository.findById(idFournisseur).orElseThrow(
@@ -52,6 +56,21 @@ public class FournisseurService implements IFournisseurService {
 
         medicamentRepository.saveAll(medicaments);
         return fournisseur;
+    }
+
+    @Override
+    public List<Fournisseur> getFournisseursParMedicament(String nomMedicament) {
+        List<Fournisseur> fournisseurs = fournisseurRepository.findAll();
+
+        // Filtre et trie les fournisseurs en fonction du médicament et de son prix
+        return fournisseurs.stream()
+                .filter(f -> f.getMedicaments().stream()
+                        .anyMatch(m -> m.getNom().equalsIgnoreCase(nomMedicament)))
+                .sorted(Comparator.comparingDouble(f -> f.getMedicaments().stream()
+                        .filter(m -> m.getNom().equalsIgnoreCase(nomMedicament))
+                        .mapToDouble(Medicament::getPrix)
+                        .min().orElse(Double.MAX_VALUE)))
+                .collect(Collectors.toList());
     }
 
 }

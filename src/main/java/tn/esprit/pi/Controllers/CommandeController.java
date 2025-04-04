@@ -2,9 +2,18 @@ package tn.esprit.pi.Controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.pi.DTOS.CommandeRequestDTO;
+import tn.esprit.pi.DTOS.CommandeResponseDTO;
+import tn.esprit.pi.DTOS.LigneCommandeDTO;
+import tn.esprit.pi.DTOS.StockVerificationDTO;
+import tn.esprit.pi.Repositories.MedicamentRepository;
 import tn.esprit.pi.Services.ICommandeService;
+import tn.esprit.pi.Services.IMedicamentService;
 import tn.esprit.pi.entities.Commande;
+import tn.esprit.pi.entities.Medicament;
+import tn.esprit.pi.entities.Status;
 
 import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200") // Allow requests from Angular frontend
@@ -16,6 +25,7 @@ public class CommandeController {
 
     @Autowired
     ICommandeService CommandeService;
+
 
     @PostMapping("/")
     public Commande addCommande(@RequestBody Commande Commande) {
@@ -33,9 +43,22 @@ public class CommandeController {
     public List<Commande> getAllCommande(){
         return CommandeService.getAllCommande();
     }
-    @GetMapping(("/{idCommande}"))
-    Commande getCommande(@PathVariable Long idCommande){
+    // Récupérer une commande par ID
+    @GetMapping("/{idCommande}")
+    public Commande getCommande(@PathVariable Long idCommande){
         return CommandeService.getCommande(idCommande);
     }
+    @PostMapping
+    public CommandeResponseDTO createCommande(@RequestBody CommandeRequestDTO request) {
+        return CommandeService.createCommande(request);
+    }
+    // Endpoint to update the status of a command
+    @PutMapping("/updateStatus/{commandeId}")
+    public Commande updateStatusCommande(
+            @PathVariable Long commandeId,
+            @RequestParam Status newStatus) {
+        return CommandeService.updateStatusCommande1(commandeId, String.valueOf(newStatus));
+    }
+
 
 }

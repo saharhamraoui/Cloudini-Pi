@@ -16,4 +16,5 @@ public interface IFournisseurService {
 
     Fournisseur getFournisseur(Long idFournisseur);
     Fournisseur affecterMedicaments(Long idFournisseur, List<Long> idMedicaments);
+    List<Fournisseur> getFournisseursParMedicament(String nomMedicament);
 }

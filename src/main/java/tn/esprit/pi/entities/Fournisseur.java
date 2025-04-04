@@ -1,6 +1,8 @@
 package tn.esprit.pi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,24 +16,28 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Fournisseur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("idfournisseur")
     private Long idfournisseur;
     private String nom;
     private String contact;
     private String adresse;
 
-    @OneToMany(mappedBy = "fournisseur", cascade = CascadeType.ALL)
-    @JsonIgnore // Prevents infinite loop
-    private List<Medicament> medicaments= new ArrayList<>();
+    @OneToMany(mappedBy = "fournisseur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore // éviter une boucle infinie lors de la sérialisation JSON
+    private List<Medicament> medicaments = new ArrayList<>();
 
-    public Long getId() {
+
+
+    public Long getIdfournisseur() {
         return idfournisseur;
     }
 
-    public void setId(Long id) {
-        this.idfournisseur = id;
+    public void setIdfournisseur(Long idfournisseur) {
+        this.idfournisseur = idfournisseur;
     }
 
     public String getNom() {
@@ -65,5 +71,4 @@ public class Fournisseur {
     public void setMedicaments(List<Medicament> medicaments) {
         this.medicaments = medicaments;
     }
-
 }

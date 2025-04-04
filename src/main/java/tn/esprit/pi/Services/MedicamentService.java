@@ -7,6 +7,7 @@ import tn.esprit.pi.Repositories.MedicamentRepository;
 import tn.esprit.pi.entities.Fournisseur;
 import tn.esprit.pi.entities.Medicament;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -52,6 +53,28 @@ public class MedicamentService implements IMedicamentService {
         );
         medicament.setFournisseur(fournisseur);
         return medicamentRepository.save(medicament);
+    }
+
+
+
+
+    @Override
+    public Medicament ajouterMedicamentEtAffecterFournisseur(Long idFournisseur, Medicament medicament) {
+        // Récupérer le fournisseur par son ID
+        Fournisseur fournisseur = fournisseurRepository.findById(idFournisseur).orElseThrow(
+                () -> new RuntimeException("Fournisseur not found")
+        );
+
+        // Affecter le fournisseur au médicament
+        medicament.setFournisseur(fournisseur);
+
+        // Sauvegarder le médicament avec l'affectation
+        return medicamentRepository.save(medicament);
+    }
+@Override
+    public List<Medicament> getMedicamentsProchesExpiration() {
+        LocalDate dateLimite = LocalDate.now().plusDays(30);
+        return medicamentRepository.findByDateExpirationBefore(dateLimite);
     }
 
 

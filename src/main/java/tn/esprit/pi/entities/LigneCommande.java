@@ -1,5 +1,6 @@
 package tn.esprit.pi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class LigneCommande {
     private int quantite;
 
     @ManyToOne
+    @JsonIgnore
     private Commande commande;
 
     @ManyToOne

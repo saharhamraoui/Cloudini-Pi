@@ -24,13 +24,13 @@ public class Commande {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-
-
     @ManyToOne
     private Fournisseur fournisseur;
 
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL)
     private List<LigneCommande> lignesCommande= new ArrayList<>();
+
+
 
     public Long getIdcommande() {
         return idcommande;

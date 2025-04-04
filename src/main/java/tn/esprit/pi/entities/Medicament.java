@@ -6,15 +6,14 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
 public class Medicament {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idmedicament;
-
     private String nom;
     private String description;
     private int quantite;
@@ -22,8 +21,20 @@ public class Medicament {
     private LocalDate dateExpiration;
     private double prix;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idfournisseur")
     private Fournisseur fournisseur;
+
+
+    public Medicament() {
+        // constructeur vide
+    }
+
+    public Medicament(Long idmedicament) {
+        this.idmedicament = idmedicament;
+    }
+
+
 
     public Long getIdmedicament() {
         return idmedicament;
@@ -80,4 +91,19 @@ public class Medicament {
     public void setFournisseur(Fournisseur fournisseur) {
         this.fournisseur = fournisseur;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Medicament that = (Medicament) o;
+        return idmedicament != null && idmedicament.equals(that.idmedicament);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+
 }
