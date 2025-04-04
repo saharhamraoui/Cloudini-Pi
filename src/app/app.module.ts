@@ -9,13 +9,24 @@ import { FormsModule } from '@angular/forms';
 import { FournisseurDetailComponent } from './components/fournisseur-detail/fournisseur-detail.component';
 import { MedicamentListComponent } from './components/medicament-list/medicament-list.component';
 import { CommandeListComponent } from './components/commande-list/commande-list.component';
+<<<<<<< Updated upstream
+=======
+import { GestionCommandesComponent } from './components/gestion-commandes/gestion-commandes.component';
+import { StockComponent } from './components/stock/stock.component';
+>>>>>>> Stashed changes
 @NgModule({
   declarations: [
     AppComponent,
     FournisseurListComponent,
     FournisseurDetailComponent,
     MedicamentListComponent,
+<<<<<<< Updated upstream
     CommandeListComponent
+=======
+    CommandeListComponent,
+    GestionCommandesComponent,
+    StockComponent
+>>>>>>> Stashed changes
   ],
   imports: [
     BrowserModule,

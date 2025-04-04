@@ -1,0 +1,24 @@
+<div class="container mt-4">
+    <h2>Stock des médicaments</h2>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Description</th>
+          <th>Quantité en stock</th>
+          <th>Prix</th>
+          <th>Date d'expiration</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let stock of stockList">
+          <td>{{ stock.medicament.nom }}</td>
+          <td>{{ stock.medicament.description }}</td>
+          <td>{{ stock.quantiteEnStock }}</td>
+          <td>{{ stock.medicament.prix }} TND</td>
+          <td>{{ stock.medicament.dateExpiration | date }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

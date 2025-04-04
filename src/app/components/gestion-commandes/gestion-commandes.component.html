@@ -1,0 +1,21 @@
+<h2>Gestion des Commandes</h2>
+
+<!-- Liste des commandes en cours -->
+<ul *ngIf="commandes && commandes.length > 0; else noCommande">
+  <li *ngFor="let commande of commandes">
+    Commande ID: {{ commande.idcommande }} - Fournisseur: {{ commande.fournisseurName }} - Statut: {{ commande.status }}
+    
+    <!-- Sélecteur pour modifier le statut de la commande -->
+    <select [(ngModel)]="commande.newStatus" (change)="updateStatusCommande(commande)">
+      <option value="Encours">En cours</option>
+      <option value="Validée">Validée</option>
+      <option value="Livrée">Livrée</option>
+    </select>
+    <button (click)="updateStatusCommande(commande)">Mettre à jour le statut</button>
+  </li>
+</ul>
+
+<!-- Message lorsque aucune commande n'est trouvée -->
+<ng-template #noCommande>
+  <p>Aucune commande disponible.</p>
+</ng-template>
