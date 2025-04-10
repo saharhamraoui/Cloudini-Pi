@@ -12,7 +12,6 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // Générer une clé secrète de 256 bits (32 octets) pour HS256
     private Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String generateToken(String email) {

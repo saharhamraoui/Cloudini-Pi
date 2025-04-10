@@ -1,5 +1,7 @@
 package tn.esprit.pi.entities;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -120,8 +122,8 @@ public class User {
     }
 
     @Column(name = "reset_token")
-        private String resetToken;
+    private String resetToken;
 
-        @Column(name = "token_expiry_date")
-        private LocalDateTime tokenExpiryDate;
+    @Column(name = "token_expiry_date")
+    private LocalDateTime tokenExpiryDate;
 }
