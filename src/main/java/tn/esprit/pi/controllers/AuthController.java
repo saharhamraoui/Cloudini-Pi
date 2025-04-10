@@ -1,5 +1,6 @@
 package tn.esprit.pi.controllers;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import tn.esprit.pi.entities.*;
 import tn.esprit.pi.repositories.UserRepository;
 import tn.esprit.pi.services.TokenService;
 import tn.esprit.pi.services.UserService;
+
 @EnableAsync
 @RestController
 @RequestMapping("/api/auth")
@@ -56,6 +58,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @PostMapping("/create-admin")
     public ResponseEntity<User> createAdmin(@RequestParam String firstName,
                                             @RequestParam String lastName,
@@ -73,17 +76,29 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
             User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
-
             if (user.isBanned()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Ce compte est banni");
             }
-
             String token = tokenService.generateToken(user);
-            return ResponseEntity.ok(new JwtResponse(token, user.getEmail(), user.getRole()));
+            return ResponseEntity.ok(new JwtResponse(
+                    token,
+                    user.getEmail(),
+                    user.getFirstName(), // Ajout du prénom
+                    user.getRole(),
+                    user.getIdUser()
+            ));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-}
+    @PutMapping("/update-profile")
+    public ResponseEntity<?> updateProfile(@RequestBody User user) {
+        try {
+            User updatedUser = userService.updateUser(user);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+} 

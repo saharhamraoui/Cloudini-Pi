@@ -10,6 +10,8 @@ import java.util.List;
 public interface IUserService {
     User createUser(User user);
     User updateUser(User user);
+
+
     void deleteUser(Long userId);
     User getUser(Long userId);
     List<User> getAllUsers();
@@ -22,4 +24,8 @@ public interface IUserService {
     List<Patient> getAllPatients();
     List<Chauffeur> getAllChauffeurs();
     List<Medecin> getAllMedecins();
-}
+    Patient updatePatient(Patient patient);
+    Medecin updateMedecin(Medecin medecin);
+    Chauffeur updateChauffeur(Chauffeur chauffeur);
+
+    }
