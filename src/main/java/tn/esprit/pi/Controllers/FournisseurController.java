@@ -30,6 +30,12 @@ public class FournisseurController {
         Fournisseur updatedFournisseur = fournisseurService.updateFournisseur(fournisseur);
         return ResponseEntity.ok(updatedFournisseur);
     }
+    @PutMapping("/{idFournisseur}")
+    public ResponseEntity<Fournisseur> updateFournisseur(@PathVariable Long idFournisseur, @RequestBody Fournisseur fournisseur) {
+        fournisseur.setIdfournisseur(idFournisseur); // Set the idFournisseur from the path variable
+        Fournisseur updatedFournisseur = fournisseurService.updateFournisseur(fournisseur);
+        return ResponseEntity.ok(updatedFournisseur);
+    }
 
     @DeleteMapping("/{idFournisseur}")
     public ResponseEntity<Void> delete(@PathVariable Long idFournisseur) {

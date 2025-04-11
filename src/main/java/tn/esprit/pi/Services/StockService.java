@@ -8,6 +8,7 @@ import tn.esprit.pi.entities.LigneCommande;
 import tn.esprit.pi.entities.Medicament;
 import tn.esprit.pi.entities.Stock;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -37,5 +38,11 @@ public class StockService implements IStockService {
     @Override
     public List<Stock> getAllStocks() {
         return stockRepository.findAll();
+    }
+
+    @Override
+    public List<Stock> getMedicamentsProchesExpiration() {
+        LocalDate dateLimite = LocalDate.now();
+        return stockRepository.findByMedicamentDateExpirationBefore(dateLimite);  // Querying based on medicament's expiration date
     }
 }

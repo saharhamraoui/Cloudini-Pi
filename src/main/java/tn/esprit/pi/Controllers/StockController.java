@@ -23,4 +23,8 @@ public class StockController {
         return stockService.getAllStocks();
     }
 
+    @GetMapping("/expiration/alertes")
+    public List<Stock> getAlertesExpiration() {
+        return stockService.getMedicamentsProchesExpiration();
+    }
 }

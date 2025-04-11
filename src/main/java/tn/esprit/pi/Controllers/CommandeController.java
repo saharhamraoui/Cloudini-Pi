@@ -36,9 +36,22 @@ public class CommandeController {
         return CommandeService.updateCommande(Commande);
     }
     @DeleteMapping("/{idCommande}")
-    public void delete(@PathVariable Long idCommande) {
-        CommandeService.deleteCommande(idCommande);
+    public ResponseEntity<?> delete(@PathVariable Long idCommande) {
+        Commande commande = CommandeService.getCommande(idCommande);
+        if (commande != null) {
+            if (commande.getStatus() == Status.Encours) {
+                CommandeService.deleteCommande(idCommande);
+                return ResponseEntity.ok().build(); // 200 OK
+            } else {
+                return ResponseEntity.badRequest().body("Seules les commandes avec le statut 'Encours' peuvent être supprimées.");
+            }
+        } else {
+            return ResponseEntity.notFound().build(); // 404
+        }
     }
+
+
+
     @GetMapping("/")
     public List<Commande> getAllCommande(){
         return CommandeService.getAllCommande();

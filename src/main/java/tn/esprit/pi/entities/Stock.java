@@ -2,6 +2,8 @@ package tn.esprit.pi.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 public class Stock {
     @Id
@@ -54,5 +56,9 @@ public class Stock {
 
     public void setQuantiteEnStock(int quantiteEnStock) {
         this.quantiteEnStock = quantiteEnStock;
+    }
+
+    public LocalDate getDateExpiration() {
+        return medicament != null ? medicament.getDateExpiration() : null;
     }
 }
