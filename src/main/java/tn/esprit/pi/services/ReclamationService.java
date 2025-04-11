@@ -13,19 +13,28 @@ public class ReclamationService implements IReclamationService {
     @Autowired
     private ReclamationRepository reclamationRepository;
 
+    @Override
     public List<Reclamation> getAllReclamations() {
         return reclamationRepository.findAll();
     }
 
+    @Override
     public Reclamation getReclamationById(Long id) {
         return reclamationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reclamation not found with id: " + id));
     }
 
+    @Override
     public Reclamation createReclamation(Reclamation reclamation) {
         return reclamationRepository.save(reclamation);
     }
 
+    @Override
+    public Reclamation updateReclamation(Reclamation reclamation) {
+        return reclamationRepository.save(reclamation);
+    }
+
+    @Override
     public void deleteReclamation(Long id) {
         reclamationRepository.deleteById(id);
     }

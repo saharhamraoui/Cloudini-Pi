@@ -20,6 +20,7 @@ public class Reclamation {
     private Long id;
 
     private Date date;
+
     private String description;
 
     @Enumerated(EnumType.STRING)
