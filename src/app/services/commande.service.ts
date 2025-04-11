@@ -2,10 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CommandeDto } from '../models/CommandeDto';
 import { Observable } from 'rxjs';
-<<<<<<< Updated upstream
-=======
 import { Stock } from '../models/Stock';
->>>>>>> Stashed changes
 
 @Injectable({
   providedIn: 'root'
@@ -22,10 +19,6 @@ export class CommandeService {
   getCommandes(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/Commandes/`);
   }
-<<<<<<< Updated upstream
- 
-
-=======
   
   updateStatusCommande(commandeId: number, newStatus: string): Observable<any> {
     return this.http.put<any>(
@@ -36,12 +29,14 @@ export class CommandeService {
       }
     );
   }
-  
+
   getStock(): Observable<Stock[]> {
     return this.http.get<Stock[]>(`${this.apiUrl}/stock/`);
   }
   
+  supprimerCommande(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/Commandes/${id}`);
+  }
+
   
-  
->>>>>>> Stashed changes
 }

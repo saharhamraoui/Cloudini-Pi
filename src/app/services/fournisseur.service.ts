@@ -33,5 +33,22 @@ export class FournisseurService {
     return this.http.get<Fournisseur>(`${this.apiUrl}/Fournisseurs/${id}`);
   }
   
+ // Add fournisseur
+addFournisseur(fournisseur: Fournisseur): Observable<Fournisseur> {
+  return this.http.post<Fournisseur>(`${this.apiUrl}/Fournisseurs/`, fournisseur);
+}
+
+updateFournisseur(fournisseur: Fournisseur): Observable<Fournisseur> {
+  console.log(`Updating fournisseur with id: ${fournisseur.idfournisseur}`);  // Debug log
+  return this.http.put<Fournisseur>(`${this.apiUrl}/Fournisseurs/${fournisseur.idfournisseur}`, fournisseur);
+}
+
+
+
+
+deleteFournisseur(id: number): Observable<void> {
+  return this.http.delete<void>(`${this.apiUrl}/Fournisseurs/${id}`);
+}
+
 }
 

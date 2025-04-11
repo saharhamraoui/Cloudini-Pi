@@ -1,27 +1,28 @@
-<div class="fournisseur-detail">
-    <h2>Fournisseur Details</h2>
+<div class="container mt-4">
+  <!-- Back Button -->
+  <a routerLink="/fournisseur" class="btn btn-sm btn-secondary mb-3">
+    <i class="fa-sharp fa-solid fa-arrow-left"></i>
+  </a>
+  <div class="container mt-4 fournisseur-detail">
   
-    <!-- Error message if any -->
-    <div *ngIf="errorMessage" class="error-message">
-      <p>{{ errorMessage }}</p>
+    <h2 class="mb-4">Détails du Fournisseur</h2>
+  
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
     </div>
   
-    <!-- Display fournisseur details if available -->
-    <div *ngIf="fournisseur">
-      <p><strong>Name:</strong> {{ fournisseur.nom }}</p>
-      <p><strong>Email:</strong> {{ fournisseur.adresse }}</p>
-      <p><strong>Phone:</strong> {{ fournisseur.contact }}</p>
-      <p><strong>Address:</strong> {{ fournisseur.adresse }}</p>
+    <!-- Fournisseur details -->
+    <div *ngIf="fournisseur" class="card shadow-sm">
+      <div class="card-body">
+        <p><strong>Nom :</strong> {{ fournisseur.nom }}</p>
+        <p><strong>Adresse :</strong> {{ fournisseur.adresse }}</p>
+        <p><strong>Contact :</strong> {{ fournisseur.contact }}</p>
   
-      <!-- Display medicaments if any -->
-      <div *ngIf="fournisseur.medicaments && fournisseur.medicaments.length > 0">
-        <h3>Medicaments Provided:</h3>
-        <ul>
-          <li *ngFor="let medicament of fournisseur.medicaments">
-            {{ medicament.nom }} ({{ medicament.prix }})
-          </li>
-        </ul>
+  
+       
       </div>
     </div>
   </div>
+  
   

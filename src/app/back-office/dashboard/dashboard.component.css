@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Aladin&family=Merienda+One&family=Staatliches&display=swap');
+
+.menu {
+  position: relative;
+  background: -webkit-linear-gradient(left, #0e5551, #48c5bf);
+  width: 0px;
+  height: 135vh;
+  float: left;
+  transition: all 0.3s ease;
+  transform: translateX(-300px);
+}
+.dashboard-title {
+    font-family: 'Staatliches', sans-serif;
+    font-size: 32px;
+    margin: 30px 0 40px 0;
+    color: #0e5551;
+  }
+  
+.menuToggle {
+  font-size: 20px;
+  position: relative;
+  display: inline-block;
+  padding: 10px;
+  text-align: center;
+  background: -webkit-linear-gradient(left, #0e5551, #48c5bf);
+  color: white;
+  width: 50px;
+  height: 50px;
+  transition: all 0.3s ease;
+}
+
+.menuToggle:hover {
+  text-decoration: none;
+  color: white;
+}
+
+.menuToggle_open {
+  margin: 0px 0px;
+  transform: rotate(90deg);
+}
+
+.hideMenu {
+  transition: all 0.3s ease;
+  transform: translateX(0px);
+  width: 200px;
+}
+
+.menu ul {
+  list-style-type: none;
+  padding: 0px;
+  transition: all 0.3s ease;
+}
+
+.menu ul ul {
+  padding-left: 10px;
+  margin-left: 0px;
+  background: -webkit-linear-gradient(left, #0e5551, #48c5bf);
+}
+
+.menu ul li {
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.menu ul li:hover {
+  background-color: #0e5551;
+  border-bottom: 1px solid #4274c8;
+}
+
+.menu ul li:hover a {
+  color: white;
+}
+
+.menu ul li a {
+  padding: 10px 10px;
+  display: block;
+  margin-top: 3%;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: bold;
+  font-size: 14px;
+  color: white;
+  transition: transform .2s;
+  -webkit-transition: background-color 1s ease-out;
+  -moz-transition: background-color 1s ease-out;
+  -o-transition: background-color 1s ease-out;
+  transition: background-color 1s ease-out;
+}
+
+.menu ul li a:hover {
+  text-decoration: none;
+}
+
+#userimg {
+  width: 100px;
+  height: 150px;
+  display: block;
+  margin-left: auto;
+  margin-top: 5%;
+  margin-right: auto;
+}
+
+.container {
+  margin-left: 14%;
+}
+
+.dashboard-card {
+    background: linear-gradient(135deg, #23ad9b, #0e5551);
+    border-radius: 12px;
+    width: 300px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    color: white;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+  }
+  
+
+  .circle {
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    float: right;
+  }
+  
+  #icons {
+    font-size: 2.5em;
+    color: #0e5551;
+  }
+  
+
+.text {
+  font-family: 'aladin';
+  letter-spacing: 1px;
+  font-size: 35px;
+  font-weight: bolder;
+  color: white;
+}
+
+.sub-text {
+  font-family: 'aladin';
+  letter-spacing: 1px;
+  font-size: 25px;
+  color: white;
+}
+.row {
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-card ul {
+    padding-left: 15px;
+  }
+  

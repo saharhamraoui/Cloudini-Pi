@@ -11,10 +11,11 @@ import { CommandeService } from 'src/app/services/commande.service';
 })
 export class MedicamentListComponent implements OnInit {
   medicaments: Medicament[] = [];
+  filteredMedicaments: Medicament[] = [];
   fournisseurId: number = 0;
-  selectedMedicaments: { medicamentId: number, quantite: number }[] = [];
-  selectedMedicament: Medicament | null = null;  // Medicament actuellement sélectionné pour la commande
+  selectedMedicament: Medicament | null = null;
   quantiteCommande: number = 1;
+  searchText: string = '';
 
   constructor(
     private fournisseurService: FournisseurService,
@@ -33,6 +34,7 @@ export class MedicamentListComponent implements OnInit {
     this.fournisseurService.getMedicamentsByFournisseur(idFournisseur).subscribe(
       data => {
         this.medicaments = data || [];
+        this.filteredMedicaments = [...this.medicaments];
       },
       error => {
         console.error('Erreur lors de la récupération des médicaments', error);
@@ -66,13 +68,21 @@ export class MedicamentListComponent implements OnInit {
 
     this.commandeService.passerCommande(commande).subscribe(
       response => {
-        alert('Commande passée avec succès !');
-        this.selectedMedicament = null;  // Fermeture de la fenêtre après commande
+        alert('✅ Commande passée avec succès !');
+        this.selectedMedicament = null;
+        this.getMedicamentsByFournisseur(this.fournisseurId); // Rechargement après commande
       },
       error => {
         console.error('Erreur lors de la commande', error);
-        alert('Erreur lors de la commande.');
+        alert('❌ Erreur lors de la commande.');
       }
+    );
+  }
+
+  filtrerMedicaments(): void {
+    const search = this.searchText.trim().toLowerCase();
+    this.filteredMedicaments = this.medicaments.filter(m =>
+      m.nom.toLowerCase().includes(search)
     );
   }
 }

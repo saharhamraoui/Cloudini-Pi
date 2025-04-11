@@ -25,4 +25,26 @@ export class CommandeListComponent implements OnInit {
       }
     );
   }
+  getTotalPrixCommande(commande: any): number {
+    let total = 0;
+    for (let ligne of commande.lignesCommande) {
+      total += ligne.medicament.prix * ligne.quantite;
+    }
+    return total;
+  }
+  annulerCommande(idcommande: number): void {
+    if (confirm('Êtes-vous sûr de vouloir annuler cette commande ?')) {
+      this.commandeService.supprimerCommande(idcommande).subscribe({
+        next: () => {
+          this.commandes = this.commandes.filter(cmd => cmd.idcommande !== idcommande);
+          alert('Commande annulée avec succès.');
+        },
+        error: err => {
+          console.error('Erreur lors de la suppression :', err);
+          alert("Échec de l'annulation de la commande.");
+        }
+      });
+    }
+  }
+  
 }

@@ -18,6 +18,13 @@
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "bootstrap": "^5.3.5",
+    "chart.js": "^4.4.8",
+    "coreui": "^0.4.2-alpha2",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.7.1",
+    "ng2-charts": "^8.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

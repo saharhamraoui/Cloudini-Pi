@@ -1,0 +1,22 @@
+/* gestion-commandes.component.css */
+.list-group-item {
+    margin-bottom: 1rem;
+  }
+  
+  .list-group-item h5 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  
+  .list-group-item p {
+    margin: 0.5rem 0;
+  }
+  
+  button {
+    margin-left: 1rem;
+  }
+  
+  select {
+    width: 120px;
+  }
+  

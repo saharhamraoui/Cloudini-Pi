@@ -4,24 +4,23 @@ import { FournisseurListComponent } from './components/fournisseur-list/fourniss
 import { FournisseurDetailComponent } from './components/fournisseur-detail/fournisseur-detail.component';
 import { MedicamentListComponent } from './components/medicament-list/medicament-list.component';
 import { CommandeListComponent } from './components/commande-list/commande-list.component';
-<<<<<<< Updated upstream
-=======
 import { GestionCommandesComponent } from './components/gestion-commandes/gestion-commandes.component';
 import { StockComponent } from './components/stock/stock.component';
->>>>>>> Stashed changes
+import { DashboardComponent } from './back-office/dashboard/dashboard.component';
+import { GestionfournisseurComponent } from './back-office/gestionfournisseur/gestionfournisseur.component';
 
 const routes: Routes = [
-  { path: '', component: FournisseurListComponent },  // Default route
+  { path: '', component: DashboardComponent }, // Default route
+  { path: 'fournisseur', component: FournisseurListComponent },  
   { path: 'fournisseur/:id', component: FournisseurDetailComponent },
   { path: 'medicaments/:id', component: MedicamentListComponent },
-<<<<<<< Updated upstream
-  { path: 'commandes', component: CommandeListComponent }
-
-=======
   { path: 'commandes', component: CommandeListComponent },
   { path: 'verifcommandes', component: GestionCommandesComponent },
-  { path: 'stock', component: StockComponent }
->>>>>>> Stashed changes
+  { path: 'stock', component: StockComponent },
+  { path: 'fournisseur/:id/medicaments', component: MedicamentListComponent },
+  { path: 'crudfournisseur', component: GestionfournisseurComponent }
+
+
 
 ];
 
