@@ -1,4 +1,4 @@
-package tn.esprit.pi;
+package tn.esprit.pi.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

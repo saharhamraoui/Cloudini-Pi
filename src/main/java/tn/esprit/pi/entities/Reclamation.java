@@ -1,40 +1,45 @@
 package tn.esprit.pi.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
-import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-
 public class Reclamation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date date;
+    private String feedback;
 
     private String description;
+
+    @Column(nullable = false)
+    private String category = "uncategorized";
+
+    @Column(name = "ai_confidence", columnDefinition = "DECIMAL(3,2)") // Use DECIMAL instead of FLOAT
+    private Double aiConfidence;
 
     @Enumerated(EnumType.STRING)
     private StatutReclamation status;
 
-   // @ManyToOne
-   // @JoinColumn(name = "patient_id")
-   // private Utilisateur patient;
+    @CreatedDate
+    @Column(updatable = false)
+    private Date createdAt;
 
-   // @ManyToOne
-    //@JoinColumn(name = "ambulance_id")
-   // private Ambulance ambulance;
+    @LastModifiedDate
+    private Date updatedAt;
 
-
+    @OneToMany(mappedBy = "reclamation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Response> responses = new ArrayList<>();
 
 }
-

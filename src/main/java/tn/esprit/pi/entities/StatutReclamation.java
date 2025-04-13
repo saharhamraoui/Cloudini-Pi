@@ -4,5 +4,6 @@ public enum StatutReclamation {
     PENDING,
     IN_PROGRESS,
     RESOLVED,
-    CANCELED
+    CANCELED,
+    ESCALATED
 }
