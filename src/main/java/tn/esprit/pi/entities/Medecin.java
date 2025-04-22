@@ -1,8 +1,8 @@
 package tn.esprit.pi.entities;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,12 +16,23 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class Medecin extends User {
+
+
     private String speciality;
     private String licenseNumber;
     private String availability;
 
-    @OneToMany(mappedBy = "medecin")
+    @OneToMany(mappedBy = "medecin", cascade = CascadeType.ALL)
+    @JsonIgnore
     List<RendezVous> rendezVous  = new ArrayList<>();
+
+    public List<RendezVous> getRendezVous() {
+        return rendezVous;
+    }
+
+    public void setRendezVous(List<RendezVous> rendezVous) {
+        this.rendezVous = rendezVous;
+    }
 
     public String getSpeciality() {
         return speciality;

@@ -1,6 +1,7 @@
 package tn.esprit.pi.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,18 +24,34 @@ public class RendezVous {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long idRendezVous;
     Date dateRendezVous;
-    Time timeRendezVous;
 
     @ManyToOne
+    @JoinColumn(name = "patient_id_user")
     Patient patient ;
 
     @ManyToOne
+    @JoinColumn(name = "medecin_id_user")
     Medecin medecin ;
 
     @OneToOne (mappedBy = "rendezVous")
+    @JsonIgnore
     Consultation consultation ;
 
+    public Medecin getMedecin() {
+        return medecin;
+    }
 
+    public void setMedecin(Medecin medecin) {
+        this.medecin = medecin;
+    }
+
+    public Consultation getConsultation() {
+        return consultation;
+    }
+
+    public void setConsultation(Consultation consultation) {
+        this.consultation = consultation;
+    }
 
     public long getIdRendezVous() {
         return idRendezVous;
@@ -52,13 +69,9 @@ public class RendezVous {
         this.dateRendezVous = dateDate;
     }
 
-    public Time getTimeRendezVous() {
-        return timeRendezVous;
-    }
 
-    public void setTimeRendezVous(Time timeDate) {
-        this.timeRendezVous = timeDate;
-    }
+
+
 
     public Patient getPatient() {
         return patient;

@@ -1,5 +1,8 @@
 package tn.esprit.pi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -23,7 +26,8 @@ public class Patient extends User {
     private String gender;
     private LocalDate dateOfBirth;
 
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @JsonIgnore
     List<RendezVous> rendezVous  = new ArrayList<>();
 
     public List<RendezVous> getRendezVous() {
@@ -73,4 +77,6 @@ public class Patient extends User {
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+
+
 }
