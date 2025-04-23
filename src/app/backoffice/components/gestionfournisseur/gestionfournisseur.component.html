@@ -1,0 +1,65 @@
+
+<app-header-back></app-header-back>
+<div class="container mt-4">
+  <div class="card p-4">
+    <h3 class="mb-4">{{ isEditMode ? 'Modifier Fournisseur' : 'Ajouter Fournisseur' }}</h3>
+
+    <form [formGroup]="fournisseurForm" (ngSubmit)="isEditMode ? updateFournisseur() : addFournisseur()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group mb-3">
+            <label for="nom">Nom</label>
+            <input type="text" class="form-control" id="nom" formControlName="nom">
+            <div class="text-danger" *ngIf="fournisseurForm.get('nom')?.invalid && (fournisseurForm.get('nom')?.dirty || fournisseurForm.get('nom')?.touched)">
+              Le nom est requis.
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="contact">Email</label>
+            <input type="email" class="form-control" id="contact" formControlName="contact">
+            <div *ngIf="fournisseurForm.get('contact') as contactCtrl">
+              <div class="text-danger" *ngIf="contactCtrl.invalid && (contactCtrl.dirty || contactCtrl.touched)">
+                <div *ngIf="contactCtrl.errors?.['required']">Le contact est requis.</div>
+                <div *ngIf="contactCtrl.errors?.['email']">Veuillez entrer une adresse email valide.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group mb-3">
+            <label for="adresse">Adresse (cliquer sur la carte)</label>
+            <input type="text" class="form-control" id="adresse" formControlName="adresse" readonly>
+          </div>
+          <div id="map" class="map-container"></div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary mt-3" [disabled]="fournisseurForm.invalid">
+        {{ isEditMode ? 'Mettre à jour' : 'Ajouter' }}
+      </button>
+    </form>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+
+  <div class="card mt-4 p-3">
+    <h4>Liste des Fournisseurs</h4>
+    <ul class="list-group mt-2">
+      <li *ngFor="let fournisseur of fournisseurs" class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <strong>{{ fournisseur.nom }}</strong><br>
+          {{ fournisseur.adresse }}<br>
+          {{ fournisseur.contact }}
+        </div>
+        <div>
+          <button class="btn btn-warning btn-sm me-2" (click)="editFournisseur(fournisseur)">Modifier</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteFournisseur(fournisseur.idfournisseur)">Supprimer</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

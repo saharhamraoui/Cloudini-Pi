@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Fournisseur } from '../models/Fournisseur';
+import { Fournisseur } from '../model/Fournisseur';
 import { Observable } from 'rxjs';
-import { Medicament } from '../models/Medicament';
+import { Medicament } from '../model/Medicament';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -44,6 +44,9 @@ updateFournisseur(fournisseur: Fournisseur): Observable<Fournisseur> {
 }
 
 
+getFournisseurs(): Observable<Fournisseur[]> {
+  return this.http.get<Fournisseur[]>(`${this.apiUrl}`);
+}
 
 
 deleteFournisseur(id: number): Observable<void> {

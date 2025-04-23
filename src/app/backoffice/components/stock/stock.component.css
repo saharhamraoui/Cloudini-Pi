@@ -1,0 +1,30 @@
+.dashboard-title {
+  font-family: 'Staatliches', cursive;
+  font-size: 36px;
+  color: #0e5551;
+  margin-bottom: 30px;
+}
+
+.table th, .table td {
+  vertical-align: middle;
+}
+
+.btn-outline-primary {
+  border-color: #0e5551;
+  color: #0e5551;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0e5551;
+  color: white;
+}
+/* stock-list.component.css */
+.text-danger {
+  color: red;
+  font-weight: bold;
+}
+
+.text-warning {
+  color: orange;
+  font-weight: bold;
+}

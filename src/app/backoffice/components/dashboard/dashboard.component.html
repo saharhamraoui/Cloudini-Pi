@@ -1,0 +1,46 @@
+<div class="dashboard-container">
+    <h1 class="dashboard-title">Welcome to the Healthcare Management System Dashboard</h1>
+    
+    <div class="cards-container">
+      <div class="modern-card" style="--card-color: #2980b9;">
+        <div class="card-icon">
+          <i class="fas fa-prescription-bottle-alt"></i>
+        </div>
+        <div class="card-content">
+          <h3>Stock</h3>
+          <div *ngIf="Medicament$ | async as medicaments" class="card-value">
+            {{ medicaments.length }} médicaments disponibles
+          </div>
+        </div>
+      </div>
+  
+      <div class="modern-card" style="--card-color: #27ae60;">
+        <div class="card-icon">
+          <i class="fas fa-user-md"></i>
+        </div>
+        <div class="card-content">
+          <h3>Commandes Livrées</h3>
+          <div *ngIf="commandesLivrees.length === 0" class="card-value">Aucune commande livrée</div>
+          <ul *ngIf="commandesLivrees.length > 0">
+            <li *ngFor="let commande of commandesLivrees">
+              Commande #{{ commande.idcommande }} — Fournisseur : {{ commande.fournisseur.nom }}
+            </li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="modern-card" style="--card-color: #e74c3c;">
+        <div class="card-icon">
+          <i class="fas fa-user-injured"></i>
+        </div>
+        <div class="card-content">
+          <h3>Total par Fournisseur</h3>
+          <div *ngFor="let fournisseur of totalParFournisseur | keyvalue" class="card-value">
+            {{ fournisseur.key }} : {{ fournisseur.value | currency:'EUR' }}
+          </div>
+        </div>
+      </div>
+  
+      
+    </div>
+  </div>

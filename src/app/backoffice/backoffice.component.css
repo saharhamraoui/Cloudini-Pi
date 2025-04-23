@@ -1,0 +1,19 @@
+.backoffice-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    margin-top: 60px; /* Match header height to push content below the fixed header */
+    margin-left: 250px; /* Match sidebar width to push content to the right of the fixed sidebar */
+  }

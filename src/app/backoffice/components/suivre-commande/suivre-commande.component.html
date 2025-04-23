@@ -1,0 +1,43 @@
+<a routerLink="/back/commandes" class="btn btn-sm btn-secondary mb-3">
+  <i class="fa-sharp fa-solid fa-arrow-left"></i>
+</a>
+
+<h2>Suivi de la Commande #{{ idcommande }}</h2>
+
+<div class="card mt-4">
+  <div class="card-body">
+    <h5>Fournisseur : {{ fournisseur?.nom }}</h5>
+    <p>Adresse : {{ fournisseur?.adresse }}</p>
+    <p>Statut :
+      <span class="badge"
+            [ngClass]="{
+              'bg-warning': commandeStatus === 'En cours',
+              'bg-success': commandeStatus === 'Validée',
+              'bg-primary': commandeStatus === 'Livrée'
+            }">
+        {{ commandeStatus }}
+      </span>
+    </p>
+    
+    <!-- Carte -->
+    <div id="map" style="height: 400px;"></div>
+
+
+
+    <!-- Barre de progression (visible lorsque la commande est en cours de livraison) -->
+    <div class="progress mt-3" *ngIf="commandeStatus === 'Validée'">
+
+    <!-- Template code to display remaining time -->
+    <div id="timeRemaining">
+      Temps restant: {{ remainingTime }}
+    </div>
+    
+      <div class="progress-bar progress-bar-striped progress-bar-animated"
+           role="progressbar"
+           [style.width.%]="progress"
+           aria-valuemin="0" aria-valuemax="100">
+        Livraison... ({{ progress | number:'1.0-0' }}%)
+      </div>
+    </div>
+  </div>
+</div>

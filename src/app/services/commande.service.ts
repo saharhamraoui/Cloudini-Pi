@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommandeDto } from '../models/CommandeDto';
+import { CommandeDto } from '../model/CommandeDto';
 import { Observable } from 'rxjs';
-import { Stock } from '../models/Stock';
+import { Stock } from '../model/Stock';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,12 @@ export class CommandeService {
   getCommandes(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/Commandes/`);
   }
+   // Récupérer la commande
+   getCommandeById(commandeId: number): Observable<CommandeDto> {
+    return this.http.get<CommandeDto>(`${this.apiUrl}/Commandes/${commandeId}`);
+  }
+
+  
   
   updateStatusCommande(commandeId: number, newStatus: string): Observable<any> {
     return this.http.put<any>(

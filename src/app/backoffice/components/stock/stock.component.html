@@ -1,0 +1,60 @@
+<app-header-back></app-header-back>
+
+<div class="container mt-4">
+
+
+  <h3 class="mb-4">Liste des Stocks</h3>
+
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Quantité en stock</th>
+        <th>Prix</th>
+        <th>Date d'expiration</th>
+        <th>Seuil d’alerte</th>
+        <th>Fournisseur</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stock of stockList">
+        <td>{{ stock.medicament.nom }}</td>
+        <td>{{ stock.medicament.description }}</td>
+        <td [ngClass]="{ 'text-danger': stock.quantiteEnStock < stock.seuilAlerte }">
+          {{ stock.quantiteEnStock }}
+        </td>
+        <td>{{ stock.medicament.prix }} TND</td>
+        <!-- Afficher la date d'expiration uniquement si la quantité en stock est > 0 -->
+        <td *ngIf="stock.quantiteEnStock > 0">
+          <!-- Add condition for expired medications -->
+          <span [ngClass]="{ 'text-danger': isExpire(stock.medicament.dateExpiration) }">
+            {{ stock.medicament.dateExpiration | date:'shortDate' }}
+          </span>
+        </td>
+        <td>{{ stock.seuilAlerte }}</td>
+        <td>{{ stock.medicament.fournisseur.nom }}</td>
+        <td>
+          <button 
+            class="btn btn-sm btn-primary" 
+            *ngIf="stock.quantiteEnStock < stock.seuilAlerte"
+            (click)="commanderChezFournisseur(stock.medicament.fournisseur.idfournisseur)">
+            Commander
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Alerte Médicaments proches de l'expiration -->
+  <div *ngIf="expirationAlertes.length > 0" class="alert alert-warning mt-3">
+    <h5><i class="bi bi-exclamation-triangle-fill"></i> Médicaments proches de l'expiration</h5>
+    <ul class="mb-0">
+      <li *ngFor="let med of expirationAlertes" [ngClass]="{ 'text-danger': isExpire(med.medicament.dateExpiration) }">
+        {{ med.medicament.nom }} - {{ med.medicament.dateExpiration | date:'shortDate' }} 
+        <span *ngIf="isExpire(med.medicament.dateExpiration)"> - Expirée !</span>
+      </li>
+    </ul>
+  </div>
+</div>

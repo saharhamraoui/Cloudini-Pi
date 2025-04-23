@@ -1,0 +1,145 @@
+/* Style général */
+.heading-text {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin: 30px 0 10px;
+  color: #333;
+}
+
+/* Flèche de retour */
+.back-arrow {
+  display: inline-block;
+  margin: 10px 0 20px 10px;
+  font-size: 18px;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.back-arrow:hover {
+  color: #0056b3;
+}
+
+/* Barre de recherche */
+.search-bar {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  width: 300px;
+  max-width: 90%;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 16px;
+}
+
+/* Carte médicament */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  width: 280px;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* Bloc image */
+.img-block {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.circle {
+  width: 70px;
+  height: 70px;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bloodimg {
+  width: 40px;
+  height: 40px;
+}
+
+/* Infos texte */
+.card-block .text {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 10px 0 5px;
+  text-align: center;
+}
+
+/* Badges */
+.badge {
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+.rupture {
+  background-color: #dc3545;
+  color: white;
+}
+
+.low-stock {
+  background-color: #ffc107;
+  color: #333;
+}
+
+/* Boutons */
+.status-btn1 {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.status-btn2,
+.status-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.status-btn2:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.status-btn2:hover:not(:disabled),
+.status-btn:hover {
+  background-color: #218838;
+}
+
+/* Input quantité */
+input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
