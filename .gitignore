@@ -37,3 +37,4 @@ build/
 /.mvn
 *.iml
 *.log
+Categservice/venv/

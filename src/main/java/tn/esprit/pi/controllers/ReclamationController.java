@@ -43,7 +43,7 @@ public class ReclamationController {
         return reclamationService.getReclamationById(id);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("deleteReclamation/{id}")
     public void deleteReclamation(@PathVariable Long id) {
         reclamationService.deleteReclamation(id);
     }

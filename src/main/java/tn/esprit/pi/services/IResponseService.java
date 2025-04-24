@@ -8,8 +8,9 @@ import java.util.List;
 public interface IResponseService {
      List<Response> getAllResponses();
      Response getResponseById(Long id);
-     Response createResponse(Response response);
-     void deleteResponse(Long id);
+    Response createResponse(Long reclamationId, Response response);
+
+    void deleteResponse(Long id);
     List<Response> getResponsesByReclamationId(Long reclamationId);
     Response updateResponse(Response response);
     List<Response> findByReclamationId(Long reclamationId);

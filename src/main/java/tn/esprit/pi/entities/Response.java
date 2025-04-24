@@ -1,5 +1,6 @@
 package tn.esprit.pi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,10 +23,9 @@ public class Response {
     private String message;
     private Date date;
 
-    @ManyToOne
-    @JoinColumn(name = "reclamation_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reclamation_id", nullable = false)
+    @JsonIgnore
     private Reclamation reclamation;
-
-
 }
 

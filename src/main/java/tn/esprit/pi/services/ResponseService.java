@@ -1,5 +1,6 @@
 package tn.esprit.pi.services;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.esprit.pi.entities.Reclamation;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ResponseService implements IResponseService {
     @Autowired
     private ResponseRepository responseRepository;
@@ -32,16 +34,25 @@ public class ResponseService implements IResponseService {
     }
 
     @Override
-    public Response createResponse(Response response) {
-        Reclamation rec = response.getReclamation();
-        if (rec != null && rec.getStatus() == StatutReclamation.PENDING) {
-            rec.setStatus(StatutReclamation.IN_PROGRESS);
-            rec.setUpdatedAt(new Date());
-            reclamationRepository.save(rec);
-        }
-        return responseRepository.save(response);
-    }
+    public Response createResponse(Long reclamationId, Response response) {
+        Reclamation reclamation = reclamationRepository.findById(reclamationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Reclamation not found"));
 
+        // Maintain bidirectional relationship
+        response.setReclamation(reclamation);  // Critical fix here
+        reclamation.getResponses().add(response);
+
+        // Update status if needed
+        if (reclamation.getStatus() == StatutReclamation.PENDING) {
+            reclamation.setStatus(StatutReclamation.IN_PROGRESS);
+            reclamation.setUpdatedAt(new Date());
+        }
+
+        // Only save the reclamation - responses are cascaded
+        reclamationRepository.save(reclamation);
+
+        return response; // The response will be persisted through cascade
+    }
     @Override
     public void deleteResponse(Long id) {
         responseRepository.deleteById(id);

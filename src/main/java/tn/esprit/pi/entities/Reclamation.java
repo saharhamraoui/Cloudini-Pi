@@ -1,5 +1,6 @@
 package tn.esprit.pi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,6 +23,10 @@ public class Reclamation {
     private String feedback;
 
     private String description;
+    
+    @Column
+    private String emotion;
+
 
     @Column(nullable = false)
     private String category = "uncategorized";
@@ -39,7 +44,17 @@ public class Reclamation {
     @LastModifiedDate
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "reclamation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "reclamation",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonIgnore
     private List<Response> responses = new ArrayList<>();
 
+    // Helper method to maintain bidirectional relationship
+    public void addResponse(Response response) {
+        responses.add(response);
+        response.setReclamation(this);
+    }
 }

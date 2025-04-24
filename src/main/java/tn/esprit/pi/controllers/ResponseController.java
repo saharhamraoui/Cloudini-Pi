@@ -35,9 +35,9 @@ public class ResponseController {
         return responseService.updateResponse(response);
     }
 
-    @PostMapping("createresponse")
-    public Response createResponse(@RequestBody Response response) {
-        return responseService.createResponse(response);
+    @PostMapping("/{reclamationId}/create")
+    public Response createResponse(@PathVariable Long reclamationId, @RequestBody Response response) {
+        return responseService.createResponse(reclamationId, response);
     }
 
     @DeleteMapping("/{id}")

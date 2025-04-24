@@ -1,5 +1,6 @@
 package tn.esprit.pi.services;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.esprit.pi.entities.Reclamation;
@@ -7,6 +8,7 @@ import tn.esprit.pi.entities.StatutReclamation;
 import tn.esprit.pi.exceptions.ResourceNotFoundException;
 import tn.esprit.pi.repository.ReclamationRepository;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -90,15 +92,24 @@ public class ReclamationService {
     }
 
     public void escalatePendingReclamations() {
-        Date threshold = new Date(System.currentTimeMillis() - 3 * 24 * 60 * 60 * 1000); // 3 days
-        List<Reclamation> toEscalate = reclamationRepository.findByStatusAndCreatedAtBefore(StatutReclamation.PENDING, threshold);
-        for (Reclamation r : toEscalate) {
-            r.setStatus(StatutReclamation.ESCALATED);
-            r.setUpdatedAt(new Date());
-            reclamationRepository.save(r);
-        }
-    }
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -3);
+        Date threeDaysAgo = calendar.getTime();
+
+
+        List<Reclamation> toEscalate = reclamationRepository.findByStatusAndCreatedAtBefore(
+                StatutReclamation.PENDING,
+                threeDaysAgo
+        );
+
+
+        toEscalate.forEach(reclamation -> {
+            reclamation.setStatus(StatutReclamation.ESCALATED);
+            reclamation.setUpdatedAt(new Date());
+            reclamationRepository.save(reclamation);
+        });
+    }
     public Reclamation addFeedback(Long id, String feedback) {
         Reclamation reclamation = getReclamationById(id);
         if (reclamation.getStatus() != StatutReclamation.RESOLVED) {
