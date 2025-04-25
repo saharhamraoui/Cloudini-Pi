@@ -1,5 +1,8 @@
 package esprit.tn.pidev.entities;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -12,12 +15,15 @@ public class Prescription {
 
     @ManyToOne
     @JoinColumn(name = "medical_record_id")
+    @JsonIgnore
     private MedicalRecord medicalRecord;
 
     private String medication;
     private String dosage;
     private String instructions;
     private LocalDate issueDate;
+
+    @JsonProperty("status")
     @Enumerated(EnumType.STRING)
     private PrescriptionStatus status;
 
@@ -30,6 +36,22 @@ public class Prescription {
         this.dosage = dosage;
         this.instructions = instructions;
         this.issueDate = issueDate;
+    }
+
+    public Long getIdPrescription() {
+        return idPrescription;
+    }
+
+    public void setIdPrescription(Long idPrescription) {
+        this.idPrescription = idPrescription;
+    }
+
+    public PrescriptionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PrescriptionStatus status) {
+        this.status = status;
     }
 
     // Getters and Setters
@@ -56,4 +78,6 @@ public class Prescription {
     public LocalDate getIssueDate() { return issueDate; }
 
     public void setIssueDate(LocalDate issueDate) { this.issueDate = issueDate; }
+
+
 }

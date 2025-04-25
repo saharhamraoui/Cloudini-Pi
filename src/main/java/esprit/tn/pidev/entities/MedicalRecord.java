@@ -2,6 +2,9 @@ package esprit.tn.pidev.entities;
 
 import jakarta.persistence.*;
 import esprit.tn.pidev.entities.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +24,13 @@ public class MedicalRecord {
     private Medecin doctor;
 
     @Column(nullable = false, updatable = false)
-    private Date createdAt;
+    private LocalDate createdAt;
+
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDate.now(); // Assign system date when saving
+    }
 
     @OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL)
     private List<Prescription> prescriptions;
@@ -69,11 +78,11 @@ public class MedicalRecord {
         this.doctor = doctor;
     }
 
-    public Date getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 

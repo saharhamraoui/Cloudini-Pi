@@ -14,13 +14,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idUser ;
-
     private String firstName;
     private String lastName;
     private String email;
     private String password;
     private String phoneNumber;
-
 
     private String address;
     @Enumerated(EnumType.STRING)
