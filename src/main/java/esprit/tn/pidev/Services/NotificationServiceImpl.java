@@ -18,12 +18,18 @@ public class NotificationServiceImpl implements INotificationService {
 
     @Override
     @Transactional
-    public void notifyNewPost(Post post) {
-        String message = "Nouveau post publié: " + post.getTitle();
-        List<User> allUsers = userRepository.findAll();
 
-        allUsers.stream()
-                .filter(user -> user.getIdUser() != post.getAuthor().getIdUser())
+    public void notifyNewPost(Post post) {
+        // Vérification nullité de l'auteur
+        if (post.getAuthor() == null) {
+            throw new IllegalArgumentException("L'auteur du post est null");
+        }
+
+        String message = "Nouveau post publié: " + post.getTitle();
+        long authorId = post.getAuthor().getIdUser(); // Note: type primitif long
+
+        userRepository.findAll().stream()
+                .filter(user -> user.getIdUser() != authorId) // Comparaison directe avec !=
                 .forEach(user -> {
                     Notification notification = new Notification(message, user);
                     notificationRepository.save(notification);
@@ -33,9 +39,11 @@ public class NotificationServiceImpl implements INotificationService {
     @Override
     @Transactional
     public void notifyNewComment(User recipient, Comment comment) {
-        String message = "Nouveau commentaire de " +
-                comment.getAuthor().getFirstName() +
-                ": " + comment.getContent().substring(0, Math.min(30, comment.getContent().length())) + "...";
+        String contentPreview = comment.getContent().length() > 30
+                ? comment.getContent().substring(0, 30) + "..."
+                : comment.getContent();
+
+        String message = "Nouveau commentaire de " + comment.getAuthor().getFirstName() + ": " + contentPreview;
 
         Notification notification = new Notification(message, recipient);
         notificationRepository.save(notification);
@@ -49,21 +57,21 @@ public class NotificationServiceImpl implements INotificationService {
     @Override
     @Transactional
     public void markAsRead(Long notificationId) {
-        Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(() -> new EntityNotFoundException("Notification non trouvée"));
-
-        if (!notification.isSeen()) {
-            notification.setSeen(true);
-            notificationRepository.save(notification);
-        }
+        notificationRepository.findById(notificationId)
+                .ifPresent(notification -> {
+                    notification.setSeen(true);
+                    notificationRepository.save(notification);
+                });
     }
 
     @Override
     @Transactional
     public void markAllAsRead(Long userId) {
-        List<Notification> unreadNotifications = notificationRepository.findByRecipientIdAndSeenFalse(userId);
-        unreadNotifications.forEach(notification -> notification.setSeen(true));
-        notificationRepository.saveAll(unreadNotifications);
+        notificationRepository.findByRecipientIdAndSeenFalse(userId)
+                .forEach(notification -> {
+                    notification.setSeen(true);
+                    notificationRepository.save(notification);
+                });
     }
 
     @Override

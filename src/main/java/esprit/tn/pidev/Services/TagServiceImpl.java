@@ -7,11 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 
-    @Service
+@Service
     @RequiredArgsConstructor
     public class TagServiceImpl implements ITagService {
 
@@ -28,7 +31,7 @@ import java.util.Optional;
 
         @Override
         public Optional<Tag> findByName(String name) {
-            return Optional.ofNullable(tagRepository.findByName(name));
+            return tagRepository.findByName(name);
         }
 
         @Override
@@ -77,4 +80,23 @@ import java.util.Optional;
             tagRepository.delete(tag);
         }
 
-}
+        @Override
+        public List<Tag> createOrGetTags(List<String> tagNames) {
+            List<Tag> tags = new ArrayList<>();
+            for (String tagName : tagNames) {
+                Tag tag = tagRepository.findByName(tagName)
+                        .orElseGet(() -> {
+                            Tag newTag = new Tag();
+                            newTag.setName(tagName);
+                            return tagRepository.save(newTag);
+                        });
+                tags.add(tag);
+            }
+            return tags;
+        }
+        @Override
+        public Tag getTagById(Long id) {
+            return tagRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Tag non trouvé avec l'ID: " + id));        }
+
+    }

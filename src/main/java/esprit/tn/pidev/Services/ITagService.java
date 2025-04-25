@@ -13,4 +13,6 @@ public interface ITagService {
     List<Tag> getAllTags();
     Tag updateTag(Long id, String newName);
     void deleteTag(Long id);
+    List<Tag> createOrGetTags(List<String> tagNames);
+    Tag getTagById(Long id);
 }
