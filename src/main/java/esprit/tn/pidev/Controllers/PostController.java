@@ -24,6 +24,7 @@ import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 
@@ -255,4 +256,37 @@ public class PostController {
                     .body("Error: " + e.getMessage());
         }
     }
+    @PostMapping("/{postId}/like")
+  public ResponseEntity<Map<String, Object>> likePost(@PathVariable Long postId) {
+    try {
+      if (!postRepository.existsById(postId)) {
+        return ResponseEntity.notFound().build();
+      }
+      int likesCount = postService.likePost(postId);
+      return ResponseEntity.ok(Map.of(
+        "success", true,
+        "likesCount", likesCount
+      ));
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().body(Map.of(
+        "success", false,
+        "message", "Erreur serveur lors du like"
+      ));
+    }
+  }
+
+  @GetMapping("/getLikesForPost/{postId}")  public ResponseEntity<Map<String, Object>> getLikesCount(@PathVariable Long postId) {
+    try {
+      int likesCount = postService.getLikesCount(postId);
+      return ResponseEntity.ok(Map.of(
+        "postId", postId,
+        "likesCount", likesCount,
+        "timestamp", LocalDateTime.now()
+      ));
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.notFound().build();
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().build();
+    }
+  }
 }
