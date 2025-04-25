@@ -1,5 +1,6 @@
 package esprit.tn.pidev.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,24 +17,24 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String title;
 
     @Column(columnDefinition = "TEXT")
     private String content;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at")
     private Date createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "idUser", nullable = false)
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "user_id", referencedColumnName = "idUser")
+    @JsonBackReference
     private User author;
-
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
@@ -50,6 +51,11 @@ public class Post {
         this.title = title;
         this.content = content;
         this.author = author;
+        this.image= null ;
     }
+
+    @Lob
+    @Column(name = "image", columnDefinition = "LONGBLOB") // Pour MySQL (sinon "BYTEA" pour PostgreSQL)
+    private byte[] image; // Stocke l'image en BDD (BLOB)
 
 }

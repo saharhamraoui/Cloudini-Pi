@@ -1,5 +1,6 @@
 package esprit.tn.pidev.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class Tag {
 
     @ManyToMany(mappedBy = "tags",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JsonIgnore
     private List<Post> posts = new ArrayList<>();
 
     public Tag(String name) {

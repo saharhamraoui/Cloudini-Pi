@@ -1,5 +1,8 @@
 package esprit.tn.pidev.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,9 +32,11 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
+    @JsonBackReference
     private Post post;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "idUser", nullable = false)
+    @JsonManagedReference
     private User author;
 }
