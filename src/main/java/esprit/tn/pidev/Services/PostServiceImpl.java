@@ -59,14 +59,12 @@ private TagServiceImpl tagService;
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found"));
 
-        // Vérification des droits
         if (post.getAuthor() == null ||
                 (post.getAuthor().getIdUser() != currentUser.getIdUser()
                         && currentUser.getRole() != Role.ADMIN)) {
             throw new IllegalStateException("Unauthorized deletion");
         }
 
-        // Nettoyage optionnel des relations
         if (!post.getTags().isEmpty()) {
             post.getTags().clear();
             postRepository.save(post);
@@ -126,15 +124,12 @@ private TagServiceImpl tagService;
 
     @Override
     public long getAuthorIdByPostId(Long postId) {
-        // Appeler la méthode du repository pour récupérer l'ID de l'auteur
         return postRepository.findAuthorIdByPostId(postId)
                 .describeConstable().orElseThrow(() -> new EntityNotFoundException("Aucun auteur trouvé pour ce post"));
     }
 
     @Override
     public Map<String, Object> getPostWithAuthorName(Long postId) {
-        // Appeler la méthode du repository
-        // Récupérer le post par son ID
         Optional<Post> optionalPost = postRepository.findById(postId);
 
         if (optionalPost.isEmpty()) {
@@ -143,7 +138,6 @@ private TagServiceImpl tagService;
 
         Post post = optionalPost.get();
 
-        // Formater les données pour le frontend
         Map<String, Object> response = new HashMap<>();
         response.put("id", post.getId());
         response.put("title", post.getTitle());
@@ -151,7 +145,6 @@ private TagServiceImpl tagService;
         response.put("createdAt", post.getCreatedAt());
         response.put("updatedAt", post.getUpdatedAt());
 
-        // Récupérer le nom complet de l'auteur
         String authorFullName = "Auteur inconnu";
         if (post.getAuthor() != null) {
             authorFullName = post.getAuthor().getFirstName() + " " + post.getAuthor().getLastName();
@@ -178,15 +171,12 @@ private TagServiceImpl tagService;
     @Override
     @Transactional
     public Post createPostWithTags(Post post, List<String> tagNames, User author) {
-        // 1. Vérification du rôle
         if (author.getRole() != Role.MEDECIN) {
             throw new IllegalStateException("Seuls les médecins peuvent publier des posts");
         }
 
-        // 2. Associer l'auteur au post
         post.setAuthor(author);
 
-        // 3. Gestion des tags
         if (tagNames != null && !tagNames.isEmpty()) {
             List<Tag> managedTags = new ArrayList<>();
 
@@ -205,7 +195,6 @@ private TagServiceImpl tagService;
             post.setTags(managedTags);
         }
 
-        // 4. Sauvegarde
         return postRepository.save(post);
     }
     @Override
@@ -214,5 +203,19 @@ private TagServiceImpl tagService;
                 .orElseThrow(() -> new EntityNotFoundException("Tag not found"));
         return postRepository.findByTagsContaining(tag);    }
 
+  @Transactional
+  public int likePost(Long postId) {
+    Post post = postRepository.findById(postId)
+      .orElseThrow(() -> new EntityNotFoundException("Post non trouvé"));
+    post.incrementLikes();
+    postRepository.save(post);
+    return post.getLikesCount();
+  }
+
+  @Override
+  public int getLikesCount(Long postId) {
+    return postRepository.getLikesCount(postId);
+  }
 
 }
+

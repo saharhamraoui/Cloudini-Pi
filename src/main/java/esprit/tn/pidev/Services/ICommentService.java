@@ -9,8 +9,10 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ICommentService {
-    Comment createComment(Long postId, String content, User author);
-    Page<Comment> getCommentsByPost(Long postId, Pageable pageable);
-    Comment updateComment(Long commentId, String newContent, User currentUser);
-    void deleteComment(Long commentId, User currentUser);
+  Comment createComment(Long postId, String content, User author);
+  Comment createReply(Long parentCommentId, String content, User author);
+  Page<Comment> getCommentsByPost(Long postId, Pageable pageable);
+  Page<Comment> getRepliesByComment(Long commentId, Pageable pageable);
+  Comment updateComment(Long commentId, String newContent, User currentUser);
+  void deleteComment(Long commentId, User currentUser);
 }

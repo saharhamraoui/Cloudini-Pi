@@ -17,7 +17,7 @@ public class WebConfig {
                         .allowedOrigins("http://localhost:4200") // Autorise les requêtes depuis ce domaine
                         .allowedMethods("GET", "POST", "PUT", "DELETE") // Autorise ces méthodes HTTP
                         .allowedHeaders("*") // Autorise tous les headers
-                        .allowCredentials(true); // Autorise les cookies ou les sessions si nécessaire
+                        .allowCredentials(true);
             }
         };
     }

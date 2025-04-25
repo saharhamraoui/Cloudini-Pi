@@ -28,9 +28,8 @@ public class Notification {
     @JoinColumn(name = "user_id", referencedColumnName = "idUser", nullable = false)
     private User recipient;
 
-    // Nouveaux champs optionnels
     @Column(name = "content_type")
-    private String contentType; // 'POST', 'COMMENT', 'LIKE'
+    private String contentType;
 
     @Column(name = "content_id")
     private Long contentId;
@@ -38,7 +37,6 @@ public class Notification {
     @Column(name = "sender_id")
     private Long senderId;
 
-    // Constructeur existant (compatibilité)
     public Notification(String message, User recipient) {
         this.message = message;
         this.recipient = recipient;

@@ -15,4 +15,8 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT c FROM Comment c WHERE c.post.id = :postId ORDER BY c.createdAt ASC")
     Page<Comment> findCommentsByPostId(@Param("postId") Long postId, Pageable pageable);
-   }
+
+  Page<Comment> findByPostIdAndParentCommentIsNull(Long postId, Pageable pageable);
+  Page<Comment> findByParentCommentId(Long parentCommentId, Pageable pageable);
+  boolean existsById(Long commentId);
+}

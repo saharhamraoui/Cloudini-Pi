@@ -41,20 +41,16 @@ public class CommentController {
             @PathVariable Long postId,
             @RequestBody Map<String, Object> requestData) {
         try {
-            // Récupération des données du commentaire
             String content = (String) requestData.get("content");
             Long authorId = ((Number) requestData.get("authorId")).longValue();
 
-            // Vérification des données obligatoires
             if (content == null || authorId == null) {
                 return ResponseEntity.badRequest().body("Données du commentaire invalides");
             }
 
-            // Récupération de l'utilisateur via son ID
             User author = userRepository.findById(authorId)
                     .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
 
-            // Création du commentaire
             Comment createdComment = commentService.createComment(
                     postId,
                     content,
@@ -122,4 +118,44 @@ public class CommentController {
                     .body("Error: " + e.getMessage());
         }
     }
+  @Operation(summary = "Create reply to comment")
+  @PostMapping("/reply/{parentCommentId}")
+  public ResponseEntity<?> createReply(
+    @PathVariable Long parentCommentId,
+    @RequestBody Map<String, Object> requestData) {
+    try {
+      String content = (String) requestData.get("content");
+      Long authorId = ((Number) requestData.get("authorId")).longValue();
+
+      if (content == null || authorId == null) {
+        return ResponseEntity.badRequest().body("Données de la réponse invalides");
+      }
+
+      User author = userRepository.findById(authorId)
+        .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+
+      Comment createdReply = commentService.createReply(
+        parentCommentId,
+        content,
+        author
+      );
+
+      return ResponseEntity.status(HttpStatus.CREATED).body(createdReply);
+
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError()
+        .body("Erreur: " + e.getMessage());
+    }
+  }
+
+  @Operation(summary = "Get replies for a comment")
+  @GetMapping("/{commentId}/replies")
+  public ResponseEntity<Page<Comment>> getCommentReplies(
+    @PathVariable Long commentId,
+    Pageable pageable) {
+    Page<Comment> replies = commentService.getRepliesByComment(commentId, pageable);
+    return ResponseEntity.ok(replies);
+  }
 }

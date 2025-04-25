@@ -11,4 +11,5 @@ public interface INotificationService {
     void markAllAsRead(Long userId);
     long getUnreadNotificationsCount(Long userId);
 
+    void notifyNewReply(User author, Comment savedReply);
 }

@@ -118,24 +118,48 @@ public class PostController {
                 .contentType(MediaType.IMAGE_JPEG) // ou MediaType.IMAGE_PNG selon le format
                 .body(post.getImage());
     }
-    @Operation(summary = "Update an existing post (image optional)")
-    @PutMapping("/updatepostbyid/{id}")
-    public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody Post postDetails) {
-        try {
-            if (postDetails.getAuthor() == null || postDetails.getAuthor().getIdUser() == 0) {
-                return ResponseEntity.badRequest().body("Invalid author");
-            }
+  @Operation(summary = "Update post content")
+  @PutMapping("/updatepostbyid/{id}")
+  public ResponseEntity<?> updatePost(
+    @PathVariable Long id,
+    @RequestBody Map<String, String> updates,
+    @RequestHeader("X-User-Id") long currentUserId) {
 
-            User author = userRepository.findById(postDetails.getAuthor().getIdUser())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+    try {
+      Post post = postRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Post not found"));
 
-            Post updatedPost = postService.updatePost(id, postDetails, author);
-            return ResponseEntity.ok(updatedPost);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+      // 2. Vérifier que l'utilisateur est l'auteur original
+      if (post.getAuthor().getIdUser() != currentUserId) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+          .body(Map.of(
+            "error", "FORBIDDEN",
+            "message", "Only the original author can update this post"
+          ));
+      }
+
+      // 3. Mise à jour sélective
+      if (updates.containsKey("title")) {
+        post.setTitle(updates.get("title"));
+      }
+      if (updates.containsKey("content")) {
+        post.setContent(updates.get("content"));
+      }
+
+      // 4. Sauvegarde
+      Post updatedPost = postRepository.save(post);
+      return ResponseEntity.ok(updatedPost);
+
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.notFound().build();
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+        .body(Map.of(
+          "error", "BAD_REQUEST",
+          "message", e.getMessage()
+        ));
     }
-
+  }
     @Operation(summary = "Delete a post")
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId, @RequestHeader("userId") Long userId) {

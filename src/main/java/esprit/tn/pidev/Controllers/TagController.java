@@ -52,7 +52,6 @@ public class TagController {
         Tag updatedTag = tagService.updateTag(id, tagDetails.getName());
         return ResponseEntity.ok(updatedTag);
     }
-    // Ajoutez ces méthodes à votre TagController
 
     @Operation(summary = "Get all tags")
     @GetMapping("/tags")
@@ -74,5 +73,6 @@ public class TagController {
         Tag tag = tagService.getTagById(id);
         return ResponseEntity.ok(tag);
     }
+
 
 }

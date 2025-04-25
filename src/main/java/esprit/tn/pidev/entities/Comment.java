@@ -19,24 +19,33 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
+  @Column(nullable = false, columnDefinition = "TEXT")
+  private String content;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private Date createdAt;
+  @CreationTimestamp
+  @Column(nullable = false, updatable = false)
+  private Date createdAt;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    @JsonBackReference
-    private Post post;
+  @ManyToOne
+  @JoinColumn(name = "post_id", nullable = false)
+  @JsonBackReference
+  private Post post;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "idUser", nullable = false)
-    @JsonManagedReference
-    private User author;
+  @ManyToOne
+  @JoinColumn(name = "user_id", referencedColumnName = "idUser", nullable = false)
+  @JsonManagedReference
+  private User author;
+
+  @ManyToOne
+  @JoinColumn(name = "parent_comment_id")
+  @JsonBackReference
+  private Comment parentComment;
+
+  @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
+  private List<Comment> replies = new ArrayList<>();
 }

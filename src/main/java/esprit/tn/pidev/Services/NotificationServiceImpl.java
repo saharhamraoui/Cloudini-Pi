@@ -7,6 +7,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -20,7 +22,6 @@ public class NotificationServiceImpl implements INotificationService {
     @Transactional
 
     public void notifyNewPost(Post post) {
-        // Vérification nullité de l'auteur
         if (post.getAuthor() == null) {
             throw new IllegalArgumentException("L'auteur du post est null");
         }
@@ -78,4 +79,31 @@ public class NotificationServiceImpl implements INotificationService {
     public long getUnreadNotificationsCount(Long userId) {
         return notificationRepository.countByRecipientIdAndSeenFalse(userId);
     }
+
+  @Override
+  @Transactional
+  public void notifyNewReply(User recipient, Comment reply) {
+    if (recipient == null) {
+      throw new IllegalArgumentException("Le destinataire est null");
+    }
+    if (reply == null || reply.getAuthor() == null) {
+      throw new IllegalArgumentException("Réponse ou auteur invalide");
+    }
+
+    String contentPreview = reply.getContent().length() > 30
+      ? reply.getContent().substring(0, 30) + "..."
+      : reply.getContent();
+
+    String message = String.format("%s a répondu à votre commentaire: %s",
+      reply.getAuthor().getFirstName(),
+      contentPreview);
+
+    Notification notification = new Notification(message, recipient);
+    notification.setContentType("COMMENT_REPLY");
+    notification.setContentId(reply.getId());
+    notification.setSenderId(reply.getAuthor().getIdUser());
+
+    notificationRepository.save(notification);
+  }
 }
+
