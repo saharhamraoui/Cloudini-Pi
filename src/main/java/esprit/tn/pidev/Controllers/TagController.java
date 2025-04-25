@@ -10,9 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+@CrossOrigin(origins = "http://localhost:4200")
 
 @RestController
-@RequestMapping("/api/v1/tags")
+@RequestMapping("/tags")
 @io.swagger.v3.oas.annotations.tags.Tag(name = "Tag Management", description = "Endpoints for managing tags")
 public class TagController {
 
@@ -51,4 +52,27 @@ public class TagController {
         Tag updatedTag = tagService.updateTag(id, tagDetails.getName());
         return ResponseEntity.ok(updatedTag);
     }
+    // Ajoutez ces méthodes à votre TagController
+
+    @Operation(summary = "Get all tags")
+    @GetMapping("/tags")
+    public ResponseEntity<List<Tag>> getAllTags() {
+        List<Tag> tags = tagService.getAllTags();
+        return ResponseEntity.ok(tags);
+    }
+
+    @Operation(summary = "Create or get multiple tags")
+    @PostMapping("/bulk")
+    public ResponseEntity<List<Tag>> createOrGetTags(@RequestBody List<String> tagNames) {
+        List<Tag> tags = tagService.createOrGetTags(tagNames);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tags);
+    }
+
+    @Operation(summary = "Get tag by ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<Tag> getTagById(@PathVariable Long id) {
+        Tag tag = tagService.getTagById(id);
+        return ResponseEntity.ok(tag);
+    }
+
 }
