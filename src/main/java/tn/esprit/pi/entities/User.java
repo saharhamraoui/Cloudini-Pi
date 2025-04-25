@@ -1,7 +1,5 @@
 package tn.esprit.pi.entities;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,114 +14,122 @@ import java.time.LocalDateTime;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idUser ;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long idUser ;
+   private  String faceDescriptor;
+  private String firstName;
+  private String lastName;
+  private String email;
+  private String password;
+  private String phoneNumber;
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private String phoneNumber;
 
+  private String address;
+  @Enumerated(EnumType.STRING)
+  private Role role;
 
-    private String address;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+  public Role getRole() {
+    return role;
+  }
 
-    public Role getRole() {
-        return role;
-    }
+  public void setRole(Role role) {
+    this.role = role;
+  }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+  public long getIdUser() {
+    return idUser;
+  }
 
-    public long getIdUser() {
-        return idUser;
-    }
+  public byte[] getFaceDescriptor() {
+    return faceDescriptor.getBytes();
+  }
 
-    public void setIdUser(long idUser) {
-        this.idUser = idUser;
-    }
+  public void setFaceDescriptor(String faceDescriptor) {
+    this.faceDescriptor = faceDescriptor;
+  }
 
-    public String getFirstName() {
-        return firstName;
-    }
+  public void setIdUser(long idUser) {
+    this.idUser = idUser;
+  }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+  public String getFirstName() {
+    return firstName;
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+  public String getLastName() {
+    return lastName;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
 
-    public String getAddress() {
-        return address;
-    }
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-    @Column(name = "is_banned", columnDefinition = "boolean default false")
-    private boolean banned = false;
+  public String getAddress() {
+    return address;
+  }
 
-    public boolean isBanned() {
-        return banned;
-    }
+  public void setAddress(String address) {
+    this.address = address;
+  }
+  @Column(name = "is_banned", columnDefinition = "boolean default false")
+  private boolean banned = false;
 
-    public void setBanned(boolean banned) {
-        this.banned = banned;
-    }
+  public boolean isBanned() {
+    return banned;
+  }
 
-    public String getResetToken() {
-        return resetToken;
-    }
+  public void setBanned(boolean banned) {
+    this.banned = banned;
+  }
 
-    public void setResetToken(String resetToken) {
-        this.resetToken = resetToken;
-    }
+  public String getResetToken() {
+    return resetToken;
+  }
 
-    public LocalDateTime getTokenExpiryDate() {
-        return tokenExpiryDate;
-    }
+  public void setResetToken(String resetToken) {
+    this.resetToken = resetToken;
+  }
 
-    public void setTokenExpiryDate(LocalDateTime tokenExpiryDate) {
-        this.tokenExpiryDate = tokenExpiryDate;
-    }
+  public LocalDateTime getTokenExpiryDate() {
+    return tokenExpiryDate;
+  }
 
-    @Column(name = "reset_token")
-    private String resetToken;
+  public void setTokenExpiryDate(LocalDateTime tokenExpiryDate) {
+    this.tokenExpiryDate = tokenExpiryDate;
+  }
 
-    @Column(name = "token_expiry_date")
-    private LocalDateTime tokenExpiryDate;
+  @Column(name = "reset_token")
+  private String resetToken;
+
+  @Column(name = "token_expiry_date")
+  private LocalDateTime tokenExpiryDate;
 }

@@ -1,7 +1,6 @@
 package tn.esprit.pi.entities;
 
-import esprit.tn.pidev.entities.Medecin;
-import esprit.tn.pidev.entities.Patient;
+
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -16,11 +15,11 @@ public class MedicalRecord {
 
     @OneToOne
     @JoinColumn(name = "patientId", referencedColumnName = "idUser")
-    private esprit.tn.pidev.entities.Patient patient;
+    private Patient patient;
 
     @ManyToOne
     @JoinColumn(name = "doctorId", referencedColumnName = "idUser")
-    private esprit.tn.pidev.entities.Medecin doctor;
+    private Medecin doctor;
 
     @Column(nullable = false, updatable = false)
     private LocalDate createdAt;
@@ -46,7 +45,7 @@ public class MedicalRecord {
     // Constructors
     public MedicalRecord() {}
 
-    public MedicalRecord(esprit.tn.pidev.entities.Patient patient, esprit.tn.pidev.entities.Medecin doctor, String diagnosis, String notes) {
+    public MedicalRecord(Patient patient, Medecin doctor, String diagnosis, String notes) {
         this.patient = patient;
         this.doctor = doctor;
         this.diagnosis = diagnosis;
@@ -61,7 +60,7 @@ public class MedicalRecord {
         this.idMedicalRecord = idMedicalRecord;
     }
 
-    public esprit.tn.pidev.entities.Patient getPatient() {
+    public Patient getPatient() {
         return patient;
     }
 
@@ -69,7 +68,7 @@ public class MedicalRecord {
         this.patient = patient;
     }
 
-    public esprit.tn.pidev.entities.Medecin getDoctor() {
+    public Medecin getDoctor() {
         return doctor;
     }
 

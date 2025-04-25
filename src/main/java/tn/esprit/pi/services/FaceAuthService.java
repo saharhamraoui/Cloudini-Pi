@@ -7,6 +7,7 @@ import tn.esprit.pi.repositories.UserRepository;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class FaceAuthService {
 
         ByteBuffer buffer = ByteBuffer.allocate(descriptor.length * Float.BYTES);
         buffer.asFloatBuffer().put(descriptor);
-        user.setFaceDescriptor(buffer.array());
+        user.setFaceDescriptor(Arrays.toString(buffer.array()));
 
         userRepository.save(user);
     }

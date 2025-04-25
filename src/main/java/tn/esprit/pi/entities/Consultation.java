@@ -1,6 +1,5 @@
 package tn.esprit.pi.entities;
 
-import esprit.tn.pidev.entities.RendezVous;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,8 +19,7 @@ public class Consultation {
     long idConsultation;
     Date dateConsultation;
     String rapport ;
-    @OneToOne
-    RendezVous rendezVous ;
+
 
     @ManyToOne
     @JoinColumn(name = "medical_record_id")
@@ -59,13 +57,6 @@ public class Consultation {
         this.rapport = rapport;
     }
 
-    public RendezVous getRendezVous() {
-        return rendezVous;
-    }
-
-    public void setRendezVous(RendezVous rendezVous) {
-        this.rendezVous = rendezVous;
-    }
 
 
 }
