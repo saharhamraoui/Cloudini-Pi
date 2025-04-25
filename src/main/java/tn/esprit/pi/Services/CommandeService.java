@@ -28,6 +28,8 @@ public class CommandeService implements ICommandeService{
 
     @Autowired
     private FournisseurRepository fournisseurRepository;
+    @Autowired
+    private MailService mailService;
 
 
     @Override
@@ -56,6 +58,68 @@ public class CommandeService implements ICommandeService{
     }
     @Override
     public CommandeResponseDTO createCommande(CommandeRequestDTO request) {
+        Fournisseur fournisseur = fournisseurRepository.findById(request.getFournisseurId())
+                .orElseThrow(() -> new RuntimeException("Fournisseur non trouvé"));
+
+        Commande commande = new Commande();
+        commande.setFournisseur(fournisseur);
+        commande.setStatus(Status.Encours);
+        commande = commandeRepository.save(commande);
+
+        List<LigneCommande> lignes = new ArrayList<>();
+        for (LigneCommandeDTO ligneDto : request.getMedicaments()) {
+            Medicament medicament = medicamentRepository.findById(ligneDto.getMedicamentId())
+                    .orElseThrow(() -> new RuntimeException("Médicament non trouvé"));
+
+            if (ligneDto.getQuantite() > medicament.getQuantite()) {
+                throw new RuntimeException("Stock insuffisant pour le médicament : " + medicament.getNom());
+            }
+
+            medicament.setQuantite(medicament.getQuantite() - ligneDto.getQuantite());
+            medicamentRepository.save(medicament);
+
+            LigneCommande ligneCommande = new LigneCommande();
+            ligneCommande.setCommande(commande);
+            ligneCommande.setMedicament(medicament);
+            ligneCommande.setQuantite(ligneDto.getQuantite());
+            lignes.add(ligneCommande);
+        }
+
+        ligneCommandeRepository.saveAll(lignes);
+
+        // Construction de la réponse
+        CommandeResponseDTO responseDTO = new CommandeResponseDTO();
+        responseDTO.setCommandeId(commande.getIdcommande());
+        responseDTO.setFournisseurName(fournisseur.getNom());
+        responseDTO.setStatus(String.valueOf(commande.getStatus()));
+
+        List<LigneCommandeDTO> ligneDTOs = new ArrayList<>();
+        for (LigneCommande ligne : lignes) {
+            LigneCommandeDTO dto = new LigneCommandeDTO();
+            dto.setMedicamentId(ligne.getMedicament().getIdmedicament());
+            dto.setQuantite(ligne.getQuantite());
+            ligneDTOs.add(dto);
+        }
+        responseDTO.setMedicaments(ligneDTOs);
+
+        // ✅ Envoyer le mail au fournisseur
+        String to = fournisseur.getContact(); // Contact = email du fournisseur
+        String subject = "Nouvelle commande #" + commande.getIdcommande();
+        String urlValidation = "http://localhost:4200/back/commande/valider/" + commande.getIdcommande(); // 🔗 lien vers page Angular pour valider
+        String body = "Bonjour " + fournisseur.getNom() + ",\n\n" +
+                "Vous avez reçu une nouvelle commande de médicaments. Voici les détails :\n" +
+                "- ID Commande : " + commande.getIdcommande() + "\n" +
+                "- Nombre d'articles : " + lignes.size() + "\n\n" +
+                "Veuillez cliquer sur le lien suivant pour consulter et valider la commande :\n" +
+                urlValidation + "\n\n" +
+                "Merci,\nL'équipe de gestion hospitalière";
+
+        mailService.sendEmail(to, subject, body);
+
+        return responseDTO;
+    }
+
+    /*public CommandeResponseDTO createCommande(CommandeRequestDTO request) {
         // 1️⃣ Trouver le fournisseur
         Fournisseur fournisseur = fournisseurRepository.findById(request.getFournisseurId())
                 .orElseThrow(() -> new RuntimeException("Fournisseur non trouvé"));

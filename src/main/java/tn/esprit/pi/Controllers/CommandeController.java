@@ -25,8 +25,6 @@ public class CommandeController {
 
     @Autowired
     ICommandeService CommandeService;
-
-
     @PostMapping("/")
     public Commande addCommande(@RequestBody Commande Commande) {
         return CommandeService.addCommande(Commande);
