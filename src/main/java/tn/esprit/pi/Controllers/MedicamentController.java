@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.pi.Services.FournisseurService;
-import tn.esprit.pi.Services.IFournisseurService;
 import tn.esprit.pi.Services.IMedicamentService;
-import tn.esprit.pi.entities.Fournisseur;
 import tn.esprit.pi.entities.Medicament;
 
 import java.util.List;
@@ -66,7 +63,14 @@ public class MedicamentController {
     public List<Medicament> getAlertesExpiration() {
         return medicamentService.getMedicamentsProchesExpiration();
     }
+    @PutMapping("/medicament/{id}/desaffecter-fournisseur")
+    public Medicament desaffecterFournisseur(@PathVariable Long id) {
+        return medicamentService.desaffecterFournisseur(id);
+    }
 
-
-
+    @GetMapping("/fournisseur/{idFournisseur}/nom")
+    public ResponseEntity<String> getFournisseurNameById(@PathVariable Long idFournisseur) {
+        String fournisseurName = medicamentService.getFournisseurNameById(idFournisseur);
+        return ResponseEntity.ok(fournisseurName);  // Return 200 OK with the fournisseur name
+    }
 }

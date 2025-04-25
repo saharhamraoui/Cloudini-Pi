@@ -9,6 +9,7 @@ import tn.esprit.pi.entities.Medicament;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicamentService implements IMedicamentService {
@@ -76,6 +77,22 @@ public class MedicamentService implements IMedicamentService {
         LocalDate dateLimite = LocalDate.now().plusDays(30);
         return medicamentRepository.findByDateExpirationBefore(dateLimite);
     }
+    @Override
+    public Medicament desaffecterFournisseur(Long idMedicament) {
+        Medicament medicament = medicamentRepository.findById(idMedicament).orElseThrow(
+                () -> new RuntimeException("Medicament not found")
+        );
 
+        medicament.setFournisseur(null); // Désaffecter le fournisseur
+
+        return medicamentRepository.save(medicament);
+    }
+    @Override
+    public String getFournisseurNameById(Long idFournisseur) {
+        Fournisseur fournisseur = fournisseurRepository.findById(idFournisseur).orElseThrow(
+                () -> new RuntimeException("Fournisseur not found")
+        );
+        return fournisseur.getNom();
+    }
 
 }

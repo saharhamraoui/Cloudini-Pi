@@ -20,4 +20,6 @@ public interface IMedicamentService  {
 
     Medicament ajouterMedicamentEtAffecterFournisseur(Long idFournisseur, Medicament medicament);
     List<Medicament> getMedicamentsProchesExpiration();
+    Medicament desaffecterFournisseur(Long idMedicament);
+    public String getFournisseurNameById(Long idFournisseur);
 }
