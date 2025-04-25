@@ -12,6 +12,7 @@ public class SmsController {
 
     @Autowired
     private SmsService smsService;
+
     @PostMapping("/send/{to}/{body}")
     public String sendSms(@PathVariable("to") String to, @PathVariable("body") String body) {
         return smsService.sendSms(to, body);
