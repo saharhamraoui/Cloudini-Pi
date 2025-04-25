@@ -17,5 +17,4 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("SELECT t FROM Tag t ORDER BY SIZE(t.posts) DESC")
     List<Tag> findMostPopularTags();
 
-    Tag findByName(String name);
-}
+    Optional<Tag> findByName(String name);}
