@@ -1,42 +1,47 @@
 <a routerLink="/back/commandes" class="btn btn-sm btn-secondary mb-3">
-  <i class="fa-sharp fa-solid fa-arrow-left"></i>
+  <i class="fa-sharp fa-solid fa-arrow-left"></i> Retour aux commandes
 </a>
 
-<h2>Suivi de la Commande #{{ idcommande }}</h2>
+<div class="container">
+  <h2>Suivi de la Commande #{{ idcommande }}</h2>
 
-<div class="card mt-4">
-  <div class="card-body">
-    <h5>Fournisseur : {{ fournisseur?.nom }}</h5>
-    <p>Adresse : {{ fournisseur?.adresse }}</p>
-    <p>Statut :
-      <span class="badge"
-            [ngClass]="{
-              'bg-warning': commandeStatus === 'En cours',
-              'bg-success': commandeStatus === 'Validée',
-              'bg-primary': commandeStatus === 'Livrée'
-            }">
-        {{ commandeStatus }}
-      </span>
-    </p>
-    
-    <!-- Carte -->
-    <div id="map" style="height: 400px;"></div>
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h5>Fournisseur : {{ fournisseur?.nom }}</h5>
+          <p><i class="fas fa-map-marker-alt"></i> {{ fournisseur?.adresse }}</p>
+          <p><i class="fas fa-phone"></i> {{ fournisseur?.telephone || 'Non disponible' }}</p>
+          
+          <div class="status-info">
+            <p>Statut : 
+              <span class="badge" 
+                    [ngClass]="{
+                      'bg-warning': commandeStatus === 'Encours',
+                      'bg-info': commandeStatus === 'Validée',
+                      'bg-success': commandeStatus === 'Livrée'
+                    }">
+                {{ commandeStatus }}
+              </span>
+            </p>
+          </div>
 
+          <div class="delivery-info" *ngIf="commandeStatus === 'Validée'">
+            <div class="time-remaining">
+              <i class="fas fa-clock"></i> Temps restant: {{ remainingTime }}
+            </div>
+            <div class="progress mt-3">
+              <div class="progress-bar progress-bar-striped progress-bar-animated"
+                   [style.width.%]="progress">
+                {{ progress | number:'1.0-0' }}%
+              </div>
+            </div>
+          </div>
+        </div>
 
-
-    <!-- Barre de progression (visible lorsque la commande est en cours de livraison) -->
-    <div class="progress mt-3" *ngIf="commandeStatus === 'Validée'">
-
-    <!-- Template code to display remaining time -->
-    <div id="timeRemaining">
-      Temps restant: {{ remainingTime }}
-    </div>
-    
-      <div class="progress-bar progress-bar-striped progress-bar-animated"
-           role="progressbar"
-           [style.width.%]="progress"
-           aria-valuemin="0" aria-valuemax="100">
-        Livraison... ({{ progress | number:'1.0-0' }}%)
+        <div class="col-md-6">
+          <div id="map"></div>
+        </div>
       </div>
     </div>
   </div>

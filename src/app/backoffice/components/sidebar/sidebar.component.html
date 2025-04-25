@@ -20,7 +20,13 @@
             <span>Dashboard</span>
           </a>
         </li>
-  
+    
+        <li>
+          <a [routerLink]="['/editdoctorprofile']" routerLinkActive="active">
+            <i class="fas fa-user-circle icon-spaced"></i>
+            <span>Profile</span>
+          </a>
+        </li>
         <li>
           <a [routerLink]="['/back/crudmed']" routerLinkActive="active">
             <i class="fa fa-pills icon-spaced"></i>
@@ -62,98 +68,7 @@
             <label>Gestion des fournisseurs</label>
           </a>
         </li>
-  
-        <li>
-          <a [routerLink]="['/editdoctorprofile']" routerLinkActive="active">
-            <i class="fas fa-user-circle icon-spaced"></i>
-            <span>Profile</span>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/back/approvalstatus']" routerLinkActive="active">
-            <i class="fa fa-check icon-spaced"></i>
-            <label>Statut d'approbation</label>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/back/list-rendez-vous-back']" routerLinkActive="active">
-            <i class="fa fa-calendar-check icon-spaced"></i>
-            <label>Liste des rendez-vous</label>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/back/list-consultation-Back']" routerLinkActive="active">
-            <i class="fa fa-notes-medical icon-spaced"></i>
-            <label>Liste des consultations</label>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/back/ajouterassistant']" routerLinkActive="active">
-            <i class="fa fa-user-nurse icon-spaced"></i>
-            <label>Liste des assistants</label>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/stock']" routerLinkActive="active">
-            <i class="fa fa-box icon-spaced"></i>
-            <label>Liste des produits</label>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/commande']" routerLinkActive="active">
-            <i class="fa fa-receipt icon-spaced"></i>
-            <label>Liste des commandes</label>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/doctorlist']" routerLinkActive="active">
-            <i class="fa fa-user-md icon-spaced"></i>
-            <label>Liste des médecins</label>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/patientlist']" routerLinkActive="active">
-            <i class="fa fa-users icon-spaced"></i>
-            <label>Patients</label>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/paiements']" routerLinkActive="active">
-            <i class="fa fa-credit-card icon-spaced"></i>
-            <label>Paiements</label>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/addprescription']" routerLinkActive="active">
-            <i class="fa fa-paper-plane icon-spaced"></i>
-            <label>Ajouter des ordonnances</label>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/prescriptions']" routerLinkActive="active">
-            <i class="fa fa-list icon-spaced"></i>
-            <label>Liste des ordonnances</label>
-          </a>
-        </li>
-  
-        <li>
-          <a [routerLink]="['/consulter-conges']" routerLinkActive="active">
-            <i class="fa fa-calendar-times icon-spaced"></i>
-            <label>Liste des congés</label>
-          </a>
-        </li>
-  
+
         <li>
           <a [routerLink]="['/']" routerLinkActive="active">
             <i class="fas fa-sign-out-alt icon-spaced"></i>

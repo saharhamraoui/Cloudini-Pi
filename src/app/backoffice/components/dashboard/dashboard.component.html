@@ -1,46 +1,106 @@
 <div class="dashboard-container">
-    <h1 class="dashboard-title">Welcome to the Healthcare Management System Dashboard</h1>
-    
-    <div class="cards-container">
-      <div class="modern-card" style="--card-color: #2980b9;">
-        <div class="card-icon">
-          <i class="fas fa-prescription-bottle-alt"></i>
-        </div>
-        <div class="card-content">
-          <h3>Stock</h3>
-          <div *ngIf="Medicament$ | async as medicaments" class="card-value">
-            {{ medicaments.length }} médicaments disponibles
-          </div>
-        </div>
+  <h1 class="dashboard-title">Tableau de Bord des Commandes Livrées</h1>
+
+  <div class="cards-container">
+    <div class="modern-card stat-card">
+      <div class="card-icon">
+        <i class="fas fa-truck"></i>
       </div>
-  
-      <div class="modern-card" style="--card-color: #27ae60;">
-        <div class="card-icon">
-          <i class="fas fa-user-md"></i>
-        </div>
-        <div class="card-content">
-          <h3>Commandes Livrées</h3>
-          <div *ngIf="commandesLivrees.length === 0" class="card-value">Aucune commande livrée</div>
-          <ul *ngIf="commandesLivrees.length > 0">
-            <li *ngFor="let commande of commandesLivrees">
-              Commande #{{ commande.idcommande }} — Fournisseur : {{ commande.fournisseur.nom }}
-            </li>
-          </ul>
-        </div>
+      <div class="card-content">
+        <h3>Commandes Livrées</h3>
+        <div class="card-value">{{ commandesLivrees.length }}</div>
+        <div class="card-description">Total des commandes livrées</div>
       </div>
-  
-      <div class="modern-card" style="--card-color: #e74c3c;">
-        <div class="card-icon">
-          <i class="fas fa-user-injured"></i>
-        </div>
-        <div class="card-content">
-          <h3>Total par Fournisseur</h3>
-          <div *ngFor="let fournisseur of totalParFournisseur | keyvalue" class="card-value">
-            {{ fournisseur.key }} : {{ fournisseur.value | currency:'EUR' }}
-          </div>
-        </div>
+    </div>
+
+    <div class="modern-card stat-card">
+      <div class="card-icon">
+        <i class="fas fa-euro-sign"></i>
       </div>
-  
-      
+      <div class="card-content">
+        <h3>Montant Total</h3>
+        <div class="card-value">
+          {{ getTotalAmount() | currency:'EUR':'symbol':'1.2-2' }}
+        </div>
+        <div class="card-description">Valeur totale des commandes</div>
+      </div>
+    </div>
+
+    <div class="modern-card stat-card">
+      <div class="card-icon">
+        <i class="fas fa-store"></i>
+      </div>
+      <div class="card-content">
+        <h3>Fournisseurs</h3>
+        <div class="card-value">{{ fournisseurs.length }}</div>
+        <div class="card-description">Nombre de fournisseurs</div>
+      </div>
     </div>
   </div>
+
+  <div class="charts-container">
+    <div class="chart-card">
+      <h3 class="chart-title">Répartition par Fournisseur (Montant)</h3>
+      <div class="chart-wrapper">
+        <canvas baseChart
+          [data]="barChartData"
+          [options]="barChartOptions"
+          [type]="barChartType">
+        </canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3 class="chart-title">Part de Marché des Fournisseurs</h3>
+      <div class="chart-wrapper pie-wrapper">
+        <canvas baseChart
+          [data]="pieChartData"
+          [options]="pieChartOptions"
+          [type]="pieChartType">
+        </canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="details-container">
+    <h3 class="section-title">Détails des Commandes</h3>
+    <div class="table-responsive">
+      <table class="commandes-table">
+        <thead>
+          <tr>
+            <th>ID Commande</th>
+            <th>Date</th>
+            <th>Fournisseur</th>
+            <th>Médicaments</th>
+            <th>Quantité</th>
+            <th>Montant</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let commande of commandesLivrees">
+            <td>#{{ commande.idcommande }}</td>
+            <td>{{ commande.dateCommande | date:'dd/MM/yyyy' }}</td>
+            <td>{{ commande.fournisseur.nom }}</td>
+            <td>
+              <ul class="medicaments-list">
+                <li *ngFor="let ligne of commande.lignesCommande">
+                  {{ ligne.medicament.nom }}
+                </li>
+              </ul>
+            </td>
+            <td>
+              <ul class="quantities-list">
+                <li *ngFor="let ligne of commande.lignesCommande">
+                  {{ ligne.quantite }}
+                </li>
+              </ul>
+            </td>
+            <td class="amount-cell">
+              {{ calculateCommandeTotal(commande) | currency:'EUR':'symbol':'1.2-2' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

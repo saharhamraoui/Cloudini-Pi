@@ -20,6 +20,7 @@ import { GestionmedsComponent } from './components/gestionmeds/gestionmeds.compo
 import { StatusFilterPipe } from '../pipes/status-filter.pipe';
 import { SuivreCommandeComponent } from './components/suivre-commande/suivre-commande.component';
 import { ValidationCommandeComponent } from './components/validation-commande/validation-commande.component';
+import { NgChartsModule } from 'ng2-charts';  
 
 
 @NgModule({
@@ -46,7 +47,10 @@ import { ValidationCommandeComponent } from './components/validation-commande/va
     RouterModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    CommonModule,  
+    NgChartsModule   
+
   ]
 })
 export class BackofficeModule { }

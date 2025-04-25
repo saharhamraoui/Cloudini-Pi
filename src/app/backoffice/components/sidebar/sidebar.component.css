@@ -47,7 +47,7 @@
   
   /* Active link */
   .sidebar .menu li a.active {
-    background: #007bff; /* Bootstrap blue (or use #3498db for a softer blue) */
+    background: #2f73bb; /* Bootstrap blue (or use #3498db for a softer blue) */
     color: white;
     font-weight: 500;
   }

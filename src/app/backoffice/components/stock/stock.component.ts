@@ -1,55 +1,90 @@
-import { MedicamentService } from '../../../services/medicament.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Medicament } from 'src/app/model/Medicament';
-import { Stock } from 'src/app/model/Stock';
-import { CommandeService } from 'src/app/services/commande.service';
 import { StockService } from 'src/app/services/stock.service';
+import { CommandeService } from 'src/app/services/commande.service';
+import { Stock } from 'src/app/model/Stock';
+import { Chart } from 'chart.js';
 
 @Component({
   selector: 'app-stock',
   templateUrl: './stock.component.html',
   styleUrls: ['./stock.component.css']
 })
-export class StockComponent  implements OnInit {
+export class StockComponent implements OnInit {
   stockList: Stock[] = [];
-  expirationAlertes: Stock[] = []; // 👈 Médicaments proches de l’expiration
+  expirationAlertes: Stock[] = [];
 
   constructor(
     private commandeService: CommandeService,
-    private medicamentService: StockService,
+    private stockService: StockService, // Renommez medicamentService en stockService pour plus de clarté
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.loadStockData();
+  }
+
+  loadStockData(): void {
     this.commandeService.getStock().subscribe(data => {
       this.stockList = data;
+      this.checkExpirationAlertes();
+      this.initCharts();
     });
 
-    this.medicamentService.getMedicamentsProchesExpiration().subscribe(data => {
+    this.stockService.getMedicamentsProchesExpiration().subscribe(data => {
       this.expirationAlertes = data;
     });
+  }
+
+  isExpire(expirationDate: string): boolean {
+    const now = new Date();
+    const expDate = new Date(expirationDate);
+    return expDate < now;
+  }
+
+  checkExpirationAlertes(): void {
+    const today = new Date();
+    this.expirationAlertes = this.stockList.filter(stock => {
+      const expDate = new Date(stock.medicament.dateExpiration);
+      const diffTime = expDate.getTime() - today.getTime();
+      const diffDays = diffTime / (1000 * 3600 * 24);
+      return diffDays <= 7;
+    });
+  }
+
+  shouldShowCommanderButton(stock: Stock): boolean {
+    return stock.quantiteEnStock < stock.seuilAlerte;
   }
 
   commanderChezFournisseur(fournisseurId: number): void {
     this.router.navigate(['/back/fournisseur', fournisseurId, 'medicaments']);
   }
 
- // Vérifier si la date d'expiration est dépassée
- isExpire(expirationDate: string): boolean {
-  const now = new Date();
-  const expDate = new Date(expirationDate);
-  return expDate < now;
-}
+  getLowStockCount(): number {
+    return this.stockList.filter(s => s.quantiteEnStock < s.seuilAlerte).length;
+  }
 
-// Vérifier les alertes pour les médicaments proches de l'expiration
-checkExpirationAlertes(): void {
-  const today = new Date();
-  this.expirationAlertes = this.stockList.filter(stock => {
-    const expDate = new Date(stock.medicament.dateExpiration);
-    const diffTime = expDate.getTime() - today.getTime();
-    const diffDays = diffTime / (1000 * 3600 * 24); // Convertir le temps en jours
-    return diffDays <= 7;  // Si expiration dans les 7 jours
-  });
-}
+  getTotalValue(): number {
+    return this.stockList.reduce((sum, stock) => sum + (stock.medicament.prix * stock.quantiteEnStock), 0);
+  }
+
+  initCharts(): void {
+    const statusCtx = document.getElementById('stockStatusChart') as HTMLCanvasElement;
+    new Chart(statusCtx, {
+      type: 'pie',
+      data: {
+        labels: ['Normal', 'Stock faible', 'Expiré'],
+        datasets: [{
+          data: [
+            this.stockList.filter(s => s.quantiteEnStock >= s.seuilAlerte && !this.isExpire(s.medicament.dateExpiration)).length,
+            this.getLowStockCount(),
+            this.stockList.filter(s => this.isExpire(s.medicament.dateExpiration)).length
+          ],
+          backgroundColor: [
+            '#2ecc71', '#f39c12', '#e74c3c'
+          ]
+        }]
+      }
+    });
+  }
 }

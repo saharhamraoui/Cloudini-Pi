@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import { CommandeService } from 'src/app/services/commande.service';
@@ -9,13 +9,18 @@ import 'leaflet-routing-machine';
   templateUrl: './suivre-commande.component.html',
   styleUrls: ['./suivre-commande.component.css']
 })
-export class SuivreCommandeComponent implements OnInit {
+export class SuivreCommandeComponent implements OnInit, OnDestroy {
   idcommande!: number;
   fournisseur: any;
   commandeStatus: string = '';
   map!: L.Map;
   progress = 0;
-  remainingTime: string = '';  // To hold the remaining time
+  remainingTime: string = '';
+  routeTime!: number;
+  fournisseurCoords!: [number, number];
+  hospitalCoords!: [number, number];
+  statusCheckInterval: any;
+  deliveryInterval: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,177 +30,248 @@ export class SuivreCommandeComponent implements OnInit {
   ngOnInit(): void {
     this.idcommande = +this.route.snapshot.paramMap.get('idcommande')!;
     this.loadCommande();
-    this.checkStatusLoop();
+    this.startStatusCheckLoop();
   }
 
-  // Vérifie périodiquement l'état de la commande
-  checkStatusLoop() {
-    const interval = setInterval(() => {
-      this.commandeService.getCommandeById(this.idcommande).subscribe((commande) => {
-        this.commandeStatus = commande.status;
-        if (commande.status === 'Livrée') {
-          clearInterval(interval);
-          this.playSound('arrivee');
-        }
-      });
-    }, 3000); // Vérifie toutes les 3 secondes
+  ngOnDestroy(): void {
+    if (this.statusCheckInterval) {
+      clearInterval(this.statusCheckInterval);
+    }
+    if (this.deliveryInterval) {
+      clearInterval(this.deliveryInterval);
+    }
   }
 
-  // Charge les données de la commande et initialise la carte
-  loadCommande() {
+  startStatusCheckLoop(): void {
+    this.statusCheckInterval = setInterval(() => {
+      this.checkCommandeStatus();
+    }, 3000);
+  }
+
+  checkCommandeStatus(): void {
+    this.commandeService.getCommandeById(this.idcommande).subscribe((commande) => {
+      const newStatus = commande.status;
+
+      if (this.commandeStatus !== newStatus) {
+        this.handleStatusChange(newStatus);
+      }
+
+      this.commandeStatus = newStatus;
+    });
+  }
+
+  handleStatusChange(newStatus: string): void {
+    switch(newStatus) {
+      case 'Validée':
+        this.startDeliverySimulation();
+        break;
+      case 'Livrée':
+        this.handleDeliveryCompletion();
+        break;
+    }
+  }
+
+  startDeliverySimulation(): void {
+    if (this.routeTime && this.fournisseurCoords && this.hospitalCoords) {
+      this.playSound('depart');
+      this.simulateDelivery(this.routeTime, this.fournisseurCoords, this.hospitalCoords);
+    }
+  }
+
+  handleDeliveryCompletion(): void {
+    clearInterval(this.statusCheckInterval);
+    this.playSound('arrivee');
+  }
+
+  loadCommande(): void {
     this.commandeService.getCommandeById(this.idcommande).subscribe(
       (commande: any) => {
         this.fournisseur = commande.fournisseur;
         this.commandeStatus = commande.status;
+        console.log("Commande status:", this.commandeStatus);  // Vérifiez ici aussi
         this.initMap(this.fournisseur.adresse);
       },
       error => {
-        console.error("Erreur lors du chargement de la commande", error);
-        alert('Erreur lors du chargement de la commande');
+        console.error("Error loading commande", error);
+        alert('Error loading commande details');
       }
     );
   }
+  
 
-  // Joue le son correspondant à l'état de la commande
-  playSound(type: 'depart' | 'enroute' | 'arrivee') {
+  playSound(type: 'depart' | 'enroute' | 'arrivee'): void {
     const audio = new Audio(`assets/sounds/${type}.m4a`);
-    audio.play();
+    audio.play().catch(e => console.error("Audio playback failed:", e));
   }
 
-  // Initialise la carte Leaflet avec l'adresse du fournisseur
-  async initMap(adresse: string) {
+  async initMap(adresse: string): Promise<void> {
     try {
-      const fournisseurCoords = await this.getCoordinatesFromAddress(adresse);
-
-      // Initialisation de la carte
-      this.map = L.map('map').setView(fournisseurCoords, 13);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(this.map);
-
-      const customIcon = L.icon({
-        iconUrl: 'assets/marker-icon.png',
-        shadowUrl: 'assets/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
-        shadowAnchor: [12, 41]
-      });
-
-      // Marqueur fournisseur
-      L.marker(fournisseurCoords, { icon: customIcon }).addTo(this.map)
-        .bindPopup('Fournisseur')
-        .openPopup();
-
-      // Localiser l'utilisateur
-      this.map.locate({ setView: false, maxZoom: 16 });
-
-      this.map.on('locationfound', (e: L.LocationEvent) => {
-        const userCoords: [number, number] = [e.latlng.lat, e.latlng.lng];
-      
-        L.marker(userCoords, { icon: customIcon }).addTo(this.map)
-          .bindPopup('Votre position')
-          .openPopup();
-
-        const control = L.Routing.control({
-          waypoints: [
-            L.latLng(userCoords[0], userCoords[1]),
-            L.latLng(fournisseurCoords[0], fournisseurCoords[1])
-          ],
-          routeWhileDragging: false,
-          addWaypoints: false,
-          show: false,
-          createMarker: () => null
-        } as any).addTo(this.map);
-
-        control.on('routesfound', (e: any) => {
-          const route = e.routes[0];
-          const tempsEnSecondes = route.summary.totalTime;
-
-          console.log(`⏱ Temps estimé du trajet : ${tempsEnSecondes} secondes`);
-          this.playSound('depart');
-          this.simulateDelivery(tempsEnSecondes, fournisseurCoords, userCoords);
-        });
-      });
-
-      this.map.on('locationerror', () => {
-        console.error('Impossible de localiser l’utilisateur');
-        alert('Impossible de localiser votre position.');
-      });
-
-      // Fix pour taille carte après chargement
-      setTimeout(() => {
-        this.map.invalidateSize();
-      }, 300);
+      this.fournisseurCoords = await this.getCoordinatesFromAddress(adresse);
+      this.initializeMap(this.fournisseurCoords);
     } catch (error) {
-      console.error('Erreur lors de la récupération des coordonnées:', error);
-      alert('Erreur de localisation de l’adresse fournisseur.');
+      console.error('Error initializing map:', error);
+      alert('Error initializing map');
     }
   }
 
-  // Récupère les coordonnées d'une adresse via OpenStreetMap
+  initializeMap(fournisseurCoords: [number, number]): void {
+    this.map = L.map('map').setView(fournisseurCoords, 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    this.addFournisseurMarker(fournisseurCoords);
+    this.locateUserPosition(fournisseurCoords);
+
+    setTimeout(() => this.map.invalidateSize(), 300);
+  }
+
+  addFournisseurMarker(coords: [number, number]): void {
+    const customIcon = this.createCustomIcon();
+    L.marker(coords, { icon: customIcon })
+      .addTo(this.map)
+      .bindPopup('Fournisseur')
+      .openPopup();
+  }
+
+  locateUserPosition(fournisseurCoords: [number, number]): void {
+    this.map.locate({ setView: false, maxZoom: 16 });
+
+    this.map.on('locationfound', (e: L.LocationEvent) => {
+      this.handleLocationFound(e, fournisseurCoords);
+    });
+
+    this.map.on('locationerror', this.handleLocationError);
+  }
+
+  handleLocationFound(e: L.LocationEvent, fournisseurCoords: [number, number]): void {
+    this.hospitalCoords = [e.latlng.lat, e.latlng.lng];
+    const customIcon = this.createCustomIcon();
+
+    L.marker(this.hospitalCoords, { icon: customIcon })
+      .addTo(this.map)
+      .bindPopup('Votre position')
+      .openPopup();
+
+    this.calculateRoute(fournisseurCoords, this.hospitalCoords);
+  }
+
+  handleLocationError(e: L.ErrorEvent): void {
+    console.error('Location error:', e);
+    alert('Impossible de localiser votre position.');
+  }
+
+  calculateRoute(startCoords: [number, number], endCoords: [number, number]): void {
+    const control = L.Routing.control({
+      waypoints: [
+        L.latLng(startCoords[0], startCoords[1]),
+        L.latLng(endCoords[0], endCoords[1])
+      ],
+      routeWhileDragging: false,
+      addWaypoints: false,
+      show: false,
+      createMarker: () => null
+    } as any).addTo(this.map);
+
+    control.on('routesfound', (e: any) => {
+      const route = e.routes[0];
+      this.routeTime = route.summary.totalTime;
+      console.log(`Estimated travel time: ${this.routeTime} seconds`);
+      
+      if (this.commandeStatus === 'Validée') {
+        this.startDeliverySimulation();
+      }
+    });
+  }
+
+  createCustomIcon(): L.Icon {
+    return L.icon({
+      iconUrl: 'assets/marker-icon.png',
+      shadowUrl: 'assets/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+      shadowAnchor: [12, 41]
+    });
+  }
+
   async getCoordinatesFromAddress(adresse: string): Promise<[number, number]> {
     const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresse)}`);
     const data = await response.json();
-    if (data.length === 0) throw new Error('Adresse non trouvée');
+    if (data.length === 0) throw new Error('Address not found');
     return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
   }
 
-  // Simule la livraison en déplaçant un marqueur sur la carte
-  simulateDelivery(tempsEnSecondes: number, fournisseurCoords: [number, number], hospitalCoords: [number, number]) {
-    const marker = L.marker(fournisseurCoords, {
-      icon: L.icon({
-        iconUrl: 'assets/point.png', // Custom marker icon
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34]
-      })
-    }).addTo(this.map).bindPopup('Livraison en cours...');
+  simulateDelivery(tempsEnSecondes: number, startCoords: [number, number], endCoords: [number, number]): void {
+    if (this.deliveryInterval) {
+      clearInterval(this.deliveryInterval);
+    }
 
-    const dureeMs = tempsEnSecondes * 1000;
+    const marker = this.createDeliveryMarker(startCoords);
     const steps = 50;
-    const interval = dureeMs / steps;
-
+    const interval = (tempsEnSecondes * 1000) / steps;
     let step = 0;
-    let remainingTime = tempsEnSecondes;
-    this.progress = 0;
 
-    // Fonction pour calculer et afficher le temps restant
-    const updateRemainingTime = () => {
-      remainingTime--;
-      const minutes = Math.floor(remainingTime / 60);
-      const seconds = remainingTime % 60;
-      this.remainingTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    };
-
-    // Intervalle pour simuler la livraison
-    const intervalId = setInterval(() => {
+    this.deliveryInterval = setInterval(() => {
       step++;
+      this.updateDeliveryProgress(step, steps, marker, startCoords, endCoords);
 
-      const lat = fournisseurCoords[0] + (hospitalCoords[0] - fournisseurCoords[0]) * (step / steps);
-      const lon = fournisseurCoords[1] + (hospitalCoords[1] - fournisseurCoords[1]) * (step / steps);
-
-      marker.setLatLng([lat, lon]);
-
-      this.progress = (step / steps) * 100;
-      updateRemainingTime(); // Met à jour le temps restant à chaque étape
-
-      // Vérification si 50% de la progression est atteint
-      if (this.progress == 50) {
+      if (step === Math.floor(steps / 2)) {
         this.playSound('enroute');
       }
 
       if (step >= steps) {
-        clearInterval(intervalId);
-        marker.bindPopup('Commande livrée ✅').openPopup();
-        this.playSound('arrivee');
-
-        this.commandeService.updateStatusCommande(this.idcommande, 'Livrée').subscribe(() => {
-          console.log('✅ Commande mise à jour : Livrée');
-        });
+        this.completeDelivery(marker);
       }
     }, interval);
+  }
+
+  createDeliveryMarker(coords: [number, number]): L.Marker {
+    const icon = L.icon({
+      iconUrl: 'assets/point.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34]
+    });
+  
+    const marker = L.marker(coords, {
+      icon: icon
+    }).addTo(this.map).bindPopup('Livraison en cours...');
+  
+    // Add class to marker element after creation
+    marker.getElement()?.classList.add('delivery-marker');
+    return marker;
+  }
+
+  updateDeliveryProgress(step: number, steps: number, marker: L.Marker, 
+    startCoords: [number, number], endCoords: [number, number]): void {
+const progressRatio = step / steps;
+const lat = startCoords[0] + (endCoords[0] - startCoords[0]) * progressRatio;
+const lon = startCoords[1] + (endCoords[1] - startCoords[1]) * progressRatio;
+
+marker.setLatLng([lat, lon]);
+this.progress = progressRatio * 100;
+this.updateRemainingTime(this.routeTime * (1 - progressRatio)); // Changed tempsEnSecondes to this.routeTime
+}
+
+  updateRemainingTime(seconds: number): void {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    this.remainingTime = `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  }
+
+  completeDelivery(marker: L.Marker): void {
+    clearInterval(this.deliveryInterval);
+    marker.bindPopup('Commande livrée ✅').openPopup();
+    this.playSound('arrivee');
+
+    if (this.commandeStatus !== 'Livrée') {
+      this.commandeService.updateStatusCommande(this.idcommande, 'Livrée').subscribe({
+        next: () => console.log('✅ Commande mise à jour : Livrée'),
+        error: (err) => console.error('Error updating status:', err)
+      });
+    }
   }
 }
