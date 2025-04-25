@@ -1,22 +1,43 @@
-/* Main Container */
+/* Main Container (harmonisé avec dashboard) */
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 2rem auto;
   padding: 0 1.5rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #5a5c69;
+}
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #c3e6cb;
+  border-radius: 5px;
+  font-weight: bold;
 }
 
-/* Headings */
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+/* Headings (couleurs et bordures cohérentes avec dashboard) */
 h2, h3, h4 {
-  color: #2c3e50;
+  color: #4e73df;
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #3498db;
+  border-bottom: 1px solid #e3e6f0;
   font-weight: 600;
+  text-transform: uppercase;
 }
 
 h2 {
-  font-size: 1.75rem;
+  font-size: 1.8rem;
 }
 
 h3 {
@@ -27,240 +48,75 @@ h4 {
   font-size: 1.25rem;
 }
 
-/* Form Styles */
+/* Form Styles (identique aux cards du dashboard) */
 form {
   background: #ffffff;
-  padding: 2rem;
+  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  margin-bottom: 2rem;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  margin-bottom: 30px;
+  border-left: 4px solid #4e73df;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-.form-group {
-  margin-bottom: 1.5rem;
+form:hover {
+  box-shadow: 0 0.5rem 1.5rem 0 rgba(58, 59, 69, 0.2);
+  transform: translateY(-3px);
 }
 
+/* Input & Select styling */
+input, select, textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d3e2;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #5a5c69;
+  margin-bottom: 1rem;
+  background-color: #f8f9fc;
+  transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #4e73df;
+  box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.2);
+}
+
+/* Labels */
 label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #2d3748;
+  font-weight: 600;
+  color: #4e73df;
 }
 
-input[type="text"],
-input[type="number"],
-input[type="date"],
-select {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-  background-color: #f8fafc;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="date"]:focus,
-select:focus {
-  border-color: #4299e1;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
-  outline: none;
-  background-color: #ffffff;
-}
-
-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1rem;
-}
-
-/* Messages */
-.error {
-  color: #e53e3e;
-  font-size: 0.85rem;
-  margin-top: 0.5rem;
-}
-
-.success-message {
-  background-color: #f0fff4;
-  color: #38a169;
-  padding: 1rem;
-  border-radius: 6px;
-  margin: 1rem 0;
-  border-left: 4px solid #38a169;
-}
-
-.error-message {
-  background-color: #fff5f5;
-  color: #e53e3e;
-  padding: 1rem;
-  border-radius: 6px;
-  margin: 1rem 0;
-  border-left: 4px solid #e53e3e;
-}
-
-/* Buttons */
+/* Buttons (same theme as dashboard elements) */
 button {
-  padding: 0.75rem 1.5rem;
+  background-color: #4e73df;
+  color: white;
+  padding: 0.6rem 1.25rem;
   border: none;
   border-radius: 6px;
+  font-weight: 600;
   font-size: 1rem;
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  transition: background-color 0.3s ease;
 }
 
-.btn-primary {
-  background-color: #4299e1;
-  color: white;
+button:hover {
+  background-color: #001b6a;
 }
 
-.btn-primary:hover {
-  background-color: #3182ce;
-  transform: translateY(-1px);
-}
-
-.btn-primary:disabled {
-  background-color: #a0aec0;
-  cursor: not-allowed;
-}
-
-.btn-success {
-  background-color: #48bb78;
-  color: white;
-}
-
-.btn-success:hover {
-  background-color: #38a169;
-}
-
-.btn-warning {
-  background-color: #ed8936;
-  color: white;
-}
-
-.btn-warning:hover {
-  background-color: #dd6b20;
-}
-
-.btn-danger {
-  background-color: #f56565;
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: #e53e3e;
-}
-
-.btn-secondary {
-  background-color: #a0aec0;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #718096;
-}
-
-.btn-sm {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-}
-
-/* Form Actions */
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-/* Table Styles */
-.medicaments-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  margin-top: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.medicaments-table th,
-.medicaments-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.medicaments-table th {
-  background-color: #4299e1;
-  color: white;
-  font-weight: 500;
-  text-transform: uppercase;
-  font-size: 0.875rem;
-  letter-spacing: 0.5px;
-}
-
-.medicaments-table tr:hover td {
-  background-color: #f8fafc;
-}
-
-/* Action Buttons */
-.actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-/* Status Indicators */
-.text-danger {
-  color: #e53e3e;
-  font-weight: 600;
-}
-
-.text-warning {
-  color: #dd6b20;
-  font-weight: 600;
-}
-
-/* No Data Message */
-.no-data {
-  text-align: center;
-  color: #718096;
-  padding: 2rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  margin-top: 1rem;
-  font-size: 1.1rem;
-}
-
-/* Responsive Design */
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .container {
-    padding: 0 1rem;
+    padding: 1rem;
   }
-  
-  .form-actions {
-    flex-direction: column;
-  }
-  
-  button {
-    width: 100%;
-  }
-  
-  .medicaments-table {
-    display: block;
-    overflow-x: auto;
-  }
-  
-  .actions {
-    flex-direction: column;
+
+  form {
+    padding: 15px;
   }
 }
 

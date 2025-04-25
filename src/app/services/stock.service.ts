@@ -15,4 +15,7 @@ private apiUrl = 'http://localhost:8089/pi';  // URL de ton backend
   getMedicamentsProchesExpiration(): Observable<Stock[]> {
     return this.http.get<Stock[]>(`${this.apiUrl}/stock/expiration/alertes`);
   }
+  getallStocks():  Observable<Stock[]> {
+    return this.http.get<Stock[]>(`${this.apiUrl}/stock/`);
+  }
 }

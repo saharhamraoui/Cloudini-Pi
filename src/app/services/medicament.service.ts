@@ -34,4 +34,7 @@ export class MedicamentService {
   deleteMedicament(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/Medicaments/${id}`);
   }
+  getFournisseurName(idFournisseur: number): Observable<string> {
+    return this.http.get<string>(`${this.apiUrl}/Medicaments/fournisseur/${idFournisseur}/nom`);
+  }
 }

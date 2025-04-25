@@ -15,6 +15,7 @@ export class GestionfournisseurComponent implements OnInit, AfterViewInit {
   fournisseurForm!: FormGroup;
   isEditMode: boolean = false;
   errorMessage: string = '';
+  successMessage: string = '';
   map!: L.Map;
 
   constructor(
@@ -141,17 +142,21 @@ export class GestionfournisseurComponent implements OnInit, AfterViewInit {
         response => {
           this.fournisseurs.push(response);
           this.resetForm();
+          this.errorMessage = ''; 
+          this.successMessage = 'Fournisseur ajouté avec succès !';
         },
         error => {
+          this.successMessage = ''; 
           this.errorMessage = 'Erreur lors de l\'ajout du fournisseur.';
           console.error(error);
         }
       );
     } else {
       this.errorMessage = 'Veuillez remplir tous les champs.';
+      this.successMessage = '';
     }
   }
-
+  
   updateFournisseur(): void {
     if (this.fournisseurForm.valid) {
       const fournisseurToUpdate = {
@@ -165,28 +170,36 @@ export class GestionfournisseurComponent implements OnInit, AfterViewInit {
             this.fournisseurs[index] = response;
           }
           this.resetForm();
+          this.successMessage = 'Fournisseur mis à jour avec succès!';
+          this.errorMessage = '';
         },
         error => {
+          this.successMessage = ''; 
           this.errorMessage = 'Erreur lors de la mise à jour du fournisseur.';
           console.error(error);
         }
       );
     } else {
+      this.successMessage = ''; 
       this.errorMessage = 'Veuillez remplir tous les champs.';
     }
   }
-
+  
   deleteFournisseur(id: number): void {
     this.fournisseurService.deleteFournisseur(id).subscribe(
       () => {
         this.fournisseurs = this.fournisseurs.filter(f => f.idfournisseur !== id);
+        this.successMessage = 'Fournisseur supprimé avec succès!';
+        this.errorMessage = '';
       },
       error => {
-        this.errorMessage = 'Erreur lors de la suppression du fournisseur.';
+        this.successMessage = ''; 
+        this.errorMessage = 'Le fournisseur a des commandes en cours ou une erreur est survenue.';
         console.error(error);
       }
     );
   }
+  
 
   editFournisseur(fournisseur: Fournisseur): void {
     this.fournisseurForm.setValue({

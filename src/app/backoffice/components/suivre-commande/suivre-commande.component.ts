@@ -151,7 +151,7 @@ export class SuivreCommandeComponent implements OnInit, OnDestroy {
 
     L.marker(this.hospitalCoords, { icon: customIcon })
       .addTo(this.map)
-      .bindPopup('Votre position')
+      .bindPopup('HOSPITAL')
       .openPopup();
 
     this.calculateRoute(fournisseurCoords, this.hospitalCoords);

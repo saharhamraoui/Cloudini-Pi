@@ -5,7 +5,7 @@
 
 <div class="search-bar" style="text-align: center; margin-bottom: 20px;">
   <input type="text" [(ngModel)]="searchTerm" (input)="searchFournisseursByMedicament()" 
-         placeholder="Rechercher un médicament par prix" 
+         placeholder="Searsh By Lowest Price" 
          style="padding: 10px; width: 300px; border-radius: 8px; border: 1px solid #ccc;" />
 </div>
 
@@ -21,7 +21,7 @@
           <span style="color: #0e5551;">{{ item.adresse }}</span><br />
           <div *ngIf="searchTerm">
             <b class="price-indicator" [class.unavailable]="getMedicamentPrice(item) === 'Non disponible'">
-              Prix pour "{{ searchTerm }}": {{ getMedicamentPrice(item) }}€
+              Price for "{{ searchTerm }}": {{ getMedicamentPrice(item) }}€
             </b>
           </div>
         </div>

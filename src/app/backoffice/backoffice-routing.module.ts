@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BackofficeComponent } from './backoffice.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FournisseurListComponent } from './components/fournisseur-list/fournisseur-list.component';
 import { FournisseurDetailComponent } from './components/fournisseur-detail/fournisseur-detail.component';
 import { MedicamentListComponent } from './components/medicament-list/medicament-list.component';
@@ -12,13 +11,14 @@ import { GestionfournisseurComponent } from './components/gestionfournisseur/ges
 import { GestionmedsComponent } from './components/gestionmeds/gestionmeds.component';
 import { SuivreCommandeComponent } from './components/suivre-commande/suivre-commande.component';
 import { ValidationCommandeComponent } from './components/validation-commande/validation-commande.component';
+import { DashboardStockComponent } from './components/dashboard-stock/dashboard-stock.component';
 
 const routes: Routes = [
   {
     path: '',
     component: BackofficeComponent,
     children: [
-      { path: '', component: DashboardComponent }, // Default route
+      { path: 'DashboardStock', component: DashboardStockComponent }, // Default route
   { path: 'fournisseur', component: FournisseurListComponent },  
   { path: 'fournisseur/:id', component: FournisseurDetailComponent },
   { path: 'medicaments/:id', component: MedicamentListComponent },

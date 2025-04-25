@@ -1,20 +1,33 @@
 import { Component, OnInit } from '@angular/core';  
 import { CommandeService } from 'src/app/services/commande.service';  
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';  
+import html2pdf from 'html2pdf.js';
 
-@Component({  
-  selector: 'app-dashboard',  
-  templateUrl: './dashboard.component.html',  
-  styleUrls: ['./dashboard.component.css']  
-})  
-export class DashboardComponent implements OnInit {  
+
+@Component({
+  selector: 'app-dashboard-stock',
+  templateUrl: './dashboard-stock.component.html',
+  styleUrls: ['./dashboard-stock.component.css']
+  
+})
+export class DashboardStockComponent implements OnInit {  
   commandesLivrees: any[] = [];  
+  filteredCommandes: any[] = [];  // Array to hold filtered commandes
   totalParFournisseur: { [key: string]: number } = {};  
   fournisseurs: string[] = [];  
   montants: number[] = [];  
   totalAmount: number = 0;  
 
-  // Chart configurations  
+
+  generatePDF() {
+    const element = document.getElementById('pdf-content');
+    if (element) {
+      html2pdf().from(element).save('dashboard.pdf');
+    }
+  }
+  
+  
+  // Chart configurations
   public barChartOptions: ChartConfiguration['options'] = {  
     responsive: true,  
     scales: {  
@@ -117,11 +130,12 @@ export class DashboardComponent implements OnInit {
     ]  
   };  
 
-  constructor(private _service: CommandeService) {}  
+  constructor(private _service: CommandeService) {}
 
   ngOnInit(): void {  
     this._service.getCommandes().subscribe(commandes => {  
       this.commandesLivrees = commandes.filter(c => c.status === 'Livrée');  
+      this.filteredCommandes = [...this.commandesLivrees];  // Initialize filteredCommandes with all delivered commandes
       
       // Calculate totals by supplier  
       this.totalParFournisseur = {};  
@@ -197,5 +211,19 @@ export class DashboardComponent implements OnInit {
 
   getTotalAmount(): number {  
     return this.totalAmount;  
-  }  
-}  
+  }
+
+  // Filter by fournisseur
+  filterByFournisseur(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const value = target.value;
+
+    // If a fournisseur is selected, filter the commandes
+    if (value) {
+      this.filteredCommandes = this.commandesLivrees.filter(commande => commande.fournisseur.nom === value);
+    } else {
+      // If "Tous les fournisseurs" is selected, show all commandes
+      this.filteredCommandes = [...this.commandesLivrees];
+    }
+  }
+}

@@ -8,7 +8,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderBackComponent } from './components/header-back/header-back.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FournisseurListComponent } from './components/fournisseur-list/fournisseur-list.component';
 import { FournisseurDetailComponent } from './components/fournisseur-detail/fournisseur-detail.component';
 import { MedicamentListComponent } from './components/medicament-list/medicament-list.component';
@@ -20,13 +19,12 @@ import { GestionmedsComponent } from './components/gestionmeds/gestionmeds.compo
 import { StatusFilterPipe } from '../pipes/status-filter.pipe';
 import { SuivreCommandeComponent } from './components/suivre-commande/suivre-commande.component';
 import { ValidationCommandeComponent } from './components/validation-commande/validation-commande.component';
-import { NgChartsModule } from 'ng2-charts';  
-
+import { NgChartsModule } from 'ng2-charts';
+import { DashboardStockComponent } from './components/dashboard-stock/dashboard-stock.component';
 
 @NgModule({
   declarations: [
     BackofficeComponent,
-    DashboardComponent,
     HeaderBackComponent,
     SidebarComponent,
       FournisseurListComponent,
@@ -40,6 +38,7 @@ import { NgChartsModule } from 'ng2-charts';
         StatusFilterPipe,
         SuivreCommandeComponent,
         ValidationCommandeComponent,
+        DashboardStockComponent
   ],
   imports: [
     CommonModule,
@@ -49,7 +48,7 @@ import { NgChartsModule } from 'ng2-charts';
     ReactiveFormsModule,
     FormsModule,
     CommonModule,  
-    NgChartsModule   
+    NgChartsModule
 
   ]
 })
