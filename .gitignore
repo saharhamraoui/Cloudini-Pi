@@ -32,9 +32,12 @@ build/
 ### VS Code ###
 .vscode/
 
+# General
 /target
 /.idea
 /.mvn
 *.iml
 *.log
+
+# Python Virtual Env
 Categservice/venv/
