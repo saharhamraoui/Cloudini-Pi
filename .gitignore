@@ -32,7 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-# General
 /target
 /.idea
 /.mvn
@@ -41,3 +40,6 @@ build/
 
 # Python Virtual Env
 Categservice/venv/
+
+# Env files
+env.properties
