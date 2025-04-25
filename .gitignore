@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+"src/main/java/esprit/tn/pidev/entities/*" 
+"!src/main/java/esprit/tn/pidev/entities/Post.java" 
+"!src/main/java/esprit/tn/pidev/entities/Notification.java" 
+"!src/main/java/esprit/tn/pidev/entities/Comment.java" 
+"!src/main/java/esprit/tn/pidev/entities/Tag.java" 
