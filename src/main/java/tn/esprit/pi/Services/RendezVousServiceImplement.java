@@ -5,7 +5,10 @@ import org.springframework.stereotype.Service;
 import tn.esprit.pi.Repositories.*;
 import tn.esprit.pi.entities.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,8 +54,11 @@ public class RendezVousServiceImplement implements IRendezVousService {
 
     @Override
     public RendezVous addRendezVous(RendezVous rendezVous) {
-
+        // Sauvegarder le rendez-vous dans la base de données
         RendezVous savedRendezVous = rendezVousRepository.save(rendezVous);
+
+        // Récupérer le type de rendez-vous directement depuis l'objet 'rendezVous'
+        String typeRendezVous = rendezVous.getTypeRendezVous(); // Utilise le type directement du formulaire, sans chercher dans la base
 
         // Simulation ou test d'envoi
         try {
@@ -61,6 +67,18 @@ public class RendezVousServiceImplement implements IRendezVousService {
             String body = "Bonjour,\n\nVotre rendez-vous est confirmé pour le " +
                     savedRendezVous.getDateRendezVous() + ".\n\nMerci.";
 
+            // Vérifier le type de rendez-vous et envoyer un mail différent selon le type
+            if ("EN_LIGNE".equals(typeRendezVous)) {
+                // Générer un lien de réunion dynamique (à adapter à ton besoin)
+                String meetLink = "https://meet.google.com/jzx-auhv-rex";
+                // Remplace par ta méthode pour générer un code Meet
+                body += "\nVoici votre lien pour la visioconférence : " + meetLink;
+            } else {
+                // Sinon, juste une confirmation de rendez-vous présentiel
+                body += "\nNous vous attendons à notre cabinet.";
+            }
+
+            // Envoi du mail
             emailService.sendEmail(toEmail, subject, body);
         } catch (Exception e) {
             System.out.println("⚠️ Erreur d'envoi de mail : " + e.getMessage());
@@ -68,6 +86,63 @@ public class RendezVousServiceImplement implements IRendezVousService {
 
         return savedRendezVous;
     }
+
+    public Date proposerCreneauOptimal(Long idMedecin) {
+        List<RendezVous> rdvs = rendezVousRepository.findAll()
+                .stream()
+                .filter(rdv -> rdv.getMedecin() != null && rdv.getMedecin().getIdUser() == idMedecin)
+                .collect(Collectors.toList());
+
+        // Supposons que le médecin travaille de 08h à 22h chaque jour
+        LocalDateTime now = LocalDateTime.now().withHour(8).withMinute(0);
+
+        // Utilisation de l'historique pour ajuster les créneaux
+        Map<Integer, Long> chargeParHeure = new HashMap<>();
+        for (RendezVous rdv : rdvs) {
+            LocalDateTime rdvDate = LocalDateTime.ofInstant(rdv.getDateRendezVous().toInstant(), ZoneId.systemDefault());
+            int hour = rdvDate.getHour();
+            chargeParHeure.put(hour, chargeParHeure.getOrDefault(hour, 0L) + 1);
+        }
+
+        while (true) {
+            // Crée une nouvelle variable pour la comparaison dans la lambda
+            LocalDateTime currentTime = now;
+
+            boolean estPris = rdvs.stream().anyMatch(rdv -> {
+                LocalDateTime rdvDate = LocalDateTime.ofInstant(rdv.getDateRendezVous().toInstant(), ZoneId.systemDefault());
+                return ChronoUnit.MINUTES.between(currentTime, rdvDate) < 30 && ChronoUnit.MINUTES.between(rdvDate, currentTime) < 30;
+            });
+
+            if (!estPris && now.getHour() < 22 && chargeParHeure.getOrDefault(now.getHour(), 0L) < 3) {
+                // Propose un créneau si il n'est pas déjà pris et qu'il n'y a pas trop de rendez-vous
+                return Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+            }
+
+            now = now.plusMinutes(30);  // Incrémentation du créneau horaire
+        }
+    }
+
+
+
+//    private String generateMeetingCode() {
+//        // Génère un code aléatoire au format XXX-XXXX-XXX
+//        String chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+//        Random random = new Random();
+//
+//        StringBuilder code = new StringBuilder();
+//        for (int i = 0; i < 10; i++) {
+//            code.append(chars.charAt(random.nextInt(chars.length())));
+//            if (i == 2 || i == 6) {
+//                code.append("-");
+//            }
+//        }
+//        return code.toString();
+//    }
+
+//    public String generateMeetingCode() {
+//        // Générer un code unique pour chaque réunion
+//        return UUID.randomUUID().toString().substring(0, 12); // Prend seulement les 12 premiers caractères
+//    }
 
 
 

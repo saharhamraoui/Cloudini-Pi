@@ -2,6 +2,7 @@ package tn.esprit.pi.Services;
 
 import tn.esprit.pi.entities.*;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IRendezVousService {
@@ -15,6 +16,7 @@ public interface IRendezVousService {
 
     public RendezVous  affecterRendezVousToPatient(long idRendezVous, long idPatient) ;
     public List<RendezVous> retrieveRendezVousByMedecin(long idMedecin);
+    public Date proposerCreneauOptimal(Long idMedecin);
 
 
     Consultation affecterRendezVousToConsultation(long idConsultation, long idRendezVous);

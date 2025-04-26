@@ -24,6 +24,12 @@ public class RendezVous {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long idRendezVous;
     Date dateRendezVous;
+    @Transient
+    private String typeRendezVous; // Type de rendez-vous temporaire
+
+    // Constructeurs, getters et setters
+
+
 
     @ManyToOne
     @JoinColumn(name = "patient_id_user")
@@ -79,5 +85,13 @@ public class RendezVous {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+    public String getTypeRendezVous() {
+        return typeRendezVous;
+    }
+
+    public void setTypeRendezVous(String typeRendezVous) {
+        this.typeRendezVous = typeRendezVous;
     }
 }

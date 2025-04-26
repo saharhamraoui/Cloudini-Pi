@@ -2,11 +2,13 @@ package tn.esprit.pi.Controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.pi.Services.IConsultationService;
 import tn.esprit.pi.Services.IRendezVousService;
 import tn.esprit.pi.entities.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Tag(name = "Gestion RendezVous")
@@ -73,5 +75,11 @@ public class RendezVousController {
     public List<Patient> getAllPatients() {
         return rendezVousService.retrieveAllPatients(); // Cette méthode récupère uniquement les utilisateurs de type "PATIENT"
     }
+    @GetMapping("/proposer-creneau/{idMedecin}")
+    public ResponseEntity<Date> proposerCreneauOptimal(@PathVariable Long idMedecin) {
+        Date creneau = rendezVousService.proposerCreneauOptimal(idMedecin);
+        return ResponseEntity.ok(creneau);
+    }
+
 
 }
