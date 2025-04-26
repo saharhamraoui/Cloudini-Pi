@@ -32,6 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /target
 /.idea
@@ -44,6 +45,5 @@ Categservice/venv/
 
 # Env files
 env.properties
-=======
- 
->>>>>>> Gestion-du-blog
+
+

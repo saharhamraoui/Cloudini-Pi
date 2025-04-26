@@ -1,5 +1,8 @@
 package tn.esprit.pi.entities;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +16,9 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
+
+
 public class Consultation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +26,13 @@ public class Consultation {
     Date dateConsultation;
     String rapport ;
 
-
+    @OneToOne
+    @JoinColumn(name = "rendez_vous_id")
+    RendezVous rendezVous ;
     @ManyToOne
-    @JoinColumn(name = "medical_record_id")
+    @JoinColumn(name = "medical_record_id_")
     MedicalRecord medicalRecord ;
+
 
     public MedicalRecord getMedicalRecord() {
         return medicalRecord;
@@ -57,6 +66,18 @@ public class Consultation {
         this.rapport = rapport;
     }
 
+
+
+
+
+
+    public RendezVous getRendezVous() {
+        return rendezVous;
+    }
+
+    public void setRendezVous(RendezVous rendezVous) {
+        this.rendezVous = rendezVous;
+    }
 
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 public class MedicalRecord {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMedicalRecord;
@@ -17,11 +18,13 @@ public class MedicalRecord {
     @JoinColumn(name = "patientId", referencedColumnName = "idUser")
     private Patient patient;
 
+
     @ManyToOne
     @JoinColumn(name = "doctorId", referencedColumnName = "idUser")
     private Medecin doctor;
 
     @Column(nullable = false, updatable = false)
+
     private LocalDate createdAt;
 
 
@@ -42,6 +45,7 @@ public class MedicalRecord {
     private String diagnosis;
     private String notes;
     private String allergies;
+
     // Constructors
     public MedicalRecord() {}
 
@@ -52,29 +56,47 @@ public class MedicalRecord {
         this.notes = notes;
     }
 
+
     public Long getIdMedicalRecord() {
         return idMedicalRecord;
     }
+
 
     public void setIdMedicalRecord(Long idMedicalRecord) {
         this.idMedicalRecord = idMedicalRecord;
     }
 
+
     public Patient getPatient() {
         return patient;
     }
+
 
     public void setPatient(Patient patient) {
         this.patient = patient;
     }
 
+
     public Medecin getDoctor() {
         return doctor;
+    }
+
+    public List<Bilan> getBilans() {
+        return bilans;
+    }
+
+    public void setBilans(List<Bilan> bilans) {
+        this.bilans = bilans;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
     }
 
     public void setDoctor(Medecin doctor) {
         this.doctor = doctor;
     }
+
 
     public LocalDate getCreatedAt() {
         return createdAt;
@@ -88,9 +110,11 @@ public class MedicalRecord {
         return prescriptions;
     }
 
+
     public void setPrescriptions(List<Prescription> prescriptions) {
         this.prescriptions = prescriptions;
     }
+
 
     public List<Consultation> getConsultations() {
         return consultations;
@@ -104,17 +128,12 @@ public class MedicalRecord {
         return diagnosis;
     }
 
-    public void setDiagnosis(String diagnosis) {
-        this.diagnosis = diagnosis;
-    }
 
     public String getNotes() {
         return notes;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
+
 
     public String getAllergies() {
         return allergies;
@@ -123,5 +142,13 @@ public class MedicalRecord {
     public void setAllergies(String allergies) {
         this.allergies = allergies;
     }
+
+
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+
 }
 

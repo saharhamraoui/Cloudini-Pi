@@ -31,4 +31,6 @@ public class Chauffeur extends User {
     private String driverLicenseNumber;
     private String driverAvailability;
 
+
 }
+

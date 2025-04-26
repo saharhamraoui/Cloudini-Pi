@@ -1,8 +1,10 @@
 package tn.esprit.pi.entities;
 
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -15,6 +17,7 @@ public class Prescription {
 
     @ManyToOne
     @JoinColumn(name = "medical_record_id")
+
     @JsonIgnore
     private MedicalRecord medicalRecord;
 
@@ -23,9 +26,11 @@ public class Prescription {
     private String instructions;
     private LocalDate issueDate;
 
+
     @JsonProperty("status")
     @Enumerated(EnumType.STRING)
     private PrescriptionStatus status;
+
 
     // Constructors
     public Prescription() {}
@@ -37,6 +42,7 @@ public class Prescription {
         this.instructions = instructions;
         this.issueDate = issueDate;
     }
+
 
     public Long getIdPrescription() {
         return idPrescription;
@@ -53,6 +59,7 @@ public class Prescription {
     public void setStatus(PrescriptionStatus status) {
         this.status = status;
     }
+
 
     // Getters and Setters
     public Long getId() { return idPrescription; }
@@ -78,6 +85,5 @@ public class Prescription {
     public LocalDate getIssueDate() { return issueDate; }
 
     public void setIssueDate(LocalDate issueDate) { this.issueDate = issueDate; }
-
 
 }

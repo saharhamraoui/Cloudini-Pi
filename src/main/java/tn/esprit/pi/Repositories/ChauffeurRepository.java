@@ -1,4 +1,4 @@
-package tn.esprit.pi.repositories;
+package tn.esprit.pi.Repositories;
 
 import tn.esprit.pi.entities.Chauffeur;
 import org.springframework.data.jpa.repository.JpaRepository;
