@@ -1,4 +1,4 @@
-package tn.esprit.pi.Controllers;
+package tn.esprit.pi.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

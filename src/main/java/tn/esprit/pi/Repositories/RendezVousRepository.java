@@ -1,4 +1,4 @@
-package tn.esprit.pi.Repositories;
+package tn.esprit.pi.repositories;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;

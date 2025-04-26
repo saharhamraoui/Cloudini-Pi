@@ -1,8 +1,9 @@
-package tn.esprit.pi.Services;
+package tn.esprit.pi.services;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tn.esprit.pi.Repositories.*;
+import tn.esprit.pi.repositories.*;
 import tn.esprit.pi.entities.*;
 
 import java.time.LocalDateTime;
@@ -79,7 +80,7 @@ public class RendezVousServiceImplement implements IRendezVousService {
             }
 
             // Envoi du mail
-            emailService.sendEmail(toEmail, subject, body);
+           // emailService.sendEmail(toEmail, subject, body);
         } catch (Exception e) {
             System.out.println("⚠️ Erreur d'envoi de mail : " + e.getMessage());
         }

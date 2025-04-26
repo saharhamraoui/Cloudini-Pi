@@ -1,13 +1,15 @@
-package tn.esprit.pi.Services;
+package tn.esprit.pi.services;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tn.esprit.pi.Repositories.ConsultationRepository;
-import tn.esprit.pi.Repositories.MedicalRecordRepository;
-import tn.esprit.pi.Repositories.RendezVousRepository;
+import tn.esprit.pi.repositories.ConsultationRepository;
+import tn.esprit.pi.repositories.MedicalRecordRepository;
+import tn.esprit.pi.repositories.RendezVousRepository;
 import tn.esprit.pi.entities.Consultation;
 import tn.esprit.pi.entities.MedicalRecord;
 import tn.esprit.pi.entities.RendezVous;
+import tn.esprit.pi.repositories.RendezVousRepository;
 
 import java.util.List;
 
@@ -75,7 +77,7 @@ public class ConsultationServiceImplement implements  IConsultationService {
                 .orElseThrow(() -> new RuntimeException("Dossier médical introuvable"));
 
         consultation.setMedicalRecord(medicalRecord);
-        medicalRecord.getConsultation().add(consultation);
+        medicalRecord.getConsultations().add(consultation);
 
         consultationRepository.save(consultation);
         medicalRecordRepository.save(medicalRecord);

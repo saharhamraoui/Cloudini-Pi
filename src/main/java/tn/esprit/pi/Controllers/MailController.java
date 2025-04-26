@@ -1,10 +1,10 @@
-package tn.esprit.pi.Controllers;
+package tn.esprit.pi.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.pi.Services.MailService;
-
+import tn.esprit.pi.services.MailService;
+import tn.esprit.pi.services.MailService;
 
 
 @CrossOrigin(origins = "http://localhost:4200")

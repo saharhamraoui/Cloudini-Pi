@@ -34,23 +34,29 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/login",
-                                "/api/auth/register/**",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/api/auth/**",                                "/api/auth/forgot-password",
-                                "/users/**"
-                        ).permitAll()
-                        .requestMatchers("/users/banned-users", "/users/toggle-ban").hasRole("ADMIN")
+//        http
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//                .csrf(csrf -> csrf.disable())
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers(
+//                                "/api/auth/login",
+//                                "/api/auth/register/**",
+//                                "/swagger-ui/**",
+//                                "/v3/api-docs/**",
+//                                "/api/auth/**",                                "/api/auth/forgot-password",
+//                                "/users/**"
+//                        ).permitAll()
+//                        .requestMatchers("/users/banned-users", "/users/toggle-ban").hasRole("ADMIN")
+//
+//                        .anyRequest().authenticated()
+//                )
+//                .httpBasic(withDefaults());
 
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(withDefaults());
+                http
+    .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                );
 
         return http.build();
     }

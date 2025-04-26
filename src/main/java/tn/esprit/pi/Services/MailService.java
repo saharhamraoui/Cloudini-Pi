@@ -1,4 +1,5 @@
-package tn.esprit.pi.Services;
+package tn.esprit.pi.services;
+
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

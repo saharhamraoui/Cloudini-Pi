@@ -1,6 +1,6 @@
 package tn.esprit.pi.controllers;
 
-
+import tn.esprit.pi.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter
 import tn.esprit.pi.Security.JwtResponse;
 import tn.esprit.pi.controllers.LoginRequest;
 import tn.esprit.pi.entities.*;
-import tn.esprit.pi.repositories.UserRepository;
+
 import tn.esprit.pi.services.TokenService;
 import tn.esprit.pi.services.UserService;
 

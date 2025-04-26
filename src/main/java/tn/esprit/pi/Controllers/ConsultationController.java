@@ -1,14 +1,15 @@
-package tn.esprit.pi.Controllers;
+package tn.esprit.pi.controllers;
 
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.pi.Services.IConsultationService;
-import tn.esprit.pi.Services.IRendezVousService;
+import tn.esprit.pi.services.IConsultationService;
+import tn.esprit.pi.services.IRendezVousService;
 import tn.esprit.pi.entities.Consultation;
 import tn.esprit.pi.entities.MedicalRecord;
 import tn.esprit.pi.entities.RendezVous;
+import tn.esprit.pi.services.IConsultationService;
 
 import java.util.List;
 
