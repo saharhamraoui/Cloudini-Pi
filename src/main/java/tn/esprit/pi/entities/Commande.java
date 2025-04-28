@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,8 @@ public class Commande {
     private Long idcommande;
 
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @CreationTimestamp // Nécessite l'import Hibernate
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateCommande;
     @Enumerated(EnumType.STRING)
     private Status status;
