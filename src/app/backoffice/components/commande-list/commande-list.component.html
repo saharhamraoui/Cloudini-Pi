@@ -38,7 +38,7 @@
       <p><strong>Fournisseur :</strong> {{ commande.fournisseur.nom }}</p>
       <p><strong>Contact :</strong> {{ commande.fournisseur.contact }}</p>
       <p><strong>Adresse :</strong> {{ commande.fournisseur.adresse }}</p>
-
+      <p><strong>Date de Commande :</strong> {{ commande.dateCommande | date: 'short' }}</p>
       <h6 class="mt-3">Médicaments commandés :</h6>
       <div class="table-responsive">
         <table class="table table-bordered table-striped">
