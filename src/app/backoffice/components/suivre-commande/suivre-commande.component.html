@@ -1,15 +1,15 @@
 <a routerLink="/back/commandes" class="btn btn-sm btn-secondary mb-3">
-  <i class="fa-sharp fa-solid fa-arrow-left"></i> Retour aux commandes
+  <i class="fa-sharp fa-solid fa-arrow-left"></i> Orders
 </a>
 
 <div class="container">
-  <h2>Suivi de la Commande #{{ idcommande }}</h2>
+  <h2>Order#{{ idcommande }}</h2>
 
   <div class="card">
     <div class="card-body">
       <div class="row">
         <div class="col-md-6">
-          <h5>Fournisseur : {{ fournisseur?.nom }}</h5>
+          <h5>Supplier : {{ fournisseur?.nom }}</h5>
           <p><i class="fas fa-map-marker-alt"></i> {{ fournisseur?.adresse }}</p>
           <p><i class="fas fa-phone"></i> {{ fournisseur?.telephone || 'Non disponible' }}</p>
           
@@ -28,7 +28,7 @@
 
           <div class="delivery-info" *ngIf="commandeStatus === 'Validée'">
             <div class="time-remaining">
-              <i class="fas fa-clock"></i> Temps restant: {{ remainingTime }}
+              <i class="fas fa-clock"></i> Time remaining: {{ remainingTime }}
             </div>
             <div class="progress mt-3">
               <div class="progress-bar progress-bar-striped progress-bar-animated"

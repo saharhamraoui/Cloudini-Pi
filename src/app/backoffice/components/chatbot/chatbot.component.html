@@ -1,0 +1,8 @@
+<div>
+    <input [(ngModel)]="userInput" placeholder="Ask something..." />
+    <button (click)="askGemini()">Send</button>
+    <div *ngIf="botResponse">
+      <p><strong>Bot:</strong> {{ botResponse }}</p>
+    </div>
+  </div>
+  

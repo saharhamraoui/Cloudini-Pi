@@ -1,7 +1,7 @@
 <app-header-back></app-header-back>
 
 
-<div class="heading-text"><b>Liste des Fournisseurs</b></div>
+<div class="heading-text"><b>Suppliers</b></div>
 
 <div class="search-bar" style="text-align: center; margin-bottom: 20px;">
   <input type="text" [(ngModel)]="searchTerm" (input)="searchFournisseursByMedicament()" 
@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="status-btn">
-        <button class="btn btn-success" [routerLink]="['/back/medicaments', item.idfournisseur]">Voir Médicaments</button>
+        <button class="btn btn-success" [routerLink]="['/back/medicaments', item.idfournisseur]">see Meds</button>
         <button class="btn btn-primary" [routerLink]="['/back/fournisseur', item.idfournisseur]">Détails</button>
       </div>
     </li>

@@ -21,6 +21,7 @@ import { SuivreCommandeComponent } from './components/suivre-commande/suivre-com
 import { ValidationCommandeComponent } from './components/validation-commande/validation-commande.component';
 import { NgChartsModule } from 'ng2-charts';
 import { DashboardStockComponent } from './components/dashboard-stock/dashboard-stock.component';
+import { ChatbotComponent } from './components/chatbot/chatbot.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { DashboardStockComponent } from './components/dashboard-stock/dashboard-
         StatusFilterPipe,
         SuivreCommandeComponent,
         ValidationCommandeComponent,
-        DashboardStockComponent
+        DashboardStockComponent,
+        ChatbotComponent
   ],
   imports: [
     CommonModule,

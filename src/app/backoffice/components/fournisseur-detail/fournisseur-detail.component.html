@@ -6,7 +6,7 @@
   </a>
   <div class="container mt-4 fournisseur-detail">
   
-    <h2 class="mb-4">Détails du Fournisseur</h2>
+    <h2 class="mb-4">Supplier Détails</h2>
   
     <!-- Error message -->
     <div *ngIf="errorMessage" class="alert alert-danger">
@@ -16,8 +16,8 @@
     <!-- Fournisseur details -->
     <div *ngIf="fournisseur" class="card shadow-sm">
       <div class="card-body">
-        <p><strong>Nom :</strong> {{ fournisseur.nom }}</p>
-        <p><strong>Adresse :</strong> {{ fournisseur.adresse }}</p>
+        <p><strong>Name:</strong> {{ fournisseur.nom }}</p>
+        <p><strong>Adress :</strong> {{ fournisseur.adresse }}</p>
         <p><strong>Contact :</strong> {{ fournisseur.contact }}</p>
   
   

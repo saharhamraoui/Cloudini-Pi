@@ -1,7 +1,7 @@
 
   <div id="pdf-content">
     <div class="dashboard-container">
-        <h1 class="dashboard-title">Tableau de Bord des Commandes Livrées</h1>
+        <h1 class="dashboard-title"> Orders Dashboard </h1>
       
         
       
@@ -11,9 +11,9 @@
               <i class="fas fa-truck"></i>
             </div>
             <div class="card-content">
-              <h3>Commandes Livrées</h3>
+              <h3>delivered orders</h3>
               <div class="card-value">{{ filteredCommandes.length }}</div>
-              <div class="card-description">Total des commandes livrées</div>
+              <div class="card-description"> Tot delivered orders </div>
             </div>
           </div>
       
@@ -22,11 +22,11 @@
               <i class="fas fa-euro-sign"></i>
             </div>
             <div class="card-content">
-              <h3>Montant Total</h3>
+              <h3>Total Price</h3>
               <div class="card-value">
                 {{ getTotalAmount() | currency:'EUR':'symbol':'1.2-2' }}
               </div>
-              <div class="card-description">Valeur totale des commandes</div>
+              <div class="card-description">tot orders value</div>
             </div>
           </div>
       
@@ -35,16 +35,16 @@
               <i class="fas fa-store"></i>
             </div>
             <div class="card-content">
-              <h3>Fournisseurs</h3>
+              <h3>Suppliers</h3>
               <div class="card-value">{{ fournisseurs.length }}</div>
-              <div class="card-description">Nombre de fournisseurs</div>
+              <div class="card-description">Suppliers Number</div>
             </div>
           </div>
         </div>
       
         <div class="charts-container">
           <div class="chart-card">
-            <h3 class="chart-title">Répartition par Fournisseur (Montant)</h3>
+            <h3 class="chart-title">cost per supplier</h3>
             <div class="chart-wrapper">
               <canvas baseChart
                 [data]="barChartData"
@@ -55,7 +55,7 @@
           </div>
       
           <div class="chart-card">
-            <h3 class="chart-title">Part de Marché des Fournisseurs</h3>
+            <h3 class="chart-title">Part Marché suppliers</h3>
             <div class="chart-wrapper pie-wrapper">
               <canvas baseChart
                 [data]="pieChartData"
@@ -72,17 +72,18 @@
               <option *ngFor="let fournisseur of fournisseurs" [value]="fournisseur">{{ fournisseur }}</option>
             </select>
           </div>
+          <app-chatbot>assistant</app-chatbot>
         <div class="details-container">
-          <h3 class="section-title">Détails des Commandes</h3>
+          <h3 class="section-title">Orders Detail</h3>
           <div class="table-responsive">
             <table class="commandes-table">
               <thead>
                 <tr>
-                  <th>ID Commande</th>
-                  <th>Fournisseur</th>
-                  <th>Médicaments</th>
-                  <th>Quantité</th>
-                  <th>Montant</th>
+                  <th>ID</th>
+                  <th>Supplier</th>
+                  <th>Med</th>
+                  <th>Quantity</th>
+                  <th>cost</th>
                 </tr>
               </thead>
               <tbody>
@@ -115,5 +116,5 @@
   </div>
   
   <td class="actions">
-  <button (click)="generatePDF()" class="btn-edit">Télécharger PDF</button>
+  <button (click)="generatePDF()" class="btn-edit">download PDF</button>
   </td>

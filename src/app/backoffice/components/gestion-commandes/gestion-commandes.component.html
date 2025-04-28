@@ -1,15 +1,15 @@
 <app-header-back></app-header-back>
 <app-sidebar></app-sidebar>
 
-<h2>Gestion des Commandes</h2>
+<h2>Orders</h2>
 
 <!-- Liste des commandes -->
 <div *ngIf="commandes && commandes.length > 0; else noCommande">
   <ul class="list-group">
     <li *ngFor="let commande of commandes" class="list-group-item d-flex justify-content-between align-items-center">
       <div>
-        <h5>Commande ID: {{ commande.idcommande }}</h5>
-        <p><strong>Fournisseur:</strong> {{ commande.fournisseurName }}</p>
+        <h5>Order ID: {{ commande.idcommande }}</h5>
+        <p><strong>Supplier:</strong> {{ commande.fournisseurName }}</p>
         <p><strong>Statut:</strong> {{ commande.status }}</p>
       </div>
       
@@ -27,5 +27,5 @@
 
 <!-- Message lorsque aucune commande n'est trouvée -->
 <ng-template #noCommande>
-  <p>Aucune commande disponible.</p>
+  <p>No orders.</p>
 </ng-template>

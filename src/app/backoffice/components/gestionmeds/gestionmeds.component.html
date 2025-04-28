@@ -5,7 +5,7 @@
   <form (ngSubmit)="ajouterMedicament()" #medForm="ngForm">
     <!-- Nom -->
     <div class="form-group">
-      <label for="nom">Nom</label>
+      <label for="nom">Name</label>
       <input
         type="text"
         id="nom"
@@ -39,7 +39,7 @@
 
     <!-- Quantité -->
     <div class="form-group">
-      <label for="quantite">Quantité</label>
+      <label for="quantite">Quantity</label>
       <input
         type="number"
         id="quantite"
@@ -57,7 +57,7 @@
 
     <!-- Date d'expiration -->
     <div class="form-group">
-      <label for="dateExpiration">Date d'expiration</label>
+      <label for="dateExpiration">Expiration Date</label>
       <input
         type="date"
         id="dateExpiration"
@@ -74,7 +74,7 @@
 
     <!-- Prix -->
     <div class="form-group">
-      <label for="prix">Prix (TND)</label>
+      <label for="prix">Price (TND)</label>
       <input
         type="number"
         id="prix"
@@ -93,7 +93,7 @@
 
     <!-- Fournisseur -->
 <div class="form-group">
-  <label for="idfournisseur">Fournisseur</label>
+  <label for="idfournisseur">Supplier</label>
 
   <!-- Si ajout -->
   <select
@@ -104,7 +104,7 @@
     required
     #idfournisseur="ngModel"
   >
-    <option value="" disabled>-- Sélectionner un fournisseur --</option>
+    <option value="" disabled>-- Select Supplier --</option>
     <option *ngFor="let f of fournisseurs" [value]="f.idfournisseur">
       {{ f.nom }}
     </option>
@@ -135,7 +135,7 @@
         {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
       </button>
       <button type="button" (click)="resetForm()" class="btn-cancel" *ngIf="isEditing">
-        Annuler
+        cancel
       </button>
     </div>
   </form>
@@ -145,11 +145,11 @@
 <table class="medicaments-table">
   <thead>
     <tr>
-      <th>Nom</th>
+      <th>Name</th>
       <th>Description</th>
-      <th>Quantité</th>
-      <th>Prix</th>
-      <th>Date Expiration</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Expiration Date</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -166,7 +166,7 @@
           Modifier
         </button>
         <button (click)="deleteMedicament(med.idmedicament)" class="btn-delete">
-          Supprimer
+          Delete
         </button>
       </td>
     </tr>
@@ -175,6 +175,6 @@
 
 
   <ng-template #noMedicaments>
-    <p class="no-data">Aucun médicament disponible.</p>
+    <p class="no-data">No Meds Available.</p>
   </ng-template>
 </div>

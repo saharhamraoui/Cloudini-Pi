@@ -7,7 +7,7 @@ import { CommandeService } from 'src/app/services/commande.service';
   styleUrls: ['./commande-list.component.css']
 })
 export class CommandeListComponent implements OnInit {
-  commandes: any[] = []; // Stocke les commandes récupérées depuis l'API
+  commandes: any[] = []; 
   statusFilter: string = '';
 
   constructor(private commandeService: CommandeService) {}

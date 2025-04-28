@@ -21,10 +21,10 @@ export class SuivreCommandeComponent implements OnInit, OnDestroy {
   hospitalCoords!: [number, number];
   statusCheckInterval: any;
   deliveryInterval: any;
-
   constructor(
     private route: ActivatedRoute,
-    private commandeService: CommandeService
+    private commandeService: CommandeService,
+    
   ) {}
 
   ngOnInit(): void {

@@ -2,7 +2,7 @@
 <a routerLink="/back/fournisseur" class="btn btn-sm btn-secondary mb-3">
   <i class="fa-sharp fa-solid fa-arrow-left"></i>
 </a>
-<h2 class="heading-text">Liste des Médicaments</h2>
+<h2 class="heading-text">Medications</h2>
 
 <!-- Barre de recherche -->
 <div class="search-bar">
@@ -41,7 +41,7 @@
       <!-- Bouton Commander -->
       <div class="status-btn1">
         <button class="status-btn2" [disabled]="medicament.quantite === 0" (click)="ouvrirFenetreQuantite(medicament)">
-          Commander
+          Order
         </button>
       </div>
 
@@ -70,5 +70,5 @@
 
 <!-- Aucun médicament trouvé -->
 <ng-template #noMedicament>
-  <p class="text" style="text-align: center;">Aucun médicament disponible pour ce fournisseur.</p>
+  <p class="text" style="text-align: center;">No Meds Available.</p>
 </ng-template>
