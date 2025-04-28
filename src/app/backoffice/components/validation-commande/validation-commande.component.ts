@@ -24,8 +24,22 @@ export class ValidationCommandeComponent implements OnInit {
 
   validerCommande(status: string): void {
     this.commandeService.updateStatusCommande(this.commande.idcommande, status).subscribe(
-      res => alert(`Commande ${status}`),
+      res => {
+        alert(`Commande ${status}`);
+        this.reloadCommande(); // Refresh the commande data
+      },
       err => alert('Erreur lors de la validation')
     );
   }
+  
+  reloadCommande(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.commandeService.getCommandeById(+id).subscribe(
+        data => this.commande = data,
+        error => console.error('Erreur', error)
+      );
+    }
+  }
+  
 }
