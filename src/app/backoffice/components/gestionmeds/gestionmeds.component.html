@@ -1,6 +1,6 @@
 <div class="container">
   <!-- Form Section -->
-  <h2>{{ isEditing ? 'Modifier Médicament' : 'Ajouter un Nouveau Médicament' }}</h2>
+  <h2>{{ isEditing ? 'Edit Medication' : 'Add new Medication' }}</h2>
   
   <form (ngSubmit)="ajouterMedicament()" #medForm="ngForm">
     <!-- Nom -->
@@ -16,7 +16,7 @@
         #nom="ngModel"
       />
       <div *ngIf="nom.invalid && nom.touched" class="error">
-        Le nom est requis.
+        name required
       </div>
     </div>
 
@@ -33,7 +33,7 @@
         #description="ngModel"
       />
       <div *ngIf="description.invalid && description.touched" class="error">
-        La description est requise.
+        description required
       </div>
     </div>
 
@@ -51,7 +51,7 @@
         #quantite="ngModel"
       />
       <div *ngIf="quantite.invalid && quantite.touched" class="error">
-        La quantité ne peut pas être négative.
+        quantity should not be negative
       </div>
     </div>
 
@@ -68,7 +68,7 @@
         #dateExpiration="ngModel"
       />
       <div *ngIf="dateExpiration.invalid && dateExpiration.touched" class="error">
-        La date d'expiration ne peut pas être antérieure à aujourd'hui.
+        expiration date should not be anterieur from today 
       </div>
     </div>
 
@@ -87,7 +87,7 @@
         #prix="ngModel"
       />
       <div *ngIf="prix.invalid && prix.touched" class="error">
-        Le prix ne peut pas être négatif.
+       price should be positive
       </div>
     </div>
 
@@ -116,7 +116,7 @@
   </p>
 
   <div *ngIf="!medicament.idfournisseur && !isEditing" class="error">
-    Veuillez choisir un fournisseur.
+   select the supplier
   </div>
   
 </div>

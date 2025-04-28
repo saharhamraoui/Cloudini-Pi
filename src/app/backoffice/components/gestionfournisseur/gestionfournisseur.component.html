@@ -2,7 +2,7 @@
 <app-header-back></app-header-back>
 <div class="container mt-4">
   <div class="card p-4">
-    <h3 class="mb-4">{{ isEditMode ? 'Modifier Fournisseur' : 'Ajouter Fournisseur' }}</h3>
+    <h3 class="mb-4">{{ isEditMode ? 'Edit Supplier' : 'Add Supplier' }}</h3>
 
     <form [formGroup]="fournisseurForm" (ngSubmit)="isEditMode ? updateFournisseur() : addFournisseur()">
       <div class="row">
@@ -11,7 +11,7 @@
             <label for="nom">Name</label>
             <input type="text" class="form-control" id="nom" formControlName="nom">
             <div class="text-danger" *ngIf="fournisseurForm.get('nom')?.invalid && (fournisseurForm.get('nom')?.dirty || fournisseurForm.get('nom')?.touched)">
-              Le nom est requis.
+              name required
             </div>
           </div>
 
@@ -20,8 +20,8 @@
             <input type="email" class="form-control" id="contact" formControlName="contact">
             <div *ngIf="fournisseurForm.get('contact') as contactCtrl">
               <div class="text-danger" *ngIf="contactCtrl.invalid && (contactCtrl.dirty || contactCtrl.touched)">
-                <div *ngIf="contactCtrl.errors?.['required']">Le contact est requis.</div>
-                <div *ngIf="contactCtrl.errors?.['email']">Veuillez entrer une adresse email valide.</div>
+                <div *ngIf="contactCtrl.errors?.['required']">contact required.</div>
+                <div *ngIf="contactCtrl.errors?.['email']">you should enter a valid email adress</div>
               </div>
             </div>
           </div>
@@ -29,7 +29,7 @@
 
         <div class="col-md-6">
           <div class="form-group mb-3">
-            <label for="adresse">Adress (cliquer sur la carte)</label>
+            <label for="adresse">Adress (click the map)</label>
             <input type="text" class="form-control" id="adresse" formControlName="adresse" readonly>
           </div>
           <div id="map" class="map-container"></div>
