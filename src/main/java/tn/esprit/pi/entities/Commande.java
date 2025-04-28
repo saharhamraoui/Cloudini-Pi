@@ -21,7 +21,7 @@ public class Commande {
     private Long idcommande;
 
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    @CreationTimestamp // Nécessite l'import Hibernate
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCommande;
     @Enumerated(EnumType.STRING)

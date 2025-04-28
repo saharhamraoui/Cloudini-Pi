@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import tn.esprit.pi.DTOS.CommandeRequestDTO;
 import tn.esprit.pi.DTOS.CommandeResponseDTO;
 import tn.esprit.pi.DTOS.LigneCommandeDTO;
@@ -25,6 +26,8 @@ public class CommandeController {
 
     @Autowired
     ICommandeService CommandeService;
+
+
     @PostMapping("/")
     public Commande addCommande(@RequestBody Commande Commande) {
         return CommandeService.addCommande(Commande);
