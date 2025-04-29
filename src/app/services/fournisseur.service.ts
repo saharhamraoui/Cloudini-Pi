@@ -3,13 +3,15 @@ import { Fournisseur } from '../model/Fournisseur';
 import { Observable } from 'rxjs';
 import { Medicament } from '../model/Medicament';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FournisseurService {
 
-  private apiUrl = 'http://localhost:8089/pi';  // URL de ton backend
+ // private apiUrl = 'http://localhost:8089/pi';  // URL de ton backend
+  private apiUrl = environment.urlServiceApi;
 
   constructor(private http: HttpClient) { }
 

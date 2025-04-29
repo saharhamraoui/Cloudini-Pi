@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Stock } from '../model/Stock';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StockService {
 
-private apiUrl = 'http://localhost:8089/pi';  // URL de ton backend
+  private apiUrl = environment.urlServiceApi;
 
   constructor(private http: HttpClient) { }
 
