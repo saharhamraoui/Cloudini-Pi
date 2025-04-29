@@ -21,7 +21,7 @@ import { SuivreCommandeComponent } from './components/suivre-commande/suivre-com
 import { ValidationCommandeComponent } from './components/validation-commande/validation-commande.component';
 import { NgChartsModule } from 'ng2-charts';
 import { DashboardStockComponent } from './components/dashboard-stock/dashboard-stock.component';
-import { ChatbotComponent } from './components/chatbot/chatbot.component';
+import { ChatbotComponent } from './components/chatbotStock/chatbot.component';
 
 @NgModule({
   declarations: [

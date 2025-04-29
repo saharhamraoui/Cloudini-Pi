@@ -6,11 +6,11 @@ import { Medicament } from '../model/Medicament';
   providedIn: 'root'
 })
 export class GeminiChatService {
-  private apiUrl = 'http://localhost:8089/pi/api/chatbot/ask';  // Your Spring Boot API URL
+  private apiUrl = 'http://localhost:8089/pi/api/chatbot'; 
 
   constructor(private http: HttpClient) {}
 
-  sendMessage(prompt: string): Observable<any> {
-    return this.http.post<any>(this.apiUrl, prompt);
-  }
+sendMessage(message: string): Observable<any> {
+  return this.http.post(this.apiUrl, { message }, { responseType: 'text' });
+}
 }

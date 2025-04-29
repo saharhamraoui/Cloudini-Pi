@@ -132,7 +132,7 @@
 
     <div class="form-actions">
       <button type="submit" [disabled]="medForm.invalid" class="btn-submit">
-        {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
+        {{ isEditing ? 'Update' : 'ADD' }}
       </button>
       <button type="button" (click)="resetForm()" class="btn-cancel" *ngIf="isEditing">
         cancel
