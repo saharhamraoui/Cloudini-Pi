@@ -1,4 +1,4 @@
-package tn.esprit.pi.entities;
+package esprit.tn.pidev.entities;
 
 public enum PaymentStatus {
     PENDING,

@@ -1,5 +1,7 @@
 package tn.esprit.pi.entities;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,16 +19,44 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long idUser ;
-   private  String faceDescriptor;
+
   private String firstName;
   private String lastName;
   private String email;
   private String password;
   private String phoneNumber;
+  @Column(name = "photo_url")
+  private String photoUrl;
+  private boolean verified = false;
+  private String verificationCode;
 
+  public boolean isVerified() {
+    return verified;
+  }
+
+  public void setVerified(boolean verified) {
+    this.verified = verified;
+  }
+
+  public String getVerificationCode() {
+    return verificationCode;
+  }
+
+  public void setVerificationCode(String verificationCode) {
+    this.verificationCode = verificationCode;
+  }
+
+  public String getPhotoUrl() {
+    return photoUrl;
+  }
+
+  public void setPhotoUrl(String photoUrl) {
+    this.photoUrl = photoUrl;
+  }
 
   private String address;
   @Enumerated(EnumType.STRING)
+  @Column(nullable = true)
   private Role role;
 
   public Role getRole() {
@@ -39,14 +69,6 @@ public class User {
 
   public long getIdUser() {
     return idUser;
-  }
-
-  public byte[] getFaceDescriptor() {
-    return faceDescriptor.getBytes();
-  }
-
-  public void setFaceDescriptor(String faceDescriptor) {
-    this.faceDescriptor = faceDescriptor;
   }
 
   public void setIdUser(long idUser) {
@@ -132,4 +154,13 @@ public class User {
 
   @Column(name = "token_expiry_date")
   private LocalDateTime tokenExpiryDate;
+
+  @Column(columnDefinition = "TEXT")
+  private String description;
+
+
+
+
+
+
 }

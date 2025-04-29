@@ -51,12 +51,10 @@ public class Post {
     this.title = title;
     this.content = content;
     this.author = author;
-    this.image = null;
+
   }
 
-  @Lob
-  @Column(name = "image", columnDefinition = "LONGBLOB")
-  private byte[] image;
+
   @Getter
   @Column(name = "likes_count", columnDefinition = "INT DEFAULT 0")
   private int likesCount = 0;
@@ -64,11 +62,29 @@ public class Post {
   public void incrementLikes() {
     this.likesCount++;
   }
+  @ElementCollection
+  @CollectionTable(name = "post_likers", joinColumns = @JoinColumn(name = "post_id"))
+  @Column(name = "user_id")
+  private Set<Long> likers = new HashSet<>();
+
+  public void toggleLike(Long userId) {
+    if (likers.contains(userId)) {
+      likers.remove(userId);
+      decrementLikes();
+    } else {
+      likers.add(userId);
+      incrementLikes();
+    }
+  }
+
 
   public void decrementLikes() {
     if (this.likesCount > 0) {
       this.likesCount--;
     }
+  }
+  public boolean isLikedBy(Long userId) {
+    return likers.contains(userId);
   }
 }
 

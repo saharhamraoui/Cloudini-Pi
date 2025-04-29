@@ -6,15 +6,17 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
-import tn.esprit.pi.services.IPaiementService;
-import tn.esprit.pi.entities.Paiement;
+
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.pi.entities.Paiement;
+import tn.esprit.pi.services.IPaiementService;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,5 +100,15 @@ public class PaiementController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @PostMapping("/{id}/reject-discount")
+    public Paiement rejectDiscount(@PathVariable Long id) {
+        return paiementService.rejectDiscount(id);
+    }
+
+    @PostMapping("/{id}/approve-discount")
+    public Paiement approveDiscount(@PathVariable Long id) {
+         return paiementService.approveDiscount(id);
     }
 }

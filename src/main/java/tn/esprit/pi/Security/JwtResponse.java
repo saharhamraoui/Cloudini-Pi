@@ -8,8 +8,8 @@ public class JwtResponse {
     private String token;
     private String email;
     private Role role;
-    private Long idUser; // Ajouter idUser
-
+    private Long idUser;
+    private boolean verified;
     public void setToken(String token) {
         this.token = token;
     }
@@ -30,11 +30,19 @@ public class JwtResponse {
         return firstName;
     }
 
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public JwtResponse(String token, String email, String firstName, Role role, Long idUser ) {
+    public JwtResponse(String token, String email, String firstName, Role role, boolean verified, Long idUser ) {
         this.token = token;
         this.email = email;
         this.role = role;

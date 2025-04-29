@@ -18,103 +18,71 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
-
+import tn.esprit.pi.config.*;
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/posts")
 public class PostController {
 
-    @Autowired
-    private IPostService postService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TagRepository tagRepository;
-    @Autowired
-    private TagServiceImpl tagService;
-    @Autowired
-    private PostRepository postRepository;
+  @Autowired
+  private IPostService postService;
+  @Autowired
+  private UserRepository userRepository;
+  @Autowired
+  private TagRepository tagRepository;
+  @Autowired
+  private TagServiceImpl tagService;
+  @Autowired
+  private PostRepository postRepository;
 
-    private final String uploadDir = "uploads/images";
-    @Operation(summary = "Upload an image and get its URL")
-    @PostMapping(value = "/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Aucun fichier n'a été téléchargé");
+
+  @PostMapping(value = "/create-with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<?> createPostWithImage(
+    @RequestParam("title") String title,
+    @RequestParam("content") String content,
+    @RequestParam("authorId") Long authorId,
+    @RequestParam(value = "tags", required = false) String tagsJson,
+    @RequestParam(value = "image", required = false) MultipartFile file) {
+
+    try {
+      User author = userRepository.findById(authorId)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+
+      Post post = new Post();
+      post.setTitle(title);
+      post.setContent(content);
+      post.setAuthor(author);
+
+      List<String> tagNames = tagsJson != null && !tagsJson.isEmpty() ?
+        new ObjectMapper().readValue(tagsJson, new TypeReference<List<String>>() {})
+        : new ArrayList<>();
+
+      byte[] image = null;
+
+      if (file != null && !file.isEmpty()) {
+        if (file.getSize() > 5 * 1024 * 1024) { // Limite de 5MB
+          return ResponseEntity.badRequest().body("File size exceeds 5MB limit");
         }
-        try {
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
+        image = file.getBytes();
+      }
 
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Path filePath = uploadPath.resolve(fileName);
+      Post savedPost = postService.createPostWithTags(post, tagNames, author);
 
-            Files.copy(file.getInputStream(), filePath);
+      return ResponseEntity.ok(savedPost);
 
-            String imageUrl = "/api/images/" + fileName; // Assurez-vous que cette URL est correcte
-            return ResponseEntity.ok(imageUrl);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors du téléchargement de l'image: " + e.getMessage());
-        }
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
     }
-    @PostMapping(value = "/create-with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createPostWithImage(
-            @RequestParam("title") String title,
-            @RequestParam("content") String content,
-            @RequestParam("authorId") Long authorId,
-            @RequestParam(value = "tags", required = false) String tagsJson,
-            @RequestParam(value = "image", required = false) MultipartFile file) {
+  }
 
-        try {
-            User author = userRepository.findById(authorId)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-            Post post = new Post();
-            post.setTitle(title);
-            post.setContent(content);
-            post.setAuthor(author);
-
-            // Convertir les tags JSON en liste
-            List<String> tagNames = tagsJson != null && !tagsJson.isEmpty() ?
-                    new ObjectMapper().readValue(tagsJson, new TypeReference<List<String>>() {})
-                    : new ArrayList<>();
-
-            // Gestion de l'image
-            if (file != null && !file.isEmpty()) {
-                if (file.getSize() > 5 * 1024 * 1024) { // Limite de 5MB
-                    return ResponseEntity.badRequest().body("File size exceeds 5MB limit");
-                }
-                post.setImage(file.getBytes()); // Stocke l'image en BDD
-            }
-
-            Post savedPost = postService.createPostWithTags(post, tagNames, author);
-            return ResponseEntity.ok(savedPost);
-
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
-        }
-    }
-    @GetMapping("/{id}/image")
-    public ResponseEntity<byte[]> getPostImage(@PathVariable Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
-
-        if (post.getImage() == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG) // ou MediaType.IMAGE_PNG selon le format
-                .body(post.getImage());
-    }
   @Operation(summary = "Update post content")
   @PutMapping("/updatepostbyid/{id}")
   public ResponseEntity<?> updatePost(
@@ -157,133 +125,131 @@ public class PostController {
         ));
     }
   }
-    @Operation(summary = "Delete a post")
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId, @RequestHeader("userId") Long userId) {
-        try {
-            User currentUser = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+  @Operation(summary = "Delete a post")
+  @DeleteMapping("/{postId}")
+  public ResponseEntity<?> deletePost(@PathVariable Long postId, @RequestHeader("userId") Long userId) {
+    try {
+      User currentUser = userRepository.findById(userId)
+        .orElseThrow(() -> new RuntimeException("User not found"));
 
-            postService.deletePost(postId, currentUser);
-            return ResponseEntity.noContent().build();
+      postService.deletePost(postId, currentUser);
+      return ResponseEntity.noContent().build();
 
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(403).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                    .body("Delete error: " + e.getMessage());
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.notFound().build();
+    } catch (IllegalStateException e) {
+      return ResponseEntity.status(403).body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError()
+        .body("Delete error: " + e.getMessage());
+    }
+  }
+
+  @Operation(summary = "Get all posts with author and optional image")
+  @GetMapping("/getallposts")
+  public ResponseEntity<List<Map<String, Object>>> getAllPostsWithAuthor() {
+    List<Post> posts = postService.getAllPostsWithAuthor();
+    posts.sort((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()));
+
+    List<Map<String, Object>> enrichedPosts = posts.stream()
+      .map(post -> {
+        Map<String, Object> postData = new HashMap<>();
+        postData.put("id", post.getId());
+        postData.put("title", post.getTitle());
+        postData.put("content", post.getContent());
+        postData.put("createdAt", post.getCreatedAt());
+
+        if (post.getAuthor() != null) {
+          postData.put("authorFullName", post.getAuthor().getFirstName() + " " + post.getAuthor().getLastName());
+        } else {
+          postData.put("authorFullName", "Unknown Author");
         }
+
+        return postData;
+      })
+      .toList();
+
+    return ResponseEntity.ok(enrichedPosts);
+  }
+
+  @Operation(summary = "Get post by ID")
+  @GetMapping("/getbyid/{id}")
+  public ResponseEntity<?> getPostById(@PathVariable Long id) {
+    try {
+      Post post = postService.getPostById(id);
+      return ResponseEntity.ok(post);
+    } catch (Exception e) {
+      return ResponseEntity.notFound().build();
     }
+  }
 
-    @Operation(summary = "Get all posts with author and optional image")
-    @GetMapping("/getallposts")
-    public ResponseEntity<List<Map<String, Object>>> getAllPostsWithAuthor() {
-        List<Post> posts = postService.getAllPostsWithAuthor();
-        posts.sort((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()));
 
-        List<Map<String, Object>> enrichedPosts = posts.stream()
-                .map(post -> {
-                    Map<String, Object> postData = new HashMap<>();
-                    postData.put("id", post.getId());
-                    postData.put("title", post.getTitle());
-                    postData.put("content", post.getContent());
-                    postData.put("createdAt", post.getCreatedAt());
-                    postData.put("imageUrl", post.getImage());
+  @GetMapping("/getpostbyauthor/{authorId}")
+  public List<Post> getPostsByAuthor(@PathVariable Long authorId) {
+    return postService.getAllPostsByAuthorId(authorId);
+  }
 
-                    if (post.getAuthor() != null) {
-                        postData.put("authorFullName", post.getAuthor().getFirstName() + " " + post.getAuthor().getLastName());
-                    } else {
-                        postData.put("authorFullName", "Unknown Author");
-                    }
+  @GetMapping("/getauthorbypostid/{postId}/author-id")
+  public long getAuthorIdByPostId(@PathVariable Long postId) {
+    return postService.getAuthorIdByPostId(postId);
+  }
 
-                    return postData;
-                })
-                .toList();
+  @GetMapping("/getauthorname/{postId}")
+  public Map<String, Object> getPostWithAuthorName(@PathVariable Long postId) {
+    return postService.getPostWithAuthorName(postId);
+  }
 
-        return ResponseEntity.ok(enrichedPosts);
+  @Operation(summary = "Add multiple tags to a post")
+  @PostMapping("/{postId}/tags/bulk")
+  public ResponseEntity<?> addTagsToPostBulk(@PathVariable Long postId, @RequestBody List<String> tagNames) {
+    try {
+      Post updatedPost = postService.addTagsToPost(postId, tagNames);
+      return ResponseEntity.ok(updatedPost);
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
     }
+  }
 
-    @Operation(summary = "Get post by ID")
-    @GetMapping("/getbyid/{id}")
-    public ResponseEntity<?> getPostById(@PathVariable Long id) {
-        try {
-            Post post = postService.getPostById(id);
-            return ResponseEntity.ok(post);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+  @Operation(summary = "Get posts by tag name")
+  @GetMapping("/tagged/{tagName}")
+  public ResponseEntity<?> getPostsByTag(@PathVariable String tagName) {
+    try {
+      List<Post> posts = postService.getPostsByTag(tagName);
+
+      List<Map<String, Object>> enrichedPosts = posts.stream()
+        .map(post -> {
+          Map<String, Object> postData = new HashMap<>();
+          postData.put("id", post.getId());
+          postData.put("title", post.getTitle());
+          postData.put("content", post.getContent());
+          postData.put("createdAt", post.getCreatedAt());
+          postData.put("tags", post.getTags());
+
+          if (post.getAuthor() != null) {
+            postData.put("authorFullName", post.getAuthor().getFirstName() + " " + post.getAuthor().getLastName());
+          } else {
+            postData.put("authorFullName", "Unknown Author");
+          }
+
+          return postData;
+        })
+        .toList();
+
+      return ResponseEntity.ok(enrichedPosts);
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.notFound().build();
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError()
+        .body("Error: " + e.getMessage());
     }
-
-
-    @GetMapping("/getpostbyauthor/{authorId}")
-    public List<Post> getPostsByAuthor(@PathVariable Long authorId) {
-        return postService.getAllPostsByAuthorId(authorId);
-    }
-
-    @GetMapping("/getauthorbypostid/{postId}/author-id")
-    public long getAuthorIdByPostId(@PathVariable Long postId) {
-        return postService.getAuthorIdByPostId(postId);
-    }
-
-    @GetMapping("/getauthorname/{postId}")
-    public Map<String, Object> getPostWithAuthorName(@PathVariable Long postId) {
-        return postService.getPostWithAuthorName(postId);
-    }
-
-    @Operation(summary = "Add multiple tags to a post")
-    @PostMapping("/{postId}/tags/bulk")
-    public ResponseEntity<?> addTagsToPostBulk(@PathVariable Long postId, @RequestBody List<String> tagNames) {
-        try {
-            Post updatedPost = postService.addTagsToPost(postId, tagNames);
-            return ResponseEntity.ok(updatedPost);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @Operation(summary = "Get posts by tag name")
-    @GetMapping("/tagged/{tagName}")
-    public ResponseEntity<?> getPostsByTag(@PathVariable String tagName) {
-        try {
-            List<Post> posts = postService.getPostsByTag(tagName);
-
-            List<Map<String, Object>> enrichedPosts = posts.stream()
-                    .map(post -> {
-                        Map<String, Object> postData = new HashMap<>();
-                        postData.put("id", post.getId());
-                        postData.put("title", post.getTitle());
-                        postData.put("content", post.getContent());
-                        postData.put("createdAt", post.getCreatedAt());
-                        postData.put("imageUrl", post.getImage());
-                        postData.put("tags", post.getTags());
-
-                        if (post.getAuthor() != null) {
-                            postData.put("authorFullName", post.getAuthor().getFirstName() + " " + post.getAuthor().getLastName());
-                        } else {
-                            postData.put("authorFullName", "Unknown Author");
-                        }
-
-                        return postData;
-                    })
-                    .toList();
-
-            return ResponseEntity.ok(enrichedPosts);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                    .body("Error: " + e.getMessage());
-        }
-    }
-    @PostMapping("/{postId}/like")
-  public ResponseEntity<Map<String, Object>> likePost(@PathVariable Long postId) {
+  }
+  @PostMapping("/{postId}/like/{userId}")
+  public ResponseEntity<Map<String, Object>> likePost(@PathVariable Long postId, @PathVariable Long userId) {
     try {
       if (!postRepository.existsById(postId)) {
         return ResponseEntity.notFound().build();
       }
-      int likesCount = postService.likePost(postId);
+      int likesCount = postService.likePost(postId, userId); // Correction ici
       return ResponseEntity.ok(Map.of(
         "success", true,
         "likesCount", likesCount
@@ -295,6 +261,7 @@ public class PostController {
       ));
     }
   }
+
 
   @GetMapping("/getLikesForPost/{postId}")  public ResponseEntity<Map<String, Object>> getLikesCount(@PathVariable Long postId) {
     try {
@@ -310,4 +277,21 @@ public class PostController {
       return ResponseEntity.internalServerError().build();
     }
   }
+
+  @PostMapping("/{postId}/toggle-like/{userId}")
+  public ResponseEntity<Map<String, Object>> toggleLike(
+    @PathVariable Long postId,
+    @PathVariable Long userId) {
+
+    try {
+      Map<String, Object> response = postService.toggleLike(postId, userId);
+      return ResponseEntity.ok(response);
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().body(Map.of(
+        "success", false,
+        "message", "Erreur lors du traitement du like"
+      ));
+    }
+  }
+
 }

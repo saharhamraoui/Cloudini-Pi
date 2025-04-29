@@ -1,5 +1,7 @@
 package tn.esprit.pi.services;
 
+
+
 import tn.esprit.pi.entities.Paiement;
 
 import java.util.List;
@@ -17,4 +19,7 @@ public interface IPaiementService {
     public Paiement getPaymentsById(Long id);
 
     public List<Paiement> getPaymentsByUser(String user);
-}
+    public Paiement approveDiscount(Long id);
+    public Paiement rejectDiscount(Long id);
+
+    }

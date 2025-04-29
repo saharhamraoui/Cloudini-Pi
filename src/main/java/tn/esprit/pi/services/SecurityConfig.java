@@ -44,7 +44,44 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/api/auth/**",                                "/api/auth/forgot-password",
-                                "/users/**"
+                                "/users/**",
+                                "/tags/**",
+                                "/api/bilans/**",
+                                "/api/bilans/**",
+                                "/api/categorize**",
+                                "/api/chat/**",
+                                "/comments/**",
+                                "/signal/**",
+                                "/rendezVous/**",
+                                "/mail/**",
+                                "/disease/**",
+                                "/consultation/**",
+                                "/Commandes/**",
+                                "/Fournisseurs/**",
+                                "/Medicaments/**",
+                                "/stock/**",
+                                "/api/discount-requests/**",
+                                "/api/email/**",
+                                "/api/fraud/**",
+                                "/api/ai/**",
+                                "/konnect/**",
+                                "/leave-requests/**",
+                                "/medicalRecord/**",
+                                "/api/metrics/**",
+                                "/api/v1/notifications/**",
+                                "/paiements/",
+                                "/content-moderation/**",
+                                "/api/auth/**",
+                                "/posts/**",
+                                "/Prescription/**",
+                                "/api/reclamations/**",
+                                "/api/users/**",
+                                "/api/responses/**",
+                                "/api/sms/**",
+
+                                "/users//create-admin"
+
+
                         ).permitAll()
                         .requestMatchers("/users/banned-users", "/users/toggle-ban").hasRole("ADMIN")
 

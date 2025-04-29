@@ -7,8 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PaiementRepository extends JpaRepository<Paiement, Long> {
-
-    List<Paiement> findByNomPatientContaining(String nomPatient);
+List<Paiement> findByNomPatientContaining(String nomPatient);
 
     List<Paiement> findByStatut(String statut);
 
@@ -19,4 +18,5 @@ public interface PaiementRepository extends JpaRepository<Paiement, Long> {
     List<Paiement> findByNomPatient(String user);
     List<Paiement> findByEmailMedecinAndStatut(String user, String statut);
 
+    List<Paiement> findByDiscountRequestedTrueAndDiscountStatus(Paiement.DiscountStatus status);
 }

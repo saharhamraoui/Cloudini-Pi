@@ -1,10 +1,12 @@
 package tn.esprit.pi.services;
 
 
-import tn.esprit.pi.repositories.PaiementRepository;
-import tn.esprit.pi.entities.Paiement;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import tn.esprit.pi.entities.Paiement;
+import tn.esprit.pi.repositories.PaiementRepository;
 
 import java.util.List;
 
@@ -48,5 +50,24 @@ public class PaiementService implements IPaiementService  {
     }
     public List<Paiement> getPaymentsByUser(String user) {
         return paiementRepository.findByNomPatient(user);
+    }
+
+
+
+    public Paiement approveDiscount(Long id) {
+        Paiement p = paiementRepository.findById(id).orElseThrow();
+        if (!p.isDiscountRequested()) {
+            throw new IllegalStateException("Discount was not requested for this payment");
+        }
+        p.setDiscountApproved(true);
+        return paiementRepository.save(p);
+    }
+
+    // In Service:
+    public Paiement rejectDiscount(Long id) {
+        Paiement p = paiementRepository.findById(id).orElseThrow();
+        p.setDiscountRequested(false); // Reset request
+        p.setDisabilityCardId(null);   // Clear card ID
+        return paiementRepository.save(p);
     }
 }

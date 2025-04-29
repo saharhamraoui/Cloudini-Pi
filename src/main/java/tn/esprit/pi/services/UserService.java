@@ -1,170 +1,64 @@
 package tn.esprit.pi.services;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import tn.esprit.pi.Security.JwtUtil;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.pi.entities.*;
-import tn.esprit.pi.repositories.UserRepository;
-import tn.esprit.pi.repositories.PatientRepository;
 import tn.esprit.pi.repositories.ChauffeurRepository;
 import tn.esprit.pi.repositories.MedecinRepository;
+import tn.esprit.pi.repositories.PatientRepository;
+import tn.esprit.pi.repositories.UserRepository;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class UserService implements IUserService {
+    private static final String DEFAULT_PHOTO_URL = "/assets/default-profile.png";
+    private static final String UPLOAD_DIR = "static/uploads/";
+    private static final String UPLOAD_PATH_PREFIX = "/uploads/";
+
     @Qualifier("bCryptPasswordEncoder")
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private PatientRepository patientRepository;
+
     @Autowired
     private ChauffeurRepository chauffeurRepository;
+
     @Autowired
     private MedecinRepository medecinRepository;
-    @Autowired
 
-    private JwtUtil jwtUtil;
-
+    // --- User Management ---
 
     @Override
     public User createUser(User user) {
-        String hashedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashedPassword);
-
+        setCommonUserProperties(user);
         return userRepository.save(user);
     }
 
     @Override
     public User updateUser(User user) {
-        User existing = userRepository.findById(user.getIdUser())
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-
-        // Mise à jour des champs communs
-        existing.setFirstName(user.getFirstName());
-        existing.setLastName(user.getLastName());
-        existing.setEmail(user.getEmail());
-        existing.setPhoneNumber(user.getPhoneNumber());
-        existing.setAddress(user.getAddress());
-
-
+        User existing = findUserById(user.getIdUser());
+        updateCommonUserFields(existing, user);
         return userRepository.save(existing);
     }
-    public User changeUserRole(Long userId, Role newRole) {
-        // Récupérer l'utilisateur existant
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-        // Si le rôle est le même, retourner l'utilisateur tel quel
-        if (user.getRole() == newRole) {
-            return user;
-        }
-
-        // Supprimer l'entité spécifique existante
-        deleteSpecificUserEntity(userId, user.getRole());
-
-        // Créer la nouvelle entité spécifique
-        return createSpecificUserEntity(user, newRole);
-    }
-
-    private void deleteSpecificUserEntity(Long userId, Role currentRole) {
-        switch(currentRole) {
-            case PATIENT:
-                patientRepository.deleteById(userId);
-                break;
-            case MEDECIN:
-                medecinRepository.deleteById(userId);
-                break;
-            case CHAUFFEUR:
-                chauffeurRepository.deleteById(userId);
-                break;
-            default:
-                // Pour les autres rôles (ADMIN, etc.), rien à supprimer
-                break;
-        }
-    }
-
-    private User createSpecificUserEntity(User user, Role newRole) {
-        // Mettre à jour le rôle de base
-        user.setRole(newRole);
-        User updatedUser = userRepository.save(user);
-
-        // Créer l'entité spécifique selon le nouveau rôle
-        switch(newRole) {
-            case PATIENT:
-                Patient patient = new Patient();
-                copyUserPropertiesToPatient(user, patient);
-                return patientRepository.save(patient);
-
-            case MEDECIN:
-                Medecin medecin = new Medecin();
-                copyUserPropertiesToMedecin(user, medecin);
-                return medecinRepository.save(medecin);
-
-            case CHAUFFEUR:
-                Chauffeur chauffeur = new Chauffeur();
-                copyUserPropertiesToChauffeur(user, chauffeur);
-                return chauffeurRepository.save(chauffeur);
-
-            default:
-                // Pour les autres rôles (ADMIN, etc.), retourner l'utilisateur de base
-                return updatedUser;
-        }
-    }
-
-    // Méthodes utilitaires pour copier les propriétés
-    private void copyUserPropertiesToPatient(User source, Patient target) {
-        target.setIdUser(source.getIdUser());
-        target.setFirstName(source.getFirstName());
-        target.setLastName(source.getLastName());
-        target.setEmail(source.getEmail());
-        target.setPhoneNumber(source.getPhoneNumber());
-        target.setAddress(source.getAddress());
-        target.setPassword(source.getPassword());
-        target.setBanned(source.isBanned());
-
-        // Initialiser les champs spécifiques à Patient avec des valeurs par défaut
-        target.setMedicalRecordNumber("");
-        target.setBloodGroup("");
-        target.setHealthInsuranceNumber("");
-        target.setGender("M");
-        target.setDateOfBirth(null);
-    }
-
-    private void copyUserPropertiesToMedecin(User source, Medecin target) {
-        target.setIdUser(source.getIdUser());
-        target.setFirstName(source.getFirstName());
-        target.setLastName(source.getLastName());
-        target.setEmail(source.getEmail());
-        target.setPhoneNumber(source.getPhoneNumber());
-        target.setAddress(source.getAddress());
-        target.setPassword(source.getPassword());
-        target.setBanned(source.isBanned());
-
-        // Initialiser les champs spécifiques à Medecin
-        target.setSpeciality("");
-        target.setLicenseNumber("");
-        target.setAvailability("AVAILABLE");    }
-
-    private void copyUserPropertiesToChauffeur(User source, Chauffeur target) {
-        target.setIdUser(source.getIdUser());
-        target.setFirstName(source.getFirstName());
-        target.setLastName(source.getLastName());
-        target.setEmail(source.getEmail());
-        target.setPhoneNumber(source.getPhoneNumber());
-        target.setAddress(source.getAddress());
-        target.setPassword(source.getPassword());
-        target.setBanned(source.isBanned());
-
-        // Initialiser les champs spécifiques à Chauffeur
-        target.setDriverLicenseNumber("");
-        target.setDriverAvailability("AVAILABLE");
-    }
     @Override
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
@@ -180,12 +74,23 @@ public class UserService implements IUserService {
         return userRepository.findAll();
     }
 
+
+    public List<User> getAllBannedUsers() {
+        return userRepository.findByBannedTrue();
+    }
+
+    public User toggleBan(Long userId, boolean status) {
+        User user = findUserById(userId);
+        user.setBanned(status);
+        return userRepository.save(user);
+    }
+
+    // --- Role-Specific User Creation ---
+
     @Override
     public Patient createPatient(Patient patient) {
-        String hashedPassword = passwordEncoder.encode(patient.getPassword());
-        patient.setPassword(hashedPassword);
+        setCommonUserProperties(patient);
         patient.setRole(Role.PATIENT);
-
         return patientRepository.save(patient);
     }
 
@@ -196,11 +101,8 @@ public class UserService implements IUserService {
 
     @Override
     public Chauffeur createChauffeur(Chauffeur chauffeur) {
-        String hashedPassword = passwordEncoder.encode(chauffeur.getPassword());
+        setCommonUserProperties(chauffeur);
         chauffeur.setRole(Role.CHAUFFEUR);
-
-        chauffeur.setPassword(hashedPassword);
-
         return chauffeurRepository.save(chauffeur);
     }
 
@@ -211,10 +113,8 @@ public class UserService implements IUserService {
 
     @Override
     public Medecin createMedecin(Medecin medecin) {
-        String hashedPassword = passwordEncoder.encode(medecin.getPassword());
-        medecin.setPassword(hashedPassword);
+        setCommonUserProperties(medecin);
         medecin.setRole(Role.MEDECIN);
-
         return medecinRepository.save(medecin);
     }
 
@@ -223,76 +123,96 @@ public class UserService implements IUserService {
         return medecinRepository.findAll();
     }
 
+    // --- Role-Specific User Updates ---
+
     @Override
     public Patient updatePatient(Patient patient) {
-        Patient existing = patientRepository.findById(patient.getIdUser())
-                .orElseThrow(() -> new RuntimeException("Patient non trouvé"));
-
-        // Mise à jour des champs communs
-        existing.setFirstName(patient.getFirstName());
-        existing.setLastName(patient.getLastName());
-        existing.setEmail(patient.getEmail());
-        existing.setPhoneNumber(patient.getPhoneNumber());
-        existing.setAddress(patient.getAddress());
-
-        // Mise à jour des champs spécifiques
+        Patient existing = findPatientById(patient.getIdUser());
+        updateCommonUserFields(existing, patient);
         existing.setMedicalRecordNumber(patient.getMedicalRecordNumber());
         existing.setBloodGroup(patient.getBloodGroup());
         existing.setHealthInsuranceNumber(patient.getHealthInsuranceNumber());
         existing.setGender(patient.getGender());
         existing.setDateOfBirth(patient.getDateOfBirth());
-
         return patientRepository.save(existing);
     }
+
     @Override
     public Medecin updateMedecin(Medecin medecin) {
-        Medecin existing = medecinRepository.findById(medecin.getIdUser())
-                .orElseThrow(() -> new RuntimeException("Médecin non trouvé"));
-
-        // Champs communs
-        existing.setFirstName(medecin.getFirstName());
-        existing.setLastName(medecin.getLastName());
-        existing.setEmail(medecin.getEmail());
-        existing.setPhoneNumber(medecin.getPhoneNumber());
-        existing.setAddress(medecin.getAddress());
-
-        // Champs spécifiques
+        Medecin existing = findMedecinById(medecin.getIdUser());
+        updateCommonUserFields(existing, medecin);
         existing.setSpeciality(medecin.getSpeciality());
         existing.setLicenseNumber(medecin.getLicenseNumber());
         existing.setAvailability(medecin.getAvailability());
-
         return medecinRepository.save(existing);
     }
 
     @Override
     public Chauffeur updateChauffeur(Chauffeur chauffeur) {
-        Chauffeur existing = chauffeurRepository.findById(chauffeur.getIdUser())
-                .orElseThrow(() -> new RuntimeException("Chauffeur non trouvé"));
-
-        // Champs communs
-        existing.setFirstName(chauffeur.getFirstName());
-        existing.setLastName(chauffeur.getLastName());
-        existing.setEmail(chauffeur.getEmail());
-        existing.setPhoneNumber(chauffeur.getPhoneNumber());
-        existing.setAddress(chauffeur.getAddress());
-
-        // Champs spécifiques
+        Chauffeur existing = findChauffeurById(chauffeur.getIdUser());
+        updateCommonUserFields(existing, chauffeur);
         existing.setDriverLicenseNumber(chauffeur.getDriverLicenseNumber());
         existing.setDriverAvailability(chauffeur.getDriverAvailability());
-
         return chauffeurRepository.save(existing);
     }
 
-    public List<User> getAllBannedUsers() {
-        return userRepository.findByBannedTrue();
+    // --- Role Management ---
+
+    public User changeUserRole(Long userId, Role newRole) {
+        User user = findUserById(userId);
+        if (user.getRole() == newRole) {
+            return user;
+        }
+        deleteSpecificUserEntity(userId, user.getRole());
+        return createSpecificUserEntity(user, newRole);
     }
 
-    public User toggleBan(Long userId, boolean status) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-        user.setBanned(status);
-        return userRepository.save(user);
+    private void deleteSpecificUserEntity(Long userId, Role currentRole) {
+        switch (currentRole) {
+            case PATIENT -> patientRepository.deleteById(userId);
+            case MEDECIN -> medecinRepository.deleteById(userId);
+            case CHAUFFEUR -> chauffeurRepository.deleteById(userId);
+            default -> {
+                // No action for ADMIN or other roles
+            }
+        }
     }
+
+    private User createSpecificUserEntity(User user, Role newRole) {
+        user.setRole(newRole);
+        User updatedUser = userRepository.save(user);
+
+        return switch (newRole) {
+            case PATIENT -> {
+                Patient patient = new Patient();
+                copyUserProperties(updatedUser, patient);
+                patient.setMedicalRecordNumber("");
+                patient.setBloodGroup("");
+                patient.setHealthInsuranceNumber("");
+                patient.setGender("M");
+                patient.setDateOfBirth(null);
+                yield patientRepository.save(patient);
+            }
+            case MEDECIN -> {
+                Medecin medecin = new Medecin();
+                copyUserProperties(updatedUser, medecin);
+                medecin.setSpeciality("");
+                medecin.setLicenseNumber("");
+                medecin.setAvailability("AVAILABLE");
+                yield medecinRepository.save(medecin);
+            }
+            case CHAUFFEUR -> {
+                Chauffeur chauffeur = new Chauffeur();
+                copyUserProperties(updatedUser, chauffeur);
+                chauffeur.setDriverLicenseNumber("");
+                chauffeur.setDriverAvailability("AVAILABLE");
+                yield chauffeurRepository.save(chauffeur);
+            }
+            default -> updatedUser;
+        };
+    }
+
+    // --- Authentication ---
 
     public User createAdmin(String firstName, String lastName, String email, String password) {
         User admin = new User();
@@ -301,22 +221,90 @@ public class UserService implements IUserService {
         admin.setEmail(email);
         admin.setPassword(passwordEncoder.encode(password));
         admin.setRole(Role.ADMIN);
+        admin.setPhotoUrl(DEFAULT_PHOTO_URL);
+        admin.setDescription("");
         return userRepository.save(admin);
     }
 
     public User authenticate(String email, String rawPassword) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new RuntimeException("Utilisateur non trouvé");
+            throw new RuntimeException("User not found");
         }
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new RuntimeException("Mot de passe incorrect !");
+            throw new RuntimeException("Incorrect password");
         }
         if (user.isBanned()) {
-            throw new RuntimeException("Ce compte est banni");
+            throw new RuntimeException("This account is banned");
         }
-
+        if (!user.isVerified()) {
+            throw new RuntimeException("Email not verified");
+        }
         return user;
     }
 
+    // --- Photo Upload ---
+
+    public String saveUserPhoto(MultipartFile file) throws IOException {
+        // Use an external directory (e.g., project root or system temp dir)
+        String uploadDir = System.getProperty("user.dir") + "/uploads/";
+        Path uploadPath = Paths.get(uploadDir);
+        Files.createDirectories(uploadPath);
+
+        String fileName = UUID.randomUUID() + "_" +
+                StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        Path filePath = uploadPath.resolve(fileName);
+
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        return UPLOAD_PATH_PREFIX + fileName;
+    }
+
+    // --- Utility Methods ---
+
+    private void setCommonUserProperties(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPhotoUrl(user.getPhotoUrl() != null && !user.getPhotoUrl().isEmpty() ? user.getPhotoUrl() : DEFAULT_PHOTO_URL);
+        user.setDescription(user.getDescription() != null ? user.getDescription() : "");
+    }
+
+    private void updateCommonUserFields(User existing, User updated) {
+        existing.setFirstName(updated.getFirstName());
+        existing.setLastName(updated.getLastName());
+        existing.setEmail(updated.getEmail());
+        existing.setPhoneNumber(updated.getPhoneNumber());
+        existing.setAddress(updated.getAddress());
+        existing.setDescription(updated.getDescription());
+    }
+
+    private void copyUserProperties(User source, User target) {
+        target.setIdUser(source.getIdUser());
+        target.setFirstName(source.getFirstName());
+        target.setLastName(source.getLastName());
+        target.setEmail(source.getEmail());
+        target.setPhoneNumber(source.getPhoneNumber());
+        target.setAddress(source.getAddress());
+        target.setPassword(source.getPassword());
+        target.setBanned(source.isBanned());
+        target.setRole(source.getRole());
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    private Patient findPatientById(Long userId) {
+        return patientRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+    }
+
+    private Medecin findMedecinById(Long userId) {
+        return medecinRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Medecin not found"));
+    }
+
+    private Chauffeur findChauffeurById(Long userId) {
+        return chauffeurRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Chauffeur not found"));
+    }
 }
