@@ -39,12 +39,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                          "/users",
                                 "/api/auth/login",
                                 "/api/auth/register/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/api/auth/**",                                "/api/auth/forgot-password",
-                                "/users/**",
                                 "/tags/**",
                                 "/api/bilans/**",
                                 "/api/bilans/**",
@@ -76,8 +76,10 @@ public class SecurityConfig {
                                 "/Prescription/**",
                                 "/api/reclamations/**",
                                 "/api/users/**",
+                          "/users/**",
                                 "/api/responses/**",
                                 "/api/sms/**",
+                          "/api/auth/**",
 
                                 "/users//create-admin"
 

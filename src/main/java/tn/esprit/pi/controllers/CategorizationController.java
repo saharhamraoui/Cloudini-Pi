@@ -6,6 +6,7 @@ import tn.esprit.pi.services.CategorizationService;
 
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/categorize")
 @RequiredArgsConstructor
