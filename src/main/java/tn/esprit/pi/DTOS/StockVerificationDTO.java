@@ -7,8 +7,6 @@ public class StockVerificationDTO {
     private int stock;
     private boolean enStock;  // true if the stock is sufficient
 
-    // Getters and setters
-
     public Long getMedicamentId() {
         return medicamentId;
     }

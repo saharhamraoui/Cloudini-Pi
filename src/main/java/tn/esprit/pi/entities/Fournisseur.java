@@ -16,16 +16,15 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) //evite lazy loading a la serialistaion
 public class Fournisseur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("idfournisseur")
+    @JsonProperty("idfournisseur")  //personnaliser nom pour sérialisation en JSON
     private Long idfournisseur;
     private String nom;
     private String contact;
     private String adresse;
-
     @OneToMany(mappedBy = "fournisseur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore // éviter une boucle infinie lors de la sérialisation JSON
     private List<Medicament> medicaments = new ArrayList<>();

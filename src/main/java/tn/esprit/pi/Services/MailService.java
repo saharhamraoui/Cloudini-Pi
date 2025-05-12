@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class MailService {
 
     @Autowired
-    private JavaMailSender mailSender;
+    private JavaMailSender mailSender; //interface spring
 
     public String sendEmail(String to, String subject, String body) {
         try {
@@ -19,7 +19,6 @@ public class MailService {
             message.setTo(to);
             message.setSubject(subject);
             message.setText(body);
-
             mailSender.send(message);
             return "Email sent successfully!";
         } catch (Exception e) {

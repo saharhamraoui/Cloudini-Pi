@@ -14,4 +14,6 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     Optional<Stock> findByMedicament(Medicament medicament);
     List<Stock> findByQuantiteEnStockLessThanEqual(int seuil);
     List<Stock> findByMedicamentDateExpirationBefore(LocalDate date);
+    List<Stock> findByMedicamentNomContainingIgnoreCase(String name);
+
 }

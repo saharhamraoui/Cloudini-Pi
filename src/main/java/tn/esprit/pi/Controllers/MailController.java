@@ -13,8 +13,6 @@ public class MailController {
     @Autowired
     private MailService mailService;
 
-
-
     @PostMapping("/send")
     public String sendEmail(
             @RequestParam String to,

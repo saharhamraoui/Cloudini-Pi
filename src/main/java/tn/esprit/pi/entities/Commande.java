@@ -3,15 +3,11 @@ package tn.esprit.pi.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +25,6 @@ public class Commande {
 
     @ManyToOne
     private Fournisseur fournisseur;
-
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL)
     private List<LigneCommande> lignesCommande= new ArrayList<>();
 

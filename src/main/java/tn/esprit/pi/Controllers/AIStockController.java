@@ -5,10 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.pi.Repositories.CommandeRepository;
 import tn.esprit.pi.Repositories.MedicamentRepository;
+import tn.esprit.pi.Repositories.StockRepository;
 import tn.esprit.pi.Services.AiStockService;
 import tn.esprit.pi.Services.AiStockService;
 import tn.esprit.pi.entities.Commande;
 import tn.esprit.pi.entities.Medicament;
+import tn.esprit.pi.entities.Stock;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,7 +22,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/chatbot")
 public class AIStockController {
-//AIzaSyBM_YeWBVRmpsAzjyMXl3E_q-ql0hMGuuI
 
     @Autowired
         private AiStockService geminiService;
@@ -30,6 +31,8 @@ public class AIStockController {
 
     @Autowired
     private MedicamentRepository medicamentRepository;
+    @Autowired
+    private StockRepository StockRepository;
 
     @PostMapping
     public ResponseEntity<String> chat(@RequestBody Map<String, String> request) {
@@ -42,11 +45,9 @@ public class AIStockController {
         String reply = geminiService.askGemini(fullPrompt);
         return ResponseEntity.ok(reply);
     }
-
     private String generateContextualInfo(String message) {
         String lowerMessage = message.toLowerCase();
 
-        // Cas : infos sur les commandes
         if (lowerMessage.contains("commande")) {
             List<Commande> commandes = commandeRepository.findTop5ByOrderByDateCommandeDesc();
             return "Voici les dernières commandes :\n" +
@@ -55,55 +56,57 @@ public class AIStockController {
                             .collect(Collectors.joining("\n"));
         }
 
-        // Cas : médicaments expirés
         if (lowerMessage.contains("expiré") || lowerMessage.contains("expiration")) {
-            List<Medicament> meds = medicamentRepository.findByDateExpirationBefore(LocalDate.now().plusDays(30));
+            List<Stock> meds = StockRepository.findByMedicamentDateExpirationBefore(LocalDate.now().plusDays(30));
             return "Médicaments proches de l’expiration :\n" +
                     meds.stream()
-                            .map(m -> m.getNom() + " exp le " + m.getDateExpiration())
+                            .map(m -> m.getMedicament().getNom() + " exp le " + m.getDateExpiration())
                             .collect(Collectors.joining("\n"));
         }
 
-        // Cas : instructions pour passer une commande
         if (lowerMessage.contains("comment passer une commande?")) {
-            return "Les étapes pour passer une commande sont les suivantes :\n1. Aller à la liste des fournisseurs. 2. Sélectionner un fournisseur et les médicaments. 3. Passer la commande.";
+            return "Les étapes pour passer une commande sont les suivantes :\n1. Aller à la liste des fournisseurs. 2. Sélectionner un fournisseur . 3. Passer la commande.";
         }
         if (lowerMessage.contains("étapes")) {
-            return "Les étapes pour passer une commande sont les suivantes :\n1. Aller à la liste des fournisseurs. 2. Sélectionner un fournisseur et les médicaments. 3. Passer la commande.";
+            return "Les étapes pour passer une commande sont les suivantes :\n1. Aller à la liste des fournisseurs. 2. Sélectionner un fournisseur. 3. Passer la commande.";
         }
 
-        // Cas : stock spécifique d’un médicament
         if (lowerMessage.contains("combien de") && lowerMessage.contains("dans le stock")) {
             String medName = extractMedicamentName(message);
             if (medName != null && !medName.isEmpty()) {
-                List<Medicament> meds = medicamentRepository.findByNomContainingIgnoreCase(medName);
-                if (!meds.isEmpty()) {
+                List<Stock> stocks = StockRepository.findByMedicamentNomContainingIgnoreCase(medName);
+                if (!stocks.isEmpty()) {
                     return "Stock actuel de " + medName + " :\n" +
-                            meds.stream()
-                                    .map(m -> m.getNom() + " → quantité : " + m.getQuantite())
+                            stocks.stream()
+                                    .map(s -> s.getMedicament().getNom() + " → quantité : " + s.getQuantiteEnStock())
                                     .collect(Collectors.joining("\n"));
                 } else {
-                    return " Aucun médicament nommé \"" + medName + "\" trouvé dans le stock.";
+                    return "Aucun médicament nommé \"" + medName + "\" trouvé dans le stock.";
                 }
             }
         }
 
-        // Réponses par défaut
         switch (lowerMessage) {
             case "bonjour":
-                return "👋 Bonjour ! Je suis votre assistant IA pour la gestion du stock.";
+                return " Bonjour ! Je suis votre assistant IA pour la gestion du stock.";
             case "quel est le stock actuel ?":
-                return medicamentRepository.findAll().stream()
-                        .map(m -> m.getNom() + " : " + m.getQuantite())
+                return StockRepository.findAll().stream()
+                        .map(m -> m.getMedicament() + " : " + m.getQuantiteEnStock())
                         .collect(Collectors.joining("\n"));
             case "quel est le médicament le plus en rupture ?":
-                return medicamentRepository.findTopByOrderByQuantiteAsc()
-                        .map(m -> " Médicament le plus en rupture : " + m.getNom() + " (" + m.getQuantite() + " en stock)")
-                        .orElse("Tous les médicaments sont bien en stock !");
+                List<Stock> stocksEnRupture = StockRepository.findByQuantiteEnStockLessThanEqual(10);
+                if (!stocksEnRupture.isEmpty()) {
+                    return stocksEnRupture.stream()
+                            .map(s -> "Médicament: " + s.getMedicament().getNom() + ", Quantité en stock: " + s.getQuantiteEnStock())
+                            .collect(Collectors.joining("\n"));
+                } else {
+                    return "Tous les médicaments sont bien en stock !";
+                }
             default:
                 return "Je n'ai pas compris votre question. Essayez : \"Combien de Doliprane dans le stock ?\"";
         }
     }
+
     private String extractMedicamentName(String message) {
         try {
             String[] parts = message.toLowerCase().split("combien de");

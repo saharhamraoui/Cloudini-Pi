@@ -65,12 +65,10 @@ public class FournisseurController {
     public List<Medicament> getMedicamentsByFournisseur(@PathVariable Long idFournisseur) {
         return fournisseurService.getFournisseur(idFournisseur).getMedicaments();  // Retourne les médicaments du fournisseur
     }
-
+    //filter
     @GetMapping("/chercher-medicament/{nomMedicament}")
     public List<Fournisseur> getFournisseursByMedicament(@PathVariable String nomMedicament) {
         List<Fournisseur> fournisseurs = fournisseurService.getFournisseursParMedicament(nomMedicament);
-
-        // Sort the list of fournisseurs based on the price of the medicament in ascending order
         fournisseurs.sort((f1, f2) -> {
             Double price1 = f1.getMedicaments().stream()
                     .filter(med -> med.getNom().equalsIgnoreCase(nomMedicament))

@@ -13,25 +13,18 @@ import java.util.Map;
 
 @Service
 public class AiStockService {
-
     private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBM_YeWBVRmpsAzjyMXl3E_q-ql0hMGuuI";
     public String askGemini(String prompt) {
         try {
-            RestTemplate restTemplate = new RestTemplate();
-
+            RestTemplate restTemplate = new RestTemplate(); // Un composant de Spring utilisé pour envoyer des requêtes HTTP et recevoir des réponses. Il est utilisé ici pour effectuer une requête HTTP POST.
             Map<String, Object> content = Map.of(
                     "contents", List.of(Map.of("parts", List.of(Map.of("text", prompt))))
             );
-
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(content, headers);
-
             ResponseEntity<String> response = restTemplate.postForEntity(API_URL, entity, String.class);
-
-            // Traite la réponse pour obtenir uniquement le texte du message du bot
             String responseBody = response.getBody();
-            // Extrait le texte du JSON
             if (responseBody != null) {
                 String text = extractBotReply(responseBody);
                 return text;
@@ -45,10 +38,8 @@ public class AiStockService {
 
     private String extractBotReply(String responseBody) {
         try {
-            // Création d'un ObjectMapper
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> responseMap = objectMapper.readValue(responseBody, Map.class);
-
             List<Map<String, Object>> candidates = (List<Map<String, Object>>) responseMap.get("candidates");
             if (candidates != null && !candidates.isEmpty()) {
                 Map<String, Object> content = (Map<String, Object>) candidates.get(0).get("content");

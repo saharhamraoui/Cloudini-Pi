@@ -43,6 +43,6 @@ public class StockService implements IStockService {
     @Override
     public List<Stock> getMedicamentsProchesExpiration() {
         LocalDate dateLimite = LocalDate.now();
-        return stockRepository.findByMedicamentDateExpirationBefore(dateLimite);  // Querying based on medicament's expiration date
+        return stockRepository.findByMedicamentDateExpirationBefore(dateLimite);
     }
 }
