@@ -10,6 +10,6 @@ export class BackofficeComponent {
   constructor(public router: Router) {}
 
   showLayout(): boolean {
-    return !this.router.url.startsWith('/back/commande/valider/');
+    return !this.router.url.startsWith('/back/commande/valider/'); //hide the header and sidebar
   }
 }

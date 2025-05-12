@@ -7,7 +7,7 @@ const routes: Routes = [
     path: 'back',
     loadChildren: () => import('./backoffice/backoffice.module').then(m => m.BackofficeModule)
   },
-  { path: '**', redirectTo: '' } // Redirect invalid routes to the frontoffice
+  { path: '**', redirectTo: '' } 
 ];
 
 

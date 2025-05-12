@@ -218,11 +218,9 @@ export class DashboardStockComponent implements OnInit {
     const target = event.target as HTMLSelectElement;
     const value = target.value;
 
-    // If a fournisseur is selected, filter the commandes
     if (value) {
       this.filteredCommandes = this.commandesLivrees.filter(commande => commande.fournisseur.nom === value);
     } else {
-      // If "Tous les fournisseurs" is selected, show all commandes
       this.filteredCommandes = [...this.commandesLivrees];
     }
   }

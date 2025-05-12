@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BackofficeComponent } from './backoffice.component';
-
 import { BackofficeRoutingModule } from './backoffice-routing.module';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -51,7 +50,6 @@ import { ChatbotComponent } from './components/chatbotStock/chatbot.component';
     FormsModule,
     CommonModule,  
     NgChartsModule
-
   ]
 })
 export class BackofficeModule { }

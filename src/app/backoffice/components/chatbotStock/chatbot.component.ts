@@ -9,11 +9,10 @@ import { GeminiChatService } from 'src/app/services/gemini-chat.service';
 export class ChatbotComponent implements AfterViewChecked {
   messages: { sender: string, text: string }[] = [];
   userInput = '';
-  isChatOpen = false; // Variable pour contrôler l'ouverture du chat
+  isChatOpen = false; 
 
   constructor(private chatbotService: GeminiChatService) {}
 
-  // Fonction pour envoyer un message
   sendMessage() {
     if (!this.userInput.trim()) return;
 
@@ -26,17 +25,14 @@ export class ChatbotComponent implements AfterViewChecked {
     this.userInput = '';
   }
 
-  // Ouvrir le chat
   toggleChat() {
     this.isChatOpen = !this.isChatOpen;
   }
 
-  // Fermer le chat
   closeChat() {
     this.isChatOpen = false;
   }
 
-  // Scroll to the bottom of the chat when a new message is added
   ngAfterViewChecked() {
     const chatContainer = document.querySelector('.chat-container');
     if (chatContainer) {

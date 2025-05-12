@@ -31,8 +31,8 @@ export class GestionmedsComponent implements OnInit {
   constructor(
     private medicamentService: MedicamentService,
     private fournisseurService: FournisseurService,
-    private commandeService: CommandeService,  // Inject the commande service
-    private stockService: StockService  // Inject the stock service
+    private commandeService: CommandeService,  
+    private stockService: StockService  
   ) {}
 
   ngOnInit(): void {

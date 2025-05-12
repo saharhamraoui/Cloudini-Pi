@@ -34,7 +34,7 @@ export class MedicamentListComponent implements OnInit {
     this.fournisseurService.getMedicamentsByFournisseur(idFournisseur).subscribe(
       data => {
         this.medicaments = data || [];
-        this.filteredMedicaments = [...this.medicaments];
+        this.filteredMedicaments = [...this.medicaments]; //creer un nv tab sans ecraser
       },
       error => {
         console.error('Erreur lors de la récupération des médicaments', error);
@@ -45,7 +45,7 @@ export class MedicamentListComponent implements OnInit {
 
   ouvrirFenetreQuantite(medicament: Medicament): void {
     this.selectedMedicament = medicament;
-    this.quantiteCommande = 1;  // Reset la quantité quand une nouvelle commande est ouverte
+    this.quantiteCommande = 1; 
   }
 
   verifierQuantite(medicament: Medicament): void {
@@ -68,13 +68,13 @@ export class MedicamentListComponent implements OnInit {
 
     this.commandeService.passerCommande(commande).subscribe(
       response => {
-        alert('✅ Commande passée avec succès !');
+        alert(' Commande passée avec succès !');
         this.selectedMedicament = null;
         this.getMedicamentsByFournisseur(this.fournisseurId); // Rechargement après commande
       },
       error => {
         console.error('Erreur lors de la commande', error);
-        alert('❌ Erreur lors de la commande.');
+        alert('Erreur lors de la commande.');
       }
     );
   }

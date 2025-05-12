@@ -47,7 +47,7 @@ export class SuivreCommandeComponent implements OnInit, OnDestroy {
       this.checkCommandeStatus();
     }, 3000);
   }
-
+//start the map after changing status
   checkCommandeStatus(): void {
     this.commandeService.getCommandeById(this.idcommande).subscribe((commande) => {
       const newStatus = commande.status;
@@ -88,7 +88,7 @@ export class SuivreCommandeComponent implements OnInit, OnDestroy {
       (commande: any) => {
         this.fournisseur = commande.fournisseur;
         this.commandeStatus = commande.status;
-        console.log("Commande status:", this.commandeStatus);  // Vérifiez ici aussi
+        console.log("Commande status:", this.commandeStatus);  
         this.initMap(this.fournisseur.adresse);
       },
       error => {
@@ -117,16 +117,16 @@ export class SuivreCommandeComponent implements OnInit, OnDestroy {
   initializeMap(fournisseurCoords: [number, number]): void {
     this.map = L.map('map').setView(fournisseurCoords, 13);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { //zoom et lat long
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(this.map);
 
     this.addFournisseurMarker(fournisseurCoords);
     this.locateUserPosition(fournisseurCoords);
 
-    setTimeout(() => this.map.invalidateSize(), 300);
+    setTimeout(() => this.map.invalidateSize(), 300); //recalcule taille 
   }
-
+//icon fourni
   addFournisseurMarker(coords: [number, number]): void {
     const customIcon = this.createCustomIcon();
     L.marker(coords, { icon: customIcon })
@@ -138,13 +138,13 @@ export class SuivreCommandeComponent implements OnInit, OnDestroy {
   locateUserPosition(fournisseurCoords: [number, number]): void {
     this.map.locate({ setView: false, maxZoom: 16 });
 
-    this.map.on('locationfound', (e: L.LocationEvent) => {
+    this.map.on('locationfound', (e: L.LocationEvent) => {  //recupere pos
       this.handleLocationFound(e, fournisseurCoords);
     });
 
     this.map.on('locationerror', this.handleLocationError);
   }
-
+//calculer chemin
   handleLocationFound(e: L.LocationEvent, fournisseurCoords: [number, number]): void {
     this.hospitalCoords = [e.latlng.lat, e.latlng.lng];
     const customIcon = this.createCustomIcon();
@@ -197,13 +197,14 @@ export class SuivreCommandeComponent implements OnInit, OnDestroy {
     });
   }
 
+  //API de Nominatim d'OpenStreetMap
   async getCoordinatesFromAddress(adresse: string): Promise<[number, number]> {
-    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresse)}`);
+    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresse)}`); //formater url simplifier adresse
     const data = await response.json();
     if (data.length === 0) throw new Error('Address not found');
     return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
   }
-
+//suivre commande
   simulateDelivery(tempsEnSecondes: number, startCoords: [number, number], endCoords: [number, number]): void {
     if (this.deliveryInterval) {
       clearInterval(this.deliveryInterval);
@@ -240,8 +241,7 @@ export class SuivreCommandeComponent implements OnInit, OnDestroy {
       icon: icon
     }).addTo(this.map).bindPopup('Livraison en cours...');
   
-    // Add class to marker element after creation
-    marker.getElement()?.classList.add('delivery-marker');
+    marker.getElement()?.classList.add('delivery-marker');  //css
     return marker;
   }
 
@@ -253,7 +253,7 @@ const lon = startCoords[1] + (endCoords[1] - startCoords[1]) * progressRatio;
 
 marker.setLatLng([lat, lon]);
 this.progress = progressRatio * 100;
-this.updateRemainingTime(this.routeTime * (1 - progressRatio)); // Changed tempsEnSecondes to this.routeTime
+this.updateRemainingTime(this.routeTime * (1 - progressRatio)); 
 }
 
   updateRemainingTime(seconds: number): void {
@@ -264,12 +264,12 @@ this.updateRemainingTime(this.routeTime * (1 - progressRatio)); // Changed temps
 
   completeDelivery(marker: L.Marker): void {
     clearInterval(this.deliveryInterval);
-    marker.bindPopup('Commande livrée ✅').openPopup();
+    marker.bindPopup('Commande livrée ').openPopup();
     this.playSound('arrivee');
 
     if (this.commandeStatus !== 'Livrée') {
       this.commandeService.updateStatusCommande(this.idcommande, 'Livrée').subscribe({
-        next: () => console.log('✅ Commande mise à jour : Livrée'),
+        next: () => console.log(' Commande mise à jour : Livrée'),
         error: (err) => console.error('Error updating status:', err)
       });
     }

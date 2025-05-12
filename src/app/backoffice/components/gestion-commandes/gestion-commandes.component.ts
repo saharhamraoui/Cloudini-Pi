@@ -15,7 +15,6 @@ export class GestionCommandesComponent implements OnInit {
     this.getAllCommandes();
   }
 
-  // Récupérer toutes les commandes (celles en cours, validées, Livrées)
   getAllCommandes(): void {
     this.commandeService.getCommandes().subscribe(
       data => {
@@ -27,12 +26,11 @@ export class GestionCommandesComponent implements OnInit {
     );
   }
 
-  // Mise à jour du statut de la commande
   updateStatusCommande(commande: any): void {
     this.commandeService.updateStatusCommande(commande.idcommande, commande.newStatus).subscribe(
       response => {
         alert('Statut de la commande mis à jour avec succès.');
-        this.getAllCommandes(); // Rafraîchir la liste des commandes
+        this.getAllCommandes(); 
       },
       error => {
         console.error('Erreur lors de la mise à jour du statut de la commande', error);

@@ -25,13 +25,10 @@ export class CommandeService {
    getCommandeById(commandeId: number): Observable<CommandeDto> {
     return this.http.get<CommandeDto>(`${this.apiUrl}/Commandes/${commandeId}`);
   }
-
-  
-  
   updateStatusCommande(commandeId: number, newStatus: string): Observable<any> {
     return this.http.put<any>(
       `${this.apiUrl}/Commandes/updateStatus/${commandeId}?newStatus=${newStatus}`,
-      {}, // Empty body since the backend expects query parameters
+      {}, 
       {
         headers: { 'Content-Type': 'application/json' }
       }

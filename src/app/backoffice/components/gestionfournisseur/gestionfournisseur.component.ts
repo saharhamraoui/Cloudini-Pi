@@ -61,7 +61,7 @@ export class GestionfournisseurComponent implements OnInit, AfterViewInit {
 
       try {
         const address = await this.getAddressFromCoordinates(lat, lng);
-        this.fournisseurForm.patchValue({ adresse: address });
+        this.fournisseurForm.patchValue({ adresse: address });  //put adress
       } catch (error) {
         console.error('Erreur lors de la récupération de l’adresse :', error);
       }

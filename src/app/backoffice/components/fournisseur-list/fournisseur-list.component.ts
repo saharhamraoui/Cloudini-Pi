@@ -21,7 +21,6 @@ export class FournisseurListComponent implements OnInit {
     this.getAllFournisseurs();
   }
 
-  // Get all suppliers
   getAllFournisseurs(): void {
     this.fournisseurService.getAllFournisseurs().subscribe(data => {
       this.fournisseurs = data;
@@ -55,7 +54,7 @@ export class FournisseurListComponent implements OnInit {
   getMedicamentPrice(fournisseur: Fournisseur): number | string {
     if (fournisseur.medicaments) {
       const medicament = fournisseur.medicaments.find(med => 
-        med.nom.toLowerCase() === this.searchTerm.toLowerCase()  // Make comparison case-insensitive
+        med.nom.toLowerCase() === this.searchTerm.toLowerCase() 
       );
       return medicament ? medicament.prix : 'Non disponible';
     }

@@ -16,7 +16,7 @@ export class StockComponent implements OnInit {
 
   constructor(
     private commandeService: CommandeService,
-    private stockService: StockService, // Renommez medicamentService en stockService pour plus de clarté
+    private stockService: StockService, 
     private router: Router
   ) {}
 
@@ -46,9 +46,9 @@ export class StockComponent implements OnInit {
     const today = new Date();
     this.expirationAlertes = this.stockList.filter(stock => {
       const expDate = new Date(stock.medicament.dateExpiration);
-      const diffTime = expDate.getTime() - today.getTime();
-      const diffDays = diffTime / (1000 * 3600 * 24);
-      return diffDays <= 7;
+      const diffTime = expDate.getTime() - today.getTime();  //ms
+      const diffDays = diffTime / (1000 * 3600 * 24); //parjour ms s h
+      return diffDays <= 30;
     });
   }
 
