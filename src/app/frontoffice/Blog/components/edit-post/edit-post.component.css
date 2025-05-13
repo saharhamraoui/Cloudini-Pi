@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:host {
+  font-family: 'Inter', sans-serif;
+  --primary-color: #2c80b4;
+  --light: #ffffff;
+  --dark: #1f2937;
+  --error-color: #dc3545;
+  --border-radius: 8px;
+}
+
+/* Message de chargement et d'erreur */
+.loading-message,
+.error-message {
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  margin: 1.5rem auto;
+  max-width: 600px;
+  font-size: 1.1rem;
+}
+
+.loading-message {
+  background-color: rgba(44, 128, 180, 0.1);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.error-message {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: var(--error-color);
+  font-weight: 500;
+}
+
+/* Formulaire d'édition */
+form {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--light);
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--dark);
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius);
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(44, 128, 180, 0.1);
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* Bouton de mise à jour */
+button.btn-primary {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 50px;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+button.btn-primary:hover {
+  background-color: #246998;
+  transform: translateY(-2px);
+}
+
+button.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  form {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+}

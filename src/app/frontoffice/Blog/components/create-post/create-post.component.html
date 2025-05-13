@@ -1,0 +1,53 @@
+<div class="post-create-container">
+  <div class="form-header">
+    <h2>Create New Post</h2>
+    <p class="subtitle">Share your knowledge with the community</p>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="modern-form">
+    <div class="form-group floating-label">
+      <input type="text" id="title" [(ngModel)]="newPost.title" name="title" required placeholder=" " />
+      <label for="title">Title*</label>
+      <div class="underline"></div>
+    </div>
+
+    <div class="form-group floating-label">
+      <textarea id="content" [(ngModel)]="newPost.content" name="content" rows="6" required placeholder=" "></textarea>
+      <label for="content">Content*</label>
+      <div class="underline"></div>
+    </div>
+
+    <div class="form-group floating-label">
+      <input type="text" id="tags" [(ngModel)]="tagsInput" name="tags" placeholder=" " />
+      <label for="tags">Tags (comma separated)</label>
+      <div class="underline"></div>
+      <span class="hint">e.g., Cancer, Health, Diabetes</span>
+    </div>
+
+    <div *ngIf="showBadWordsWarning" class="warning-message">
+      <div class="warning-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+        </svg>
+      </div>
+      <div class="warning-content">
+        <p>{{ badWordsWarning }}</p>
+        <button type="button" (click)="showBadWordsWarning = false" class="continue-button">
+          Continue anyway
+        </button>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="isLoading" class="submit-btn">
+      <span *ngIf="!isLoading">Publish Post</span>
+      <span *ngIf="isLoading" class="loading-spinner"></span>
+    </button>
+
+    <div *ngIf="errorMessage" class="error-message">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+      </svg>
+      {{ errorMessage }}
+    </div>
+  </form>
+</div>

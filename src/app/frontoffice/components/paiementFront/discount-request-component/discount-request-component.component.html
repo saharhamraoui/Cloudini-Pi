@@ -1,0 +1,37 @@
+<div class="discount-request-container">
+    <h2>Request a Disability Discount</h2>
+    
+    <div *ngIf="paymentId" class="alert alert-info">
+      Requesting discount for Payment ID: {{paymentId}}
+    </div>
+    
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{errorMessage}}
+      <span *ngIf="!paymentId">You will be redirected back shortly...</span>
+    </div>
+    
+    <form (ngSubmit)="submitRequest()" #discountForm="ngForm" *ngIf="paymentId">
+      
+      <div class="form-group">
+        <label for="message">Additional Information (optional):</label>
+        <textarea id="message" [(ngModel)]="message" name="message" 
+                 class="form-control" rows="4"></textarea>
+      </div>
+  
+      <div class="form-group">
+        <label for="disabilityCard">Disability Card Proof:</label>
+        <input type="file" id="disabilityCard" (change)="onFileSelected($event)" 
+               accept="image/*,application/pdf" class="form-control" required>
+        <small class="text-muted">Upload image or PDF (max 10MB)</small>
+      </div>
+  
+      <button type="submit" [disabled]="!selectedFile" class="btn btn-primary">
+        Submit Request
+      </button>
+      
+    </form>
+  
+    <div *ngIf="successMessage" class="alert alert-success mt-3">
+      {{ successMessage }}
+    </div>
+</div>

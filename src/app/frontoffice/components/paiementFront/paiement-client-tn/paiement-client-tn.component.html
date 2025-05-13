@@ -1,0 +1,50 @@
+<div class="d17-payment-container">
+    <div class="d17-header">
+      <img src="assets\images\payment\logo-poste-tunisienne.jpg" alt="Tunisian Post Logo" class="post-logo">
+      <h2>Paiement par Carte D17</h2>
+      <div class="d17-chip"></div>
+    </div>
+    
+    <div class="d17-card">
+      <div *ngIf="paiement" class="payment-details">
+        <div class="detail-row">
+          <span class="label">Payment ID:</span>
+          <span class="value">{{ paiement.id }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Amount:</span>
+          <span class="value">{{ paiement.montant }} TND</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Status:</span>
+          <span class="value" [ngClass]="{
+            'PARTIAL': paiement.statut === 'PARTIAL',
+            'PAID': paiement.statut === 'PAID',
+            'NOT PAID': paiement.statut === 'NOT PAID'
+          }">{{ paiement.statut }}</span>
+        </div>
+      </div>
+    
+      <div *ngIf="!paiement" class="loading-section">
+        <div class="loading-spinner"></div>
+        <p>Loading payment information...</p>
+      </div>
+    
+      
+    
+    <div class="d17-buttons">
+      <button (click)="pay()" class="d17-pay-button">
+        <i class="fas fa-lock"></i> Pay {{ paiement.montant }} TND
+      </button>
+      <button (click)="goBack()" class="d17-back-button">
+        <i class="fas fa-arrow-left"></i> Cancel
+      </button>
+    </div>
+    
+    <div class="d17-footer">
+      <img src="https://www.poste.tn/images/d17-card.png" alt="D17 Card" class="d17-card-image">
+      <p class="security-note">
+        <i class="fas fa-shield-alt"></i> Secure payment powered by Tunisian Post
+      </p>
+    </div>
+  </div>

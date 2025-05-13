@@ -1,0 +1,111 @@
+
+<!-- Rendez-vous Section -->
+<section id="rendezvous" class="appointment section">
+   <!-- Suggestion IA -->
+   <div class="d-flex justify-content-end mt-3">
+    <button type="button" class="cta-btn" (click)="suggererCreneau()">Suggérer un créneau optimal (IA)</button>
+  </div>
+
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="container section-title" >
+            <h2>MAKE AN APPOINTMENT</h2>
+        </div>
+
+
+        <form [formGroup]="rendezVousForm" (ngSubmit)="ajouter()" class="php-email-form appointment-form">
+
+
+
+        <div class="row">
+          <!-- Spécialité -->
+          <div class="col-md-6 form-group mt-3">
+            <label for="speciality" class="form-label">Specialty</label>
+            <select id="speciality" formControlName="speciality" class="form-select" (change)="onSpecialityChange()">
+              <option value="">Select a specialty</option>
+              <option *ngFor="let speciality of specialities" [value]="speciality">{{ speciality }}</option>
+            </select>
+            <div *ngIf="rendezVousForm.get('speciality')?.invalid && rendezVousForm.get('speciality')?.touched" class="text-danger">
+               speciality is required.
+            </div>
+          </div>
+
+          <!-- Médecin -->
+          <div class="col-md-6 form-group mt-3">
+            <label for="medecin" class="form-label">Doctor</label>
+            <select id="medecin" formControlName="medecin" class="form-select" (change)="onMedecinChange()">
+              <option value="">Select a doctor</option>
+              <option *ngFor="let medecin of filteredMedecins" [value]="medecin.idUser">{{ medecin.firstName }}</option>
+            </select>
+            <div *ngIf="rendezVousForm.get('medecin')?.invalid && rendezVousForm.get('medecin')?.touched" class="text-danger">
+                Doctor is required..
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Patient -->
+          <div class="col-md-6 form-group mt-3">
+            <label for="patient" class="form-label">Patient</label>
+            <select id="patient" formControlName="patient" class="form-select">
+              <option value="">Select a patient</option>
+              <option *ngFor="let patient of patients" [value]="patient.idUser">{{ patient.firstName }}</option>
+            </select>
+            <div *ngIf="rendezVousForm.get('patient')?.invalid && rendezVousForm.get('patient')?.touched" class="text-danger">
+                Patient is required.
+            </div>
+          </div>
+
+          <!-- Date/Heure -->
+          <div class="col-md-6 form-group mt-3">
+            <label for="dateRendezVous" class="form-label">Date and Time</label>
+            <input type="datetime-local" id="dateRendezVous" formControlName="dateRendezVous" class="form-control" (change)="validerHeure()" />
+            <div *ngIf="rendezVousForm.get('dateRendezVous')?.invalid && rendezVousForm.get('dateRendezVous')?.touched" class="text-danger">
+                Date is required.
+            </div>
+            <div *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</div>
+          </div>
+        </div>
+
+        <!-- Type de Rendez-vous -->
+        <div class="form-group mt-4">
+          <label class="form-label d-block">Appointment Type</label>
+          <label>
+            <input type="radio" formControlName="typeRendezVous" value="PRESENTIEL" /> Présentiel
+          </label>
+          <label>
+            <input type="radio" formControlName="typeRendezVous" value="EN_LIGNE" /> En ligne
+          </label>
+        </div>
+
+        <!-- Bouton Ajouter -->
+        <div class="text-center mt-4">
+          <button type="submit" class="btn btn-primary px-4 py-2"  style="background: #3498db; border: none; color: white; padding: 10px 20px; border-radius: 50px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px;" [disabled]="rendezVousForm.invalid || errorMessage">
+            Add Appointment
+          </button>
+        </div>
+
+
+
+        <!-- RDV passés -->
+        <div *ngIf="pastRendezVous.length > 0" class="calendar-container mt-5">
+          <h4 class="text-primary text-center">Past Appointments of the Selected Doctor</h4>
+          <table class="table table-striped mt-3">
+            <thead class="thead-dark">
+              <tr>
+                <th>Jour</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rdv of pastRendezVous">
+                <td>{{ rdv.weekday }}</td>
+                <td>{{ rdv.day ? (rdv.day | date: 'dd/MM/yyyy HH:mm') : 'Date invalide' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </form>
+    </div>
+  </section>
+
+

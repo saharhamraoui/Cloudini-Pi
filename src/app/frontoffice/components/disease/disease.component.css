@@ -1,0 +1,112 @@
+
+  /* Conteneur de résultats */
+  .result-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  /* Style de la carte contenant le résultat */
+  .result-card {
+    background-color: #f8f9fa;
+    border: 1px solid #d6d8db;
+    border-radius: 8px;
+    padding: 20px;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Titre de la carte */
+  .result-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  /* Corps de la carte */
+  .result-body {
+    font-size: 1.2em;
+    color: #333;
+  }
+
+  /* Style des symptômes corrigés */
+  .result-symptoms {
+    font-style: italic;
+    color: #6c757d;
+  }
+
+  /* Style de la maladie prédite */
+  .result-disease {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #28a745;
+  }
+
+  /* Ajout d'une ligne de séparation entre les symptômes et la maladie */
+  .result-body hr {
+    margin: 20px 0;
+    border: 0;
+    border-top: 2px solid #dee2e6;
+  }
+
+  /* Mise en valeur des résultats */
+  .result-symptoms,
+  .result-disease {
+    display: block;
+    margin-top: 8px;
+  }
+
+  .add-shape {
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid #ced4da;
+    border-left: none;
+    padding: 6px 10px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .add-shape:hover {
+    background-color: #e2f0d9;
+  }
+
+  .badge-pill {
+    font-size: 1rem;
+    padding: 0.5em 0.75em;
+  }
+  
+  
+  .custom-chip {
+    display: inline-block;
+    padding: 0.4rem 0.75rem;
+    border-radius: 20px;
+    border: 1px solid #28a745; /* Vert Bootstrap */
+    color: #28a745;
+    background-color: #e9f9ee; /* Fond vert très clair */
+    font-size: 1rem;
+  }
+  .custom-chip:hover {
+    background-color: #d4f5de; /* Hover un peu plus vert */
+  }
+ 
+  .button-rounded-blue {
+    background: #3498db;
+    border: none;
+    color: white;
+    padding: 10px 40px; /* ← encore plus petit */
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 auto; /* ← pour centrer */
+  }
+  
+  
+  
+

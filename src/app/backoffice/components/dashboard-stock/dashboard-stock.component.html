@@ -1,0 +1,120 @@
+
+  <div id="pdf-content">
+    <div class="dashboard-container">
+        <h1 class="dashboard-title"> Orders Dashboard </h1>
+      
+        
+      
+        <div class="cards-container">
+          <div class="modern-card stat-card">
+            <div class="card-icon">
+              <i class="fas fa-truck"></i>
+            </div>
+            <div class="card-content">
+              <h3>delivered orders</h3>
+              <div class="card-value">{{ filteredCommandes.length }}</div>
+              <div class="card-description"> Tot delivered orders </div>
+            </div>
+          </div>
+      
+          <div class="modern-card stat-card">
+            <div class="card-icon">
+              <i class="fas fa-euro-sign"></i>
+            </div>
+            <div class="card-content">
+              <h3>Total Price</h3>
+              <div class="card-value">
+                {{ getTotalAmount() | currency:'EUR':'symbol':'1.2-2' }}
+              </div>
+              <div class="card-description">tot orders value</div>
+            </div>
+          </div>
+      
+          <div class="modern-card stat-card">
+            <div class="card-icon">
+              <i class="fas fa-store"></i>
+            </div>
+            <div class="card-content">
+              <h3>Suppliers</h3>
+              <div class="card-value">{{ fournisseurs.length }}</div>
+              <div class="card-description">Suppliers Number</div>
+            </div>
+          </div>
+        </div>
+      
+        <div class="charts-container">
+          <div class="chart-card">
+            <h3 class="chart-title">cost per supplier</h3>
+            <div class="chart-wrapper">
+              <canvas baseChart
+                [data]="barChartData"
+                [options]="barChartOptions"
+                [type]="barChartType">
+              </canvas>
+            </div>
+          </div>
+      
+          <div class="chart-card">
+            <h3 class="chart-title">Part Marché suppliers</h3>
+            <div class="chart-wrapper pie-wrapper">
+              <canvas baseChart
+                [data]="pieChartData"
+                [options]="pieChartOptions"
+                [type]="pieChartType">
+              </canvas>
+            </div>
+          </div>
+        </div>
+        <!-- Fournisseur Filter -->
+        <div class="filter-container">
+            <select id="fournisseurFilter" (change)="filterByFournisseur($event)" class="form-control">
+              <option value="">ALL Suppliers</option>
+              <option *ngFor="let fournisseur of fournisseurs" [value]="fournisseur">{{ fournisseur }}</option>
+            </select>
+          </div>
+          <app-chatbot>assistant</app-chatbot>
+        <div class="details-container">
+          <h3 class="section-title">Orders Detail</h3>
+          <div class="table-responsive">
+            <table class="commandes-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Supplier</th>
+                  <th>Med</th>
+                  <th>Quantity</th>
+                  <th>cost</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let commande of filteredCommandes">
+                  <td>#{{ commande.idcommande }}</td>
+                  <td>{{ commande.fournisseur.nom }}</td>
+                  <td>
+                    <ul class="medicaments-list">
+                      <li *ngFor="let ligne of commande.lignesCommande">
+                        {{ ligne.medicament.nom }}
+                      </li>
+                    </ul>
+                  </td>
+                  <td>
+                    <ul class="quantities-list">
+                      <li *ngFor="let ligne of commande.lignesCommande">
+                        {{ ligne.quantite }}
+                      </li>
+                    </ul>
+                  </td>
+                  <td class="amount-cell">
+                    {{ calculateCommandeTotal(commande) | currency:'EUR':'symbol':'1.2-2' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  </div>
+  
+  <td class="actions">
+  <button (click)="generatePDF()" class="btn-edit">download PDF</button>
+  </td>

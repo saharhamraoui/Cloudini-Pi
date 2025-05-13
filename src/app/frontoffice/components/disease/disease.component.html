@@ -1,0 +1,40 @@
+<div class="card p-4">
+    <h2>Prédiction de maladie</h2>
+  
+    <div class="input-group mb-3">
+      <input
+        type="text"
+        placeholder="Ajouter un symptôme"
+        [(ngModel)]="newSymptom"
+        class="form-control"
+      />
+      <div class="input-group-append">
+       
+      </div>
+    </div>
+  
+<!-- Affichage des chips -->
+<div class="mb-3">
+    <span *ngFor="let symptom of symptoms" class="custom-chip mr-2">
+      {{ symptom }}
+      <span class="ml-1" style="cursor:pointer" (click)="removeSymptom(symptom)">❌</span>
+    </span>
+  </div>
+  
+  
+  <div style="text-align: center;">
+    <button (click)="predict()" [disabled]="!symptoms.length" class="button-rounded-blue">
+      Prédire la maladie
+    </button>
+  </div>
+  
+    <div *ngIf="predictionResult" class="result-container mt-3">
+      <div class="result-card">
+        <h3 class="result-title">Maladie prédite</h3>
+        <div class="result-body">
+          <span class="result-disease">{{ predictionResult }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  

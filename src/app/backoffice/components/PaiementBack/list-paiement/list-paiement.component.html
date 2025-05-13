@@ -1,0 +1,569 @@
+<div class="payment-dashboard">
+  <div class="premium-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1><i class="fas fa-credit-card"></i> Payment Dashboard</h1>
+        <p>Manage all your transactions</p>
+      </div>
+      <div class="header-actions">
+        <button class="new-payment-btn glass-effect" (click)="openAddForm()">
+          <i class="fas fa-plus-circle"></i> New Payment
+        </button>
+        <button class="refresh-btn glass-effect" (click)="resetFilters()">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+        <div class="stat-item">
+          <i class="fas fa-calendar-check"></i>
+          <span>{{filteredPaiements.length}} Payments</span>
+        </div>
+      </div>
+    </div>
+    <div class="header-decoration">
+      <div class="decoration-circle"></div>
+      <div class="decoration-wave"></div>
+      <div class="floating-icons">
+        <i class="fas fa-coins"></i>
+        <i class="fas fa-credit-card"></i>
+        <i class="fas fa-wallet"></i>
+        <i class="fas fa-money-bill-wave"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Section 
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">
+        <i class="fas fa-credit-card"></i> Payment Management
+      </h1>
+      <p class="dashboard-subtitle">Track and manage patient payments</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-add-payment" (click)="openAddForm()">
+        <i class="fas fa-plus-circle"></i> New Payment
+      </button>
+    </div>
+  </div>-->
+  
+ <!-- Visual Statistics Section -->
+<div class="visual-stats-container">
+  <div class="chart-card">
+    <h3>Payment Status Distribution</h3>
+    <div class="chart-container">
+      <canvas id="paymentStatusChart"></canvas>
+    </div>
+  </div>
+  
+  <div class="chart-card">
+    <h3>Monthly Revenue (TND)</h3>
+    <div class="chart-container">
+      <canvas id="revenueTrendChart"></canvas>
+    </div>
+  </div>
+  
+  <div class="chart-card">
+    <h3>Payment Methods</h3>
+    <div class="chart-container">
+      <canvas id="paymentMethodChart"></canvas>
+    </div>
+  </div>
+</div>
+
+ 
+  <!-- Stats Cards -->
+  <div class="stats-container">
+    <div class="stat-card stat-primary">
+      <div class="stat-icon">
+        <i class="fas fa-money-bill-wave"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{pendingDiscounts}}</h3>
+        <p>Pending Discounts</p>
+      </div>
+      <div class="stat-info">
+        <h3>{{totalAmount | currency:'TND'}}</h3>
+        <p>Total Revenue</p>
+      </div>
+    </div>
+    <div class="stat-card stat-success">
+      <div class="stat-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{paidPayments}}</h3>
+        <p>Paid</p>
+      </div>
+    </div>
+    <div class="stat-card stat-warning">
+      <div class="stat-icon">
+        <i class="fas fa-clock"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{partiallyPaidPayments}}</h3>
+        <p>Partially Paid</p>
+      </div>
+    </div>
+    <div class="stat-card stat-danger">
+      <div class="stat-icon">
+        <i class="fas fa-times-circle"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{notPaidPayments}}</h3>
+        <p>Not Paid</p>
+      </div>
+    </div>
+  </div>
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Search and Filter -->
+    <div class="toolbar">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" [(ngModel)]="searchTerm" (input)="filterPaiements()" placeholder="Search payments...">
+      </div>
+      <div class="filters">
+        <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+          <option value="">All Statuses</option>
+          <option value="PAID">Paid</option>
+          <option value="PARTIALLY_PAID">Partially Paid</option>
+          <option value="NOT_PAID">Not Paid</option>
+        </select>
+        <select [(ngModel)]="dateFilter" (change)="applyFilters()">
+          <option value="">All Dates</option>
+          <option value="today">Today</option>
+          <option value="week">This Week</option>
+          <option value="month">This Month</option>
+        </select>
+        <select [(ngModel)]="discountFilter" (change)="applyFilters()">
+          <option value="">All Discounts</option>
+          <option value="PENDING">Pending Discounts</option>
+          <option value="APPROVED">Approved Discounts</option>
+          <option value="REJECTED">Rejected Discounts</option>
+        </select>
+      
+      </div>
+    </div>
+    
+    <!-- Payments Table -->
+    <div class="card table-card">
+      <div class="table-responsive">
+        <table class="modern-table" id="paiements">
+          <thead>
+            <tr>
+              <th (click)="sort('nomPatient')">
+                Patient 
+                <i class="fas fa-sort" [class.fa-sort-up]="sortField === 'nomPatient' && sortDirection === 'asc'"
+                                [class.fa-sort-down]="sortField === 'nomPatient' && sortDirection === 'desc'"></i>
+              </th>
+              <th (click)="sort('montant')">
+                Amount 
+                <i class="fas fa-sort" [class.fa-sort-up]="sortField === 'montant' && sortDirection === 'asc'"
+                                [class.fa-sort-down]="sortField === 'montant' && sortDirection === 'desc'"></i>
+              </th>
+              <th>Payment Method</th>
+              <th (click)="sort('datePaiement')">
+                Date 
+                <i class="fas fa-sort" [class.fa-sort-up]="sortField === 'datePaiement' && sortDirection === 'asc'"
+                                [class.fa-sort-down]="sortField === 'datePaiement' && sortDirection === 'desc'"></i>
+              </th>
+              <th (click)="sort('statut')">
+                Status 
+                <i class="fas fa-sort" [class.fa-sort-up]="sortField === 'statut' && sortDirection === 'asc'"
+                                [class.fa-sort-down]="sortField === 'statut' && sortDirection === 'desc'"></i>
+              </th>
+
+              <th>Discount</th>
+              <th class="actions-header">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let paiement of paginatedPaiements">
+              <td data-label="Patient">
+                <div class="patient-info">
+                  <span class="patient-name">{{paiement.nomPatient}}</span>
+                </div>
+              </td>
+              <td data-label="Amount" class="amount-cell">{{paiement.montant | currency:'TND'}}</td>
+              <td data-label="Payment Method">{{getPaymentMethodIcon(paiement.modeDePaiement)}} {{paiement.modeDePaiement}}</td>
+              <td data-label="Date">{{paiement.datePaiement | date:'mediumDate'}}</td>
+              <td data-label="Status">
+                <span class="status-badge" [ngClass]="getStatusClass(paiement.statut)">
+                  {{getStatusDisplay(paiement.statut)}}
+                </span>
+              </td>
+              <td data-label="Discount">
+        <span class="status-badge" [ngClass]="getDiscountStatusClass(paiement)">
+          {{getDiscountStatusDisplay(paiement)}}
+        </span>
+        <button class="btn-action btn-view" (click)="openDiscountModal(paiement)" *ngIf="paiement.discountRequested">
+          <i class="fas fa-info-circle"></i>
+        </button>
+      </td>
+              <td class="actions-cell">
+                <div class="action-buttons">
+                
+                  <button class="btn-action btn-view" (click)="viewDetails(paiement)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn-action btn-edit" (click)="openEditForm(paiement)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn-action btn-pdf" (click)="generateFacture(paiement)">
+                    <i class="fas fa-file-pdf"></i>
+                  </button>
+                  <button class="btn-action btn-delete" (click)="deletePaiement(paiement.id!)">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                  <button class="btn-action btn-print" (click)="onPrint()">
+                    <i class="fas fa-print"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredPaiements.length === 0" class="empty-state">
+        <i class="fas fa-credit-card"></i>
+        <h4>No payments found</h4>
+        <p>Try adjusting your search or filters</p>
+        <button class="btn-primary" (click)="resetFilters()">Reset Filters</button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <div class="pagination-info">
+        Showing {{(currentPage-1)*itemsPerPage + 1}} to {{currentPage*itemsPerPage > filteredPaiements.length ? filteredPaiements.length : currentPage*itemsPerPage}} of {{filteredPaiements.length}} entries
+      </div>
+      <div class="pagination-controls">
+        <select [(ngModel)]="itemsPerPage" (change)="currentPage = 1; updatePage()">
+          <option value="5">5 per page</option>
+          <option value="10">10 per page</option>
+          <option value="25">25 per page</option>
+        </select>
+        <button class="btn-pagination" (click)="firstPage()" [disabled]="currentPage === 1">
+          <i class="fas fa-angle-double-left"></i>
+        </button>
+        <button class="btn-pagination" (click)="previousPage()" [disabled]="currentPage === 1">
+          <i class="fas fa-angle-left"></i>
+        </button>
+        <div class="page-numbers">
+          <button *ngFor="let page of getPageNumbers()" 
+                  class="btn-page" 
+                  [class.active]="page === currentPage"
+                  (click)="changePage(page)">
+            {{page}}
+          </button>
+        </div>
+        <button class="btn-pagination" (click)="nextPage()" [disabled]="currentPage === totalPages">
+          <i class="fas fa-angle-right"></i>
+        </button>
+        <button class="btn-pagination" (click)="lastPage()" [disabled]="currentPage === totalPages">
+          <i class="fas fa-angle-double-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Payment Modal -->
+  <div class="modal-overlay" *ngIf="isAddFormVisible">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Create New Payment</h3>
+        <button class="btn-close" (click)="closeAddForm()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="addPaiement()" #addPaiementForm="ngForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Patient Name*</label>
+              <input type="text" [(ngModel)]="newPaiement.nomPatient" name="nomPatient" required>
+            </div>
+            <div class="form-group">
+              <label>Amount (TND)*</label>
+              <input type="number" [(ngModel)]="newPaiement.montant" name="montant" min="0" step="0.01" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Payment Method*</label>
+              <select [(ngModel)]="newPaiement.modeDePaiement" name="modeDePaiement" required>
+                <option value="">Select method</option>
+                <option value="CASH">Cash</option>
+                <option value="CREDIT_CARD">Credit Card</option>
+                <option value="DEBIT_CARD">Debit Card</option>
+                <option value="BANK_TRANSFER">Bank Transfer</option>
+                <option value="CHECK">Check</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Payment Date*</label>
+              <input type="date" [(ngModel)]="newPaiement.datePaiement" name="datePaiement" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Status*</label>
+            <select [(ngModel)]="newPaiement.statut" name="statut" required>
+              <option [ngValue]="PaymentStatus.Paid">Paid</option>
+              <option [ngValue]="PaymentStatus.Partial">Partially Paid</option>
+              <option [ngValue]="PaymentStatus.Unpaid">Not Paid</option>
+            </select>
+          </div>
+          
+          
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="closeAddForm()">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="!addPaiementForm.valid">Create Payment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Payment Modal -->
+  <div class="modal-overlay" *ngIf="isEditFormVisible">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Edit Payment #{{newPaiement.id}}</h3>
+        <button class="btn-close" (click)="closeEditForm()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="editPaiement(newPaiement.id!)" #editPaiementForm="ngForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Patient Name*</label>
+              <input type="text" [(ngModel)]="newPaiement.nomPatient" name="nomPatient" required>
+            </div>
+            <div class="form-group">
+              <label>Amount (TND)*</label>
+              <input type="number" [(ngModel)]="newPaiement.montant" name="montant" min="0" step="0.01" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Payment Method*</label>
+              <select [(ngModel)]="newPaiement.modeDePaiement" name="modeDePaiement" required>
+                <option value="CASH">Cash</option>
+                <option value="CREDIT_CARD">Credit Card</option>
+                <option value="DEBIT_CARD">Debit Card</option>
+                <option value="BANK_TRANSFER">Bank Transfer</option>
+                <option value="CHECK">Check</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Payment Date*</label>
+              <input type="date" [(ngModel)]="newPaiement.datePaiement" name="datePaiement" required>
+            </div>
+          </div>
+          
+            
+          <div class="form-group">
+            <label>Status*</label>
+            <select [(ngModel)]="newPaiement.statut" name="statut" required>
+              <option [ngValue]="PaymentStatus.Paid">Paid</option>
+              <option [ngValue]="PaymentStatus.Partial">Partially Paid</option>
+              <option [ngValue]="PaymentStatus.Unpaid">Not Paid</option>
+            </select>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="closeEditForm()">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="!editPaiementForm.valid">Update Payment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Payment Detail Modal -->
+  <div class="modal-overlay" *ngIf="viewedPayment">
+    <div class="modal-container wide">
+      <div class="modal-header">
+        <h3>Payment Details #{{viewedPayment.id}}</h3>
+        <button class="btn-close" (click)="viewedPayment = null">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="payment-detail">
+          <div class="detail-header">
+            <div class="header-left">
+              <h4>{{viewedPayment.nomPatient}}</h4>
+              <span class="status-badge" [ngClass]="getStatusClass(viewedPayment.statut)">
+                {{getStatusDisplay(viewedPayment.statut)}}
+              </span>
+            </div>
+            <div class="header-right">
+              <span class="detail-label">Date:</span>
+              <span class="detail-value">{{viewedPayment.datePaiement | date:'mediumDate'}}</span>
+            </div>
+          </div>
+          
+          <div class="detail-section">
+            <div class="detail-row">
+              <div class="detail-item">
+                <span class="detail-label">Amount</span>
+                <span class="detail-value">{{viewedPayment.montant | currency:'TND'}}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Payment Method</span>
+                <span class="detail-value">{{getPaymentMethodIcon(viewedPayment.modeDePaiement)}} {{viewedPayment.modeDePaiement}}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="detail-actions">
+            <button class="btn-secondary" (click)="generateFacture(viewedPayment)">
+              <i class="fas fa-file-pdf"></i> Download Invoice
+            </button>
+            <button class="btn-primary" (click)="sendPaymentReceipt(viewedPayment)">
+              <i class="fas fa-paper-plane"></i> Send Receipt
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+<!-- Add this modal to your template, preferably near the other modals -->
+<!-- Discount Details Modal -->
+<div class="modal-overlay" *ngIf="selectedDiscountPayment">
+  <div class="modal-container wide">
+    <div class="modal-header">
+      <h3>Discount Request Details #{{selectedDiscountPayment.id}}</h3>
+      <button class="btn-close" (click)="closeDiscountModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="discount-detail">
+        <!-- Patient and Payment Info -->
+        <div class="detail-section">
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">Patient Name</span>
+              <span class="detail-value">{{selectedDiscountPayment.nomPatient}}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Original Amount</span>
+              <span class="detail-value">{{selectedDiscountPayment.montant | currency:'TND'}}</span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">Requested Discount</span>
+              <span class="detail-value">{{selectedDiscountPayment.discountApplied| currency:'TND'}} ({{selectedDiscountPayment.discountPercentage}}%)</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Status</span>
+              <span class="detail-value status-badge" [ngClass]="getDiscountStatusClass(selectedDiscountPayment)">
+                {{getDiscountStatusDisplay(selectedDiscountPayment)}}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disability Card Section -->
+        <div class="detail-section" *ngIf="selectedDiscountPayment.discountRequested">
+          <h4>Disability Verification</h4>
+          <div class="disability-card-container">
+            <div class="card-preview" (click)="viewDisabilityCard(selectedDiscountPayment)">
+              <i class="fas fa-id-card"></i>
+              <span>View Disability Card</span>
+            </div>
+            <div class="card-info">
+              <p *ngIf="selectedDiscountPayment.discountStatus === 'PENDING'">
+                <i class="fas fa-info-circle"></i> Please verify the disability card before approving
+              </p>
+              <p *ngIf="selectedDiscountPayment.discountStatus === 'REJECTED'">
+                <i class="fas fa-times-circle"></i> Rejected on {{selectedDiscountPayment.datePaiement| date}}
+                <br>
+                <span class="rejection-reason" *ngIf="selectedDiscountPayment.rejectionReason">
+                  <strong>Reason:</strong> {{selectedDiscountPayment.rejectionReason}}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="detail-actions" *ngIf="isAdmin">
+          <ng-container *ngIf="selectedDiscountPayment.discountStatus === 'PENDING'">
+            <button class="btn-success" (click)="approveDiscount(selectedDiscountPayment)">
+              <i class="fas fa-check"></i> Approve Discount
+            </button>
+            <button class="btn-danger" (click)="openRejectDialog(selectedDiscountPayment)">
+              <i class="fas fa-times"></i> Reject Discount
+            </button>
+          </ng-container>
+          
+          <button class="btn-secondary" (click)="closeDiscountModal()">
+            <i class="fas fa-arrow-left"></i> Back to List
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Disability Card Full View Modal -->
+<div class="modal-overlay" *ngIf="viewedDisabilityCard">
+  <div class="modal-container image-viewer">
+    <div class="modal-header">
+      <h3>Disability Card Verification</h3>
+      <button class="btn-close" (click)="closeCardModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="image-container">
+        <img [src]="viewedDisabilityCard" alt="Disability Card">
+      </div>
+      <div class="image-actions">
+        <button class="btn-secondary" (click)="closeCardModal()">
+          <i class="fas fa-times"></i> Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reject Discount Dialog -->
+<div class="modal-overlay" *ngIf="showRejectDialog">
+  <div class="modal-container small">
+    <div class="modal-header">
+      <h3>Reject Discount Request</h3>
+      <button class="btn-close" (click)="cancelReject()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form (ngSubmit)="confirmReject()">
+        <div class="form-group">
+          <label>Reason for Rejection*</label>
+          <textarea [(ngModel)]="rejectionReason" name="rejectionReason" required></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="cancelReject()">
+            Cancel
+          </button>
+          <button type="submit" class="btn-danger" [disabled]="!rejectionReason">
+            Confirm Rejection
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+</div>

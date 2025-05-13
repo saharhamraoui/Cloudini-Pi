@@ -1,0 +1,31 @@
+<app-header-back></app-header-back>
+<app-sidebar></app-sidebar>
+
+<h2>Orders</h2>
+
+<!-- Liste des commandes -->
+<div *ngIf="commandes && commandes.length > 0; else noCommande">
+  <ul class="list-group">
+    <li *ngFor="let commande of commandes" class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <h5>Order ID: {{ commande.idcommande }}</h5>
+        <p><strong>Supplier:</strong> {{ commande.fournisseurName }}</p>
+        <p><strong>Statut:</strong> {{ commande.status }}</p>
+      </div>
+      
+      <!-- Sélecteur pour modifier le statut de la commande -->
+      <div class="d-flex">
+        <select [(ngModel)]="commande.newStatus" (change)="updateStatusCommande(commande)" class="form-select me-2">
+          <option value="Encours">En cours</option>
+          <option value="Validée">Validée</option>
+          <option value="Livrée">Livrée</option>
+        </select>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Message lorsque aucune commande n'est trouvée -->
+<ng-template #noCommande>
+  <p>No orders.</p>
+</ng-template>

@@ -1,0 +1,33 @@
+
+<div class="rendezvous-section">
+  <div class="container">
+    <table class="table-rdv">
+      <thead>
+        <tr>
+
+            <th>Consultation Date</th>
+            <th>Report</th>
+            <th>Appointment</th>
+            <th>Diagnosis</th>
+            <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let consultation of listConsultation">
+
+          <td>{{ consultation.dateConsultation | date:'dd MMM yyyy HH:mm' }}</td>
+          <td>{{ consultation.rapport }}</td>
+          <td>{{ consultation.rendezVous ? (consultation.rendezVous.dateRendezVous | date:'short') : 'Non défini' }}</td>
+          <td>{{ consultation.medicalRecord?.diagnosis || 'Non défini' }}</td>
+          <td>
+            <div class="btn-group">
+              <button class="icon-btn btn-modifier" (click)="generatePdf(consultation)" data-tooltip="Générer PDF">
+                <i class="fas fa-file-pdf"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,287 @@
+
+<div class="prescription-client-container">
+         
+          <ng-template #allPrescriptionsTitle>All Prescriptions</ng-template>
+  
+    <!-- Summary Cards -->
+    <div class="prescription-summary">
+      <div class="summary-card active">
+        <div class="card-icon">
+          <i class="fas fa-heartbeat"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{getActiveCount()}}</h3>
+          <p>Active Medications</p>
+        </div>
+      </div>
+      
+      <div class="summary-card refill">
+        <div class="card-icon">
+          <i class="fas fa-sync-alt"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{getPendingCount()}}</h3>
+          <p>Needing Refill</p>
+        </div>
+      </div>
+      
+      <div class="summary-card history">
+        <div class="card-icon">
+          <i class="fas fa-history"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{prescriptions.length}}</h3>
+          <p>Total Prescriptions</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Prescription List -->
+    <div class="prescription-list-container">
+      <div class="list-header">
+        <h2><i class="fas fa-list-ul"></i> Your Medication List</h2>
+        <div class="list-controls">
+          <button class="add-prescription-btn" (click)="openAddPrescriptionModal()">
+            <i class="fas fa-plus-circle"></i> Add Prescription
+          </button>
+          <div class="search-prescriptions">
+            <i class="fas fa-search"></i>
+            <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Search medications...">
+          </div>
+          <div class="filter-prescriptions">
+            <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+              <option value="">All Medications</option>
+              <option value="ACTIVE">Active</option>
+              <option value="PENDING">Pending Refill</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="EXPIRED">Expired</option>
+            </select>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Prescription Cards -->
+      <div class="prescription-cards">
+        <div *ngFor="let prescription of filteredPrescriptions" class="prescription-card" [ngClass]="prescription.status">
+          <div class="card-header">
+            <div class="medication-name">
+              <h3>{{prescription.medication}}</h3>
+              <span class="status-badge">{{prescription.status}}</span>
+            </div>
+            <div class="prescription-date">
+              <i class="fas fa-calendar-alt"></i> {{prescription.issueDate | date:'mediumDate'}}
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div class="dosage-info">
+              <div class="info-item">
+                <label>Dosage</label>
+                <p>{{prescription.dosage}}</p>
+              </div>
+              <div class="info-item">
+                <label>Frequency</label>
+                <p>As directed</p>
+              </div>
+            </div>
+            
+            <div class="instructions">
+              <label>Instructions</label>
+              <p>{{prescription.instructions}}</p>
+            </div>
+          </div>
+          
+          <div class="card-actions">
+            <button class="action-btn print" (click)="generatePdfPrescription(prescription)">
+              <i class="fas fa-print"></i> Print
+            </button>
+            <button class="action-btn reminder" (click)="sendSmsNotification(prescription)">
+              <i class="fas fa-bell"></i> Reminder
+            </button>
+            <button class="action-btn details" (click)="viewDetails(prescription)">
+              <i class="fas fa-info-circle"></i> Details
+            </button>
+            <!-- Voice Read Buttons -->
+            <div class="voice-actions">
+                <button class="action-btn tts" (click)="readPrescription(prescription, 'en')">
+                <i class="fas fa-volume-up"></i> Read (EN)
+                </button>
+               <button class="action-btn tts" (click)="readPrescription(prescription, 'fr')">
+               <i class="fas fa-volume-up"></i> Lire (FR)
+               </button>
+               <button class="action-btn tts stop" (click)="stopReading()">
+               <i class="fas fa-stop"></i> Stop
+               </button>
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+  
+      <!-- Empty State -->
+      <div *ngIf="filteredPrescriptions.length === 0" class="empty-prescriptions">
+        <div class="empty-icon">
+          <i class="fas fa-prescription-bottle-alt"></i>
+        </div>
+        <h3>No medications found</h3>
+        <p>We couldn't find any prescriptions matching your search</p>
+        <button class="reset-btn" (click)="resetFilters()">Reset Filters</button>
+      </div>
+  
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="filteredPrescriptions.length > 0">
+        <button class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <div class="page-numbers">
+          <button *ngFor="let page of getPageNumbers()" 
+                  class="page-number" 
+                  [class.active]="page === currentPage"
+                  (click)="changePage(page)">
+            {{page}}
+          </button>
+        </div>
+        
+        <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Prescription Detail Modal -->
+    <div class="modal-overlay" *ngIf="viewedPrescription" [@modalAnimation]>
+      <div class="prescription-modal">
+        <div class="modal-header">
+          <h3>
+            <i class="fas fa-file-prescription"></i> 
+            {{viewedPrescription.medication}} Details
+          </h3>
+          <button class="close-modal" (click)="viewedPrescription = null">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="prescription-details">
+            <div class="detail-row">
+              <div class="detail-label">Prescription ID</div>
+              <div class="detail-value">#{{viewedPrescription.idPrescription}}</div>
+            </div>
+            
+            <div class="detail-row">
+              <div class="detail-label">Medication</div>
+              <div class="detail-value">{{viewedPrescription.medication}}</div>
+            </div>
+            
+            <div class="detail-row">
+              <div class="detail-label">Dosage</div>
+              <div class="detail-value">{{viewedPrescription.dosage}}</div>
+            </div>
+            
+            <div class="detail-row">
+              <div class="detail-label">Instructions</div>
+              <div class="detail-value">{{viewedPrescription.instructions}}</div>
+            </div>
+            
+            <div class="detail-row">
+              <div class="detail-label">Date Issued</div>
+              <div class="detail-value">{{viewedPrescription.issueDate | date:'fullDate'}}</div>
+            </div>
+            
+            <div class="detail-row">
+              <div class="detail-label">Status</div>
+              <div class="detail-value">
+                <span class="status-badge" [ngClass]="getStatusClass(viewedPrescription.status)">
+                  {{viewedPrescription.status}}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-actions">
+            <button class="modal-btn print" (click)="generatePdfPrescription(viewedPrescription)">
+              <i class="fas fa-file-pdf"></i> Download PDF
+            </button>
+            <button class="modal-btn reminder" (click)="sendSmsNotification(viewedPrescription)">
+              <i class="fas fa-sms"></i> Send Reminder
+            </button>
+            <button class="modal-btn close" (click)="viewedPrescription = null">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" *ngIf="showAddPrescriptionModal">
+      <div class="add-prescription-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header baby-blue-header">
+          <h3><i class="fas fa-file-medical"></i> Add New Prescription</h3>
+          <button class="close-modal" (click)="closeAddPrescriptionModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="modal-body scrollable-content">
+          <form #prescriptionForm="ngForm" (ngSubmit)="onSubmitPrescription()">
+            <div class="form-section">
+              <div class="form-group full-width">
+                <label for="medication"><i class="fas fa-pills"></i> Medication Name</label>
+                <input type="text" id="medication" name="medication" 
+                       [(ngModel)]="newPrescription.medication" required
+                       class="soft-input" placeholder="e.g., Amoxicillin 500mg">
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group half-width">
+                  <label for="dosage"><i class="fas fa-syringe"></i> Dosage</label>
+                  <input type="text" id="dosage" name="dosage" 
+                         [(ngModel)]="newPrescription.dosage" required
+                         class="soft-input" placeholder="e.g., 1 tablet">
+                </div>
+                
+                <div class="form-group half-width">
+                  <label for="status"><i class="fas fa-heartbeat"></i> Status</label>
+                  <select id="status" name="status" 
+                          [(ngModel)]="newPrescription.status" required
+                          class="soft-input">
+                    <option value="ACTIVE">Active</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="EXPIRED">Expired</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-group full-width">
+                <label for="instructions"><i class="fas fa-comment-medical"></i> Patient Instructions</label>
+                <textarea id="instructions" name="instructions" 
+                          [(ngModel)]="newPrescription.instructions" required
+                          class="soft-input" rows="4"
+                          placeholder="e.g., Take twice daily after meals"></textarea>
+              </div>
+              
+              <div class="form-group full-width">
+                <label for="issueDate"><i class="fas fa-calendar-check"></i> Issue Date</label>
+                <input type="date" id="issueDate" name="issueDate" 
+                       [(ngModel)]="newPrescription.issueDate" required
+                       class="soft-input">
+              </div>
+            </div>
+            
+            <div class="modal-actions">
+              <button type="button" class="modal-btn cancel" (click)="closeAddPrescriptionModal()">
+                <i class="fas fa-times-circle"></i> Cancel
+              </button>
+              <button type="submit" class="modal-btn submit" [disabled]="!prescriptionForm.valid">
+                <i class="fas fa-save"></i> Save Prescription
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>

@@ -1,0 +1,167 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Modifier l'utilisateur</h2>
+  
+  <form [formGroup]="editForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading; else loading">
+    <div class="row">
+      <!-- Colonne gauche - Champs de base -->
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header">Informations de base</div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label">Rôle</label>
+              
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Prénom*</label>
+              <input type="text" class="form-control" formControlName="firstName" 
+                     [class.is-invalid]="editForm.get('firstName')?.invalid && editForm.get('firstName')?.touched">
+              <div *ngIf="editForm.get('firstName')?.invalid && editForm.get('firstName')?.touched" 
+                   class="invalid-feedback">
+                Le prénom est obligatoire
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Nom*</label>
+              <input type="text" class="form-control" formControlName="lastName"
+                     [class.is-invalid]="editForm.get('lastName')?.invalid && editForm.get('lastName')?.touched">
+              <div *ngIf="editForm.get('lastName')?.invalid && editForm.get('lastName')?.touched" 
+                   class="invalid-feedback">
+                Le nom est obligatoire
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Email*</label>
+              <input type="email" class="form-control" formControlName="email"
+                     [class.is-invalid]="editForm.get('email')?.invalid && editForm.get('email')?.touched">
+              <div *ngIf="editForm.get('email')?.invalid && editForm.get('email')?.touched" 
+                   class="invalid-feedback">
+                <span *ngIf="editForm.get('email')?.errors?.['required']">L'email est obligatoire</span>
+                <span *ngIf="editForm.get('email')?.errors?.['email']">Veuillez entrer un email valide</span>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Téléphone</label>
+              <input type="text" class="form-control" formControlName="phoneNumber">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Adresse</label>
+              <input type="text" class="form-control" formControlName="address">
+            </div>
+
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="banned" formControlName="banned">
+              <label class="form-check-label" for="banned">Utilisateur banni</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne droite - Champs spécifiques -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">Informations spécifiques</div>
+          <div class="card-body">
+            <!-- Patient -->
+            <div *ngIf="editForm.get('role')?.value === 'PATIENT'">
+              <div class="mb-3">
+                <label class="form-label">N° dossier médical</label>
+                <input type="text" class="form-control" formControlName="medicalRecordNumber">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Groupe sanguin</label>
+                <input type="text" class="form-control" formControlName="bloodGroup">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">N° assurance</label>
+                <input type="text" class="form-control" formControlName="healthInsuranceNumber">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Genre</label>
+                <select class="form-control" formControlName="gender">
+                  <option value="M">Masculin</option>
+                  <option value="F">Féminin</option>
+                  <option value="O">Autre</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Date de naissance</label>
+                <input type="date" class="form-control" formControlName="dateOfBirth">
+              </div>
+            </div>
+
+            <!-- Médecin -->
+            <div *ngIf="editForm.get('role')?.value === 'MEDECIN'">
+              <div class="mb-3">
+                <label class="form-label">Spécialité</label>
+                <input type="text" class="form-control" formControlName="speciality">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">N° licence</label>
+                <input type="text" class="form-control" formControlName="licenseNumber">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Disponibilité</label>
+                <select class="form-control" formControlName="availability">
+                  <option value="AVAILABLE">Disponible</option>
+                  <option value="UNAVAILABLE">Indisponible</option>
+                  <option value="ON_VACATION">En vacances</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Chauffeur -->
+            <div *ngIf="editForm.get('role')?.value === 'CHAUFFEUR'">
+              <div class="mb-3">
+                <label class="form-label">N° permis</label>
+                <input type="text" class="form-control" formControlName="driverLicenseNumber">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Disponibilité</label>
+                <select class="form-control" formControlName="driverAvailability">
+                  <option value="AVAILABLE">Disponible</option>
+                  <option value="UNAVAILABLE">Indisponible</option>
+                  <option value="ON_MISSION">En mission</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4">
+      <button type="button" class="btn btn-secondary me-2" (click)="cancel()">
+        Annuler
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid || isLoading">
+        <span *ngIf="!isLoading">Enregistrer</span>
+        <span *ngIf="isLoading">
+          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+          Enregistrement...
+        </span>
+      </button>
+    </div>
+  </form>
+
+  <ng-template #loading>
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+      <p class="mt-2">Chargement des données utilisateur...</p>
+    </div>
+  </ng-template>
+</div>

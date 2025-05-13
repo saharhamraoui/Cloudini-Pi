@@ -1,0 +1,43 @@
+
+<div class="rendezvous-section">
+    <div class="d-flex justify-content-end mb-3">
+      <button class="btn-ai-disease" [routerLink]="['/front/disease']" data-tooltip="Diagnostic AI">
+        <i class="fas fa-robot fa-lg"></i> Diagnostic AI
+      </button>
+    </div>
+
+    <div class="container">
+      <table class="table-rdv">
+        <thead>
+          <tr>
+            <th>Appointment Date</th>
+            <th>Doctor</th>
+            <th>Patient</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rv of rvs">
+            <td>{{ rv.dateRendezVous | date:'dd MMM yyyy HH:mm' }}</td>
+            <td>{{ rv.medecin ? (rv.medecin.firstName + ' ' + rv.medecin.lastName) : 'Aucun Médecin' }}</td>
+            <td>{{ rv.patient ? (rv.patient.firstName + ' ' + rv.patient.lastName) : 'Aucun Patient' }}</td>
+            <td>{{ rv.status }}</td>
+            <td>
+              <div class="btn-group">
+                <button class="icon-btn btn-modifier" (click)="modifierRendezVous(rv.idRendezVous)" data-tooltip="Modifier">
+                  <i class="fas fa-edit"></i>
+                </button>
+
+                <button class="icon-btn btn-supprimer" (click)="supprimerRendezVous(rv.idRendezVous)" data-tooltip="Supprimer">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+

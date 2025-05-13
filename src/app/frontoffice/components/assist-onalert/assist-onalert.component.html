@@ -1,0 +1,65 @@
+<!-- Chat Bubble Button -->
+<div class="assist-onalert-container" [class.open]="isOpen">
+  <div class="chat-bubble" (click)="toggleChat()">
+    <i class="bi" [ngClass]="isOpen ? 'bi-x' : 'bi-chat-dots-fill'"></i>
+  </div>
+
+  <!-- Chat Window -->
+  <div class="chat-window" *ngIf="isOpen">
+    <div class="chat-header">
+      <div class="assistant-avatar">
+        <i class="bi bi-robot"></i>
+      </div>
+      <div class="assistant-info">
+        <h4>Assist-OnAlert</h4>
+        <p>Your Medical AI Assistant</p>
+      </div>
+    </div>
+    
+    <div class="chat-messages" #chatMessages>
+      <div *ngFor="let message of messages" 
+           class="message" 
+           [ngClass]="{'user-message': message.sender === 'user', 'bot-message': message.sender === 'bot'}">
+        <div class="message-content">
+          <p [innerHTML]="message.content | nlToBr"></p>
+        </div>
+        <div class="message-time">
+          {{ message.timestamp | date:'shortTime' }}
+        </div>
+      </div>
+      
+      <!-- Typing indicator -->
+      <div *ngIf="isTyping" class="message bot-message typing-indicator">
+        <div class="message-content">
+          <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Empty div to help with scrolling to bottom -->
+      <div #scrollBottom></div>
+    </div>
+    
+    <div class="chat-input">
+      <form (ngSubmit)="sendMessage()">
+        <div class="input-group">
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Type your message..." 
+            [formControl]="messageInput"
+            autocomplete="off">
+          <button 
+            class="btn send-button" 
+            type="submit" 
+            [disabled]="!messageInput.valid || isTyping">
+            <i class="bi bi-send-fill"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 

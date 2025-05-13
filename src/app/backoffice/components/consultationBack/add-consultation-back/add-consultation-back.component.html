@@ -1,0 +1,90 @@
+<div class="consultation-form-container">
+  <!-- Titre avec style moderne -->
+  <div class="form-header">
+
+    <h1 class="form-title">Add Consultation</h1>
+    <div class="title-divider"></div>
+  </div>
+
+  <!-- Carte de formulaire moderne -->
+  <div class="form-card">
+    <form [formGroup]="consultationForm" (ngSubmit)="ajouter()">
+      <!-- Champ Date du Rendez-vous -->
+      <div class="form-field">
+        <label for="dateRendezVous" class="field-label">
+
+          <i class="far fa-calendar-check"></i> Date of Appointment
+        </label>
+        <input type="text" id="dateRendezVous"
+               formControlName="dateRendezVous"
+               class="form-input"
+               [value]="formattedDate"
+               readonly>
+      </div>
+
+      <!-- Sélection du dossier médical -->
+      <div class="form-field">
+        <label for="medicalRecord" class="field-label">
+
+          <i class="fas fa-file-medical"></i> Medical File <span class="required-asterisk">*</span>
+        </label>
+        <select id="medicalRecord"
+                formControlName="medicalRecord"
+                class="form-input"
+                [ngClass]="{'input-error': consultationForm.get('medicalRecord')?.invalid && consultationForm.get('medicalRecord')?.touched}">
+
+          <option value="">Select a Medical File</option>
+          <option *ngFor="let record of medicalRecords" [value]="record.idMedicalRecord">
+            {{ record.patient.firstName }} {{ record.patient.lastName }}
+          </option>
+        </select>
+        <div class="error-message"
+             *ngIf="consultationForm.get('medicalRecord')?.invalid && consultationForm.get('medicalRecord')?.touched">
+
+          <i class="fas fa-exclamation-circle"></i> Selection required
+        </div>
+      </div>
+
+      <!-- Champ Date de Consultation -->
+      <!-- <div class="form-field">
+        <label for="dateConsultation" class="field-label">
+          <i class="far fa-calendar-alt"></i> Date de Consultation <span class="required-asterisk">*</span>
+        </label>
+        <input type="datetime-local" id="dateConsultation"
+               formControlName="dateConsultation"
+               class="form-input"
+               [ngClass]="{'input-error': consultationForm.get('dateConsultation')?.invalid && consultationForm.get('dateConsultation')?.touched}">
+        <div class="error-message"
+             *ngIf="consultationForm.get('dateConsultation')?.invalid && consultationForm.get('dateConsultation')?.touched">
+          <i class="fas fa-exclamation-circle"></i> Ce champ est requis
+        </div>
+      </div> -->
+
+      <!-- Champ Rapport -->
+      <div class="form-field">
+        <label for="rapport" class="field-label">
+
+          <i class="far fa-file-alt"></i> Medical Report <span class="required-asterisk">*</span>
+        </label>
+        <textarea id="rapport"
+                  formControlName="rapport"
+                  rows="5"
+                  class="form-textarea"
+                  placeholder="Décrire les observations et recommandations..."
+                  [ngClass]="{'input-error': consultationForm.get('rapport')?.invalid && consultationForm.get('rapport')?.touched}"></textarea>
+        <div class="error-message"
+             *ngIf="consultationForm.get('rapport')?.invalid && consultationForm.get('rapport')?.touched">
+          <i class="fas fa-exclamation-circle"></i> Veuillez saisir un rapport
+        </div>
+      </div>
+
+      <!-- Bouton de soumission -->
+      <button type="submit"
+              class="submit-btn-thead"
+              [disabled]="consultationForm.invalid">
+
+        <i class="fas fa-plus-circle"></i> Add Consultation
+      </button>
+    </form>
+  </div>
+</div>

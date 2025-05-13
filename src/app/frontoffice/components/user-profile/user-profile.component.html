@@ -1,0 +1,138 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-9">
+      <div class="profile-card animate__animated animate__fadeIn">
+        <div class="row">
+          <!-- Sidebar -->
+          <div class="col-md-4 profile-sidebar">
+            <div class="profile-avatar text-center">
+              <div class="progress-circle">
+                <svg class="progress-ring" width="160" height="160">
+                  <circle class="progress-ring-circle" stroke="#E5E7EB" stroke-width="8" fill="transparent" r="72" cx="80" cy="80"/>
+                  <circle class="progress-ring-circle progress" stroke="#3B82F6" stroke-width="8" fill="transparent" r="72" cx="80" cy="80" stroke-dasharray="452" stroke-dashoffset="316.4"/>
+                </svg>
+                <img [src]="user.photoUrl || 'assets/profile.png'" alt="Profile Avatar" class="avatar-img">
+              </div>
+              <p class="progress-text">30% Complete</p>
+              <small class="text-muted">Complete your profile to unlock all features</small>
+            </div>
+            <h4 class="profile-name text-center">{{user.firstName}} {{user.lastName}}</h4>
+            <p class="profile-role text-center">{{user.role | titlecase}}</p>
+            <div class="avatar-actions text-center">
+              <button class="btn btn-outline-primary btn-sm" (click)="changePhoto()">
+                <i class="fas fa-camera me-1"></i> Change Photo
+              </button>
+              <button *ngIf="previewPhoto !== user.photoUrl" class="btn btn-success btn-sm ms-2" (click)="uploadPhoto()">
+                <i class="fas fa-check me-1"></i> Save
+              </button>
+              <button *ngIf="previewPhoto !== user.photoUrl" class="btn btn-danger btn-sm ms-2" (click)="previewPhoto = user.photoUrl; selectedFile = null">
+                <i class="fas fa-times me-1"></i> Cancel
+              </button>
+            </div>
+          </div>
+
+          <!-- Main Content -->
+          <div class="col-md-8 profile-content">
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-4">
+              <li class="nav-item">
+                <a class="nav-link active" id="personal-tab" data-bs-toggle="tab" href="#personal" role="tab">Personal Information</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab">Address</a>
+              </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+              <!-- Personal Information Tab -->
+              <div class="tab-pane fade show active" id="personal" role="tabpanel">
+                <div class="profile-section">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="profile-field">
+                        <label>First Name</label>
+                        <div class="field-value">{{user.firstName}}</div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="profile-field">
+                        <label>Last Name</label>
+                        <div class="field-value">{{user.lastName}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="profile-field">
+                        <label>Email Address</label>
+                        <div class="field-value">{{user.email}}</div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="profile-field">
+                        <label>Phone Number</label>
+                        <div class="field-value">{{user.phoneNumber || 'Not Provided'}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Role-Specific Fields -->
+                  <div *ngIf="user.role === 'PATIENT'" class="row">
+                    <div class="col-md-6">
+                      <div class="profile-field">
+                        <label>Medical Record</label>
+                        <div class="field-value">{{user.medicalRecordNumber || 'Not Provided'}}</div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="profile-field">
+                        <label>Blood Group</label>
+                        <div class="field-value">{{user.bloodGroup || 'Not Provided'}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="user.role === 'MEDECIN'" class="row">
+                    <div class="col-md-6">
+                      <div class="profile-field">
+                        <label>Specialty</label>
+                        <div class="field-value">{{user.speciality || 'Not Provided'}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="user.role === 'CHAUFFEUR'" class="row">
+                    <div class="col-md-6">
+                      <div class="profile-field">
+                        <label>Driver License</label>
+                        <div class="field-value">{{user.driverLicenseNumber || 'Not Provided'}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Address Tab -->
+              <div class="tab-pane fade" id="address" role="tabpanel">
+                <div class="profile-section">
+                  <div class="profile-field">
+                    <label>Address</label>
+                    <div class="field-value">{{user.address || 'Not Provided'}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="profile-actions mt-4">
+              <button class="btn btn-outline-secondary" (click)="cancel()">
+                <i class="fas fa-arrow-left me-2"></i> Back
+              </button>
+              <button class="btn btn-primary" (click)="editProfile()">
+                <i class="fas fa-edit me-2"></i> Edit Your Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,169 @@
+<div class="profile-edit-container">
+  <div class="profile-edit-card animate__animated animate__fadeIn">
+    <div class="profile-edit-header">
+      <h2><i class="fas fa-user-edit me-2"></i> Edit My Profile</h2>
+    </div>
+    
+    <form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="profile-edit-form">
+      <!-- Section: Personal Information -->
+      <div class="section-title">
+        <i class="fas fa-id-card"></i> Personal Information
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>First Name <span class="required">*</span></label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+            <input type="text" formControlName="firstName" 
+                   [class.is-invalid]="editForm.get('firstName')?.invalid && editForm.get('firstName')?.touched">
+          </div>
+          <div *ngIf="editForm.get('firstName')?.invalid && editForm.get('firstName')?.touched" 
+               class="invalid-feedback">
+            First name is required
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Last Name <span class="required">*</span></label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+            <input type="text" formControlName="lastName"
+                   [class.is-invalid]="editForm.get('lastName')?.invalid && editForm.get('lastName')?.touched">
+          </div>
+          <div *ngIf="editForm.get('lastName')?.invalid && editForm.get('lastName')?.touched" 
+               class="invalid-feedback">
+            Last name is required
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Email <span class="required">*</span></label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+            <input type="email" formControlName="email"
+                   [class.is-invalid]="editForm.get('email')?.invalid && editForm.get('email')?.touched">
+          </div>
+          <div *ngIf="editForm.get('email')?.invalid && editForm.get('email')?.touched" 
+               class="invalid-feedback">
+            <span *ngIf="editForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="editForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Phone Number</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+            <input type="text" formControlName="phoneNumber">
+          </div>
+        </div>
+        
+        <div class="form-group full-width">
+          <label>Address</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+            <input type="text" formControlName="address">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Section: Patient Information -->
+      <div *ngIf="userType === 'PATIENT' && editForm.get('medicalRecordNumber')">
+        <div class="section-title">
+          <i class="fas fa-heartbeat"></i> Medical Information
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Medical Record Number</label>
+            <input type="text" formControlName="medicalRecordNumber">
+          </div>
+          
+          <div class="form-group">
+            <label>Blood Group</label>
+            <input type="text" formControlName="bloodGroup">
+          </div>
+          
+          <div class="form-group">
+            <label>Health Insurance Number</label>
+            <input type="text" formControlName="healthInsuranceNumber">
+          </div>
+          
+          <div class="form-group">
+            <label>Gender</label>
+            <select formControlName="gender">
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+              <option value="O">Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <input type="date" formControlName="dateOfBirth">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Section: Doctor Information -->
+      <div *ngIf="userType === 'MEDECIN' && editForm.get('speciality')">
+        <div class="section-title">
+          <i class="fas fa-user-md"></i> Professional Information
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Specialty</label>
+            <input type="text" formControlName="speciality">
+          </div>
+          
+          <div class="form-group">
+            <label>License Number</label>
+            <input type="text" formControlName="licenseNumber">
+          </div>
+          
+          <div class="form-group">
+            <label>Availability</label>
+            <select formControlName="availability">
+              <option value="AVAILABLE">Available</option>
+              <option value="UNAVAILABLE">Unavailable</option>
+              <option value="ON_VACATION">On Vacation</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Section: Driver Information -->
+      <div *ngIf="userType === 'CHAUFFEUR' && editForm.get('driverLicenseNumber')">
+        <div class="section-title">
+          <i class="fas fa-taxi"></i> Professional Information
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Driver License Number</label>
+            <input type="text" formControlName="driverLicenseNumber">
+          </div>
+          
+          <div class="form-group">
+            <label>Availability</label>
+            <select formControlName="driverAvailability">
+              <option value="AVAILABLE">Available</option>
+              <option value="UNAVAILABLE">Unavailable</option>
+              <option value="ON_MISSION">On Mission</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="cancel()">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">
+          <i class="fas fa-save"></i> Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

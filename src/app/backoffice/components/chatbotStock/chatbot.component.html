@@ -1,0 +1,21 @@
+<!-- Bulle flottante -->
+<div class="floating-bubble" (click)="toggleChat()" *ngIf="!isChatOpen">
+  💬
+</div>
+
+<!-- Fenêtre du Chatbot -->
+<div *ngIf="isChatOpen" class="chat-container">
+  <div *ngFor="let message of messages" 
+       class="message" 
+       [ngClass]="{'user-message': message.sender === 'Vous', 'bot-message': message.sender === 'Bot'}">
+    <strong>{{ message.sender }}:</strong> {{ message.text }}
+  </div>
+
+  <div>
+    <input [(ngModel)]="userInput" (keydown.enter)="sendMessage()" placeholder="Posez votre question..." />
+    <button (click)="sendMessage()">Envoyer</button>
+  </div>
+
+  <!-- Bouton pour fermer le chat -->
+  <button class="close-chat" (click)="closeChat()">x</button>
+</div>

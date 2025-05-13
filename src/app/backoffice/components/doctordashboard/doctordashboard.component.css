@@ -1,0 +1,75 @@
+/* Style moderne */
+.dashboard-container {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-title {
+  color: #0e5551;
+  font-weight: bold;
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+.modern-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top: 4px solid var(--card-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.modern-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  color: var(--card-color);
+  margin-bottom: 15px;
+}
+
+.card-content h3 {
+  color: #2c3e50;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.card-value {
+  color: #34495e;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+
+.notification {
+  background-color: #ffeeba;
+  padding: 10px;
+  border: 1px solid #ffc107;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+.notification h3 {
+  margin-top: 0;
+}
+
+/* Icônes spécifiques */
+.fa-prescription-bottle-alt { color: #2980b9; }
+.fa-user-md { color: #27ae60; }
+.fa-user-injured { color: #e74c3c; }
+.fa-calendar-alt { color: #f39c12; }

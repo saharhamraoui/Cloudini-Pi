@@ -1,0 +1,59 @@
+<div class="consultation-form-container">
+  <!-- Bouton retour -->
+  <!-- <i (click)="navigateHome()" 
+     class="fas fa-arrow-left back-button"></i> -->
+
+  <!-- Titre avec style moderne -->
+  <div class="form-header">
+    <h1 class="form-title">Modifier un Rendez-vous</h1>
+    <div class="title-divider"></div>
+  </div>
+
+  <!-- Carte de formulaire moderne -->
+  <div class="form-card">
+    <form [formGroup]="rendezVousForm" (ngSubmit)="update()">
+      <!-- Sélection du patient -->
+      <div class="form-field">
+        <label for="patient" class="field-label">
+          <i class="fas fa-user-injured"></i> Patient <span class="required-asterisk">*</span>
+        </label>
+        <select id="patient" 
+                formControlName="patient" 
+                class="form-input"
+                [ngClass]="{'input-error': rendezVousForm.get('patient')?.invalid && rendezVousForm.get('patient')?.touched}">
+          <option value="">Sélectionnez un patient</option>
+          <option *ngFor="let patient of patients" [value]="patient.idUser">
+            {{ patient.firstName }} {{ patient.lastName }}
+          </option>
+        </select>
+        <div class="error-message" 
+             *ngIf="rendezVousForm.get('patient')?.invalid && rendezVousForm.get('patient')?.touched">
+          <i class="fas fa-exclamation-circle"></i> Sélection requise
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div class="form-field">
+        <label for="dateRendezVous" class="field-label">
+          <i class="far fa-calendar-alt"></i> Date du Rendez-vous <span class="required-asterisk">*</span>
+        </label>
+        <input type="datetime-local" 
+               id="dateRendezVous" 
+               formControlName="dateRendezVous" 
+               class="form-input"
+               [ngClass]="{'input-error': rendezVousForm.get('dateRendezVous')?.invalid && rendezVousForm.get('dateRendezVous')?.touched}">
+        <div class="error-message" 
+             *ngIf="rendezVousForm.get('dateRendezVous')?.invalid && rendezVousForm.get('dateRendezVous')?.touched">
+          <i class="fas fa-exclamation-circle"></i> Ce champ est requis
+        </div>
+      </div>
+
+      <!-- Bouton de soumission -->
+      <button type="submit" 
+              class="submit-btn-thead"
+              [disabled]="rendezVousForm.invalid">
+        <i class="fas fa-edit"></i> Modifier le Rendez-vous
+      </button>
+    </form>
+  </div>
+</div>

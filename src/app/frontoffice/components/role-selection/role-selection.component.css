@@ -1,0 +1,140 @@
+/* Import Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Base Styles */
+.container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F7FAFC;
+  padding: 2rem;
+}
+
+.role-selection-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 2.5rem;
+  max-width: 900px;
+  width: 100%;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+h2 {
+  color: #1A202C;
+  font-weight: 600;
+  font-size: 1.75rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.role-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.btn-role {
+  padding: 1.5rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  border: 1px solid #E5E7EB;
+  background: #F7FAFC;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-role i {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  color: #3B82F6;
+  transition: transform 0.3s ease;
+}
+
+.btn-role span {
+  transition: transform 0.3s ease;
+  color: #1A202C;
+}
+
+.btn-role:hover {
+  background: #EBF5FF;
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.btn-role:hover i {
+  transform: scale(1.1);
+}
+
+.btn-role:hover span {
+  transform: scale(1.05);
+}
+
+.btn-role:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Remove specific gradients and use a unified style */
+.btn-patient, .btn-doctor, .btn-driver {
+  background: #F7FAFC;
+  color: #1A202C;
+}
+
+.btn-role:hover {
+  background: #EBF5FF;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate__animated.animate__fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .role-selection-card {
+    padding: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .role-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-role {
+    padding: 1.2rem;
+  }
+
+  .btn-role i {
+    font-size: 1.75rem;
+  }
+
+  .btn-role span {
+    font-size: 0.9rem;
+  }
+}

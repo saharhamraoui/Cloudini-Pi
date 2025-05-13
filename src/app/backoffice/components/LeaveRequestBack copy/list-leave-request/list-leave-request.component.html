@@ -1,0 +1,384 @@
+<!-- Show dashboard ONLY if user is ADMIN -->
+<div *ngIf="curRole === 'ADMIN'" class="leave-request-dashboard">
+  <!-- Header Section -->
+<div class="leave-dashboard">
+  <div class="premium-header baby-blue-theme">
+    <div class="header-content">
+      <div class="header-text">
+        <h1><i class="fas fa-calendar-alt"></i> Leave Management</h1>
+        <p>Approve or reject leave requests</p>
+      </div>
+      <div class="header-actions">
+          <button class="btn icon-btn">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+        <div class="stat-badge">
+          <i class="fas fa-inbox"></i>
+          <span>{{ pendingRequestsCount }} Pending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Visual Statistics Section -->
+<div class="visual-stats-container">
+  <div class="chart-card">
+    <h3><i class="fas fa-chart-pie"></i> Leave Status Distribution</h3>
+    <div class="chart-container">
+      <canvas id="leaveStatusChart"></canvas>
+    </div>
+  </div>
+  
+  <div class="chart-card">
+    <h3><i class="fas fa-chart-line"></i> Monthly Leave Trends</h3>
+    <div class="chart-container">
+      <canvas id="leaveTrendChart"></canvas>
+    </div>
+  </div>
+  
+  <div class="chart-card">
+    <h3><i class="fas fa-users"></i> Assistant Activity</h3>
+    <div class="chart-container">
+      <canvas id="assistantActivityChart"></canvas>
+    </div>
+  </div>
+</div>
+<button class="btn icon-btn" (click)="refreshData()">
+  <i class="fas fa-sync-alt"></i>
+</button>
+  <!-- Main Content -->
+  <div class="content-column">
+    <!-- Search and Filter -->
+    <div class="toolbar">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" [(ngModel)]="searchStatus" 
+               (input)="onSearchStatus()" 
+               placeholder="Search by status...">
+      </div>
+      <div class="filters">
+        <select [(ngModel)]="itemsPerPage" (change)="currentPage = 1">
+          <option value="5">5 per page</option>
+          <option value="10">10 per page</option>
+          <option value="20">20 per page</option>
+        </select>
+      </div>
+      <div class="smart-suggestions">
+        <button (click)="toggleSmartSuggestions()" 
+                [class.active]="showSmartSuggestions"
+                class="btn-smart">
+          <i class="fas fa-lightbulb"></i> Smart Suggestions
+        </button>
+        <span *ngIf="suggestedApprovals.length > 0" class="badge">
+          {{ suggestedApprovals.length }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="card table-card">
+      <div class="table-responsive">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Assistant</th>
+              <th>Period</th>
+              <th>Duration</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th *ngIf="showSmartSuggestions">Suggestion</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let request of paginatedRequests" (click)="openDetailsModal(request)">
+              <td class="assistant-cell">
+                <div class="assistant-info">
+                  <div class="avatar">
+                    {{ request.assistantEmail.charAt(0).toUpperCase() }}
+                  </div>
+                  <div class="assistant-details">
+                    <span class="assistant-name">{{ request.assistantEmail }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="date-range">
+                  <span class="date">{{ request.startDate | date: 'dd MMM' }}</span>
+                  <span class="separator">-</span>
+                  <span class="date">{{ request.endDate | date: 'dd MMM' }}</span>
+                  <span class="year">{{ request.startDate | date: 'yyyy' }}</span>
+                </div>
+              </td>
+              <td>{{ calculateDuration(request.startDate, request.endDate) }} days</td>
+              <td class="reason-cell">
+                <span class="reason-text">{{ request.reason }}</span>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="request.status.toLowerCase()">
+                  {{ request.status }}
+                </span>
+              </td>
+              <td *ngIf="showSmartSuggestions">
+                <div *ngIf="isSuggestedForApproval(request) && request.status === 'Pending'" 
+                     class="suggestion-tooltip">
+                  <span class="suggestion-badge">
+                    <i class="fas fa-lightbulb"></i> Recommended
+                  </span>
+                  <div class="tooltip-content">
+                    <p><strong>Recommendation reason:de</strong></p>
+                    <ul>
+                      <li *ngIf="!hasOverlap(request)">No schedule conflicts</li>
+                      <li *ngIf="hasLowLeaveCount(request)">Low recent leave count</li>
+                    </ul>
+                    <div class="workload-indicator">
+                      <p>Workload impact: {{ getWorkloadLevel(request) | titlecase }}</p>
+                      <div class="workload-meter">
+                        <div class="meter-bar" [ngClass]="getWorkloadLevel(request)" 
+                             [style.width.%]="getWorkloadPercentage(request)"></div>
+                      </div>
+                      <p>{{ getAvailableAssistants(request) }} assistants available</p>
+                    </div>
+                  </div>
+                </div>
+                <span *ngIf="recentlyApprovedIds.includes(request.id)" 
+                      class="approved-badge">
+                  <i class="fas fa-check-circle"></i> Approved
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button *ngIf="request.status === 'Pending'" 
+                          class="btn-action btn-approve" 
+                          (click)="updateStatus(request.id, 'Approved')"
+                          title="Approve">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button *ngIf="request.status === 'Pending'" 
+                          class="btn-action btn-reject" 
+                          (click)="updateStatus(request.id, 'Rejected')"
+                          title="Reject">
+                    <i class="fas fa-times"></i>
+                  </button>
+                  <button class="btn-action btn-view" 
+                          title="Details"
+                          (click)="viewDetails(request)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredLeaveRequests.length === 0" class="empty-state">
+        <i class="fas fa-calendar-times"></i>
+        <h4>No requests found</h4>
+        <p>Try adjusting your search or filters</p>
+        <button class="btn-primary" (click)="resetFilters()">Reset filters</button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <div class="pagination-info">
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }}-{{ Math.min(currentPage * itemsPerPage, filteredLeaveRequests.length) }} of {{ filteredLeaveRequests.length }}
+      </div>
+      <div class="pagination-controls">
+        <button class="btn-pagination" 
+                [disabled]="currentPage === 1" 
+                (click)="currentPage = currentPage - 1">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <button *ngFor="let page of getVisiblePages()" 
+                class="btn-page" 
+                [class.active]="currentPage === page" 
+                (click)="currentPage = page">
+          {{ page }}
+        </button>
+        
+        <button class="btn-pagination" 
+                [disabled]="currentPage === getTotalPages()" 
+                (click)="currentPage = currentPage + 1">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar Column (Admin Only) -->
+  <div class="calendar-column">
+     <!-- heat map-->
+
+    <div class="calendar-section">
+      <div class="section-header">
+        <h3><i class="fas fa-calendar-alt"></i> Leave Calendar</h3>
+        <div class="calendar-controls">
+          <div class="month-navigator">
+            <button class="btn-nav" (click)="changeMonth(-1)">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <h4 class="month-title">{{ currentMonthName | titlecase }} {{ currentYear }}</h4>
+            <button class="btn-nav" (click)="changeMonth(1)">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+          <div class="calendar-actions">
+            <button class="btn-filter" (click)="toggleApprovedFilter()">
+              <i class="fas" [class.fa-eye]="!showOnlyApproved" [class.fa-eye-slash]="showOnlyApproved"></i>
+              {{ showOnlyApproved ? 'All Requests' : 'Approved Only' }}
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="calendar-grid">
+        <div class="calendar-weekdays">
+          <div *ngFor="let day of weekDays" class="weekday-header">
+            {{ day }}
+          </div>
+        </div>
+        
+        <div class="calendar-days-grid">
+          <div *ngFor="let day of calendarDays" 
+               class="calendar-day"
+               [class.current-month]="day.isCurrentMonth"
+               [class.today]="day.isToday"
+               [class.has-leave]="day.hasLeave">
+            <div class="day-header">
+              <span class="day-number">{{ day.date.getDate() }}</span>
+              <span *ngIf="day.isToday" class="today-badge">Today</span>
+            </div>
+            
+            <div *ngIf="day.hasLeave" class="leave-events">
+              <div *ngFor="let request of day.leaveRequests" 
+                   class="leave-event"
+                   [ngClass]="'status-' + request.status.toLowerCase()"
+                   (click)="showLeaveDetails(request, $event)"
+                   [title]="request.assistantEmail + ': ' + request.reason + ' (' + request.status + ')'">
+                <div class="event-content">
+                  <span class="assistant-initial">{{ getInitials(request.assistantEmail) }}</span>
+                  <span class="leave-duration">{{ calculateDuration(request.startDate, request.endDate) }}d</span>
+                </div>
+                <div class="event-status-icon">
+                  <i *ngIf="request.status === 'Approved'" class="fas fa-check-circle"></i>
+                  <i *ngIf="request.status === 'Rejected'" class="fas fa-times-circle"></i>
+                  <i *ngIf="request.status === 'Pending'" class="fas fa-clock"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="calendar-legend">
+        <div class="legend-item">
+          <span class="legend-color approved"></span>
+          <span>Approved</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color pending"></span>
+          <span>Pending</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color rejected"></span>
+          <span>Rejected</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Show access denied message if NOT ADMIN -->
+<div *ngIf="curRole !== 'ADMIN'" class="access-denied-container">
+  <div class="access-denied-card">
+    <i class="fas fa-lock"></i>
+    <h2>Access restricted</h2>
+    <p>You must be an administrator to access this page.</p>
+    <button class="btn-primary" (click)="navigateHome()">Return to home</button>
+  </div>
+</div>
+
+
+<!-- Add this at the bottom of your template file -->
+<div class="modal-overlay" *ngIf="selectedRequest" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Leave Request Details</h3>
+      <button class="btn-close" (click)="closeModal()">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="detail-section">
+        <div class="detail-row">
+          <div class="detail-item">
+            <span class="detail-label">Assistant</span>
+            <span class="detail-value">
+              <div class="assistant-info">
+                <div class="avatar">{{ getInitials(selectedRequest.assistantEmail) }}</div>
+                <span>{{ selectedRequest.assistantEmail }}</span>
+              </div>
+            </span>
+          </div>
+          
+          <div class="detail-item">
+            <span class="detail-label">Status</span>
+            <span class="detail-value">
+              <span class="status-badge" [ngClass]="selectedRequest.status.toLowerCase()">
+                {{ selectedRequest.status }}
+              </span>
+            </span>
+          </div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="detail-item">
+            <span class="detail-label">Period</span>
+            <span class="detail-value">
+              {{ selectedRequest.startDate | date:'mediumDate' }} - 
+              {{ selectedRequest.endDate | date:'mediumDate' }}
+              ({{ calculateDuration(selectedRequest.startDate, selectedRequest.endDate) }} days)
+            </span>
+          </div>
+          
+          <div class="detail-item">
+            <span class="detail-label">Request Date</span>
+            <span class="detail-value">
+              {{ selectedRequest.requestDate | date:'mediumDate' }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="detail-row full-width">
+          <div class="detail-item">
+            <span class="detail-label">Reason</span>
+            <span class="detail-value reason-text">
+              {{ selectedRequest.reason }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="detail-row full-width" *ngIf="selectedRequest.comments">
+          <div class="detail-item">
+            <span class="detail-label">Comments</span>
+            <span class="detail-value">
+              {{ selectedRequest.comments }}
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-actions" *ngIf="selectedRequest.status === 'Pending'">
+        <button class="btn btn-approve" (click)="updateStatus(selectedRequest.id, 'Approved')">
+          <i class="fas fa-check"></i> Approve
+        </button>
+        <button class="btn btn-reject" (click)="updateStatus(selectedRequest.id, 'Rejected')">
+          <i class="fas fa-times"></i> Reject
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

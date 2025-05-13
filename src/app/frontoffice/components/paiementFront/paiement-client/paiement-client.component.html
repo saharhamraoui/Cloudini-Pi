@@ -1,0 +1,206 @@
+<div class="payment-container">
+  <div class="payment-wrapper">
+    <div class="payment-card">
+      <div class="payment-header">
+        <div class="payment-header-content">
+          <i class="fas fa-lock payment-lock-icon"></i>
+          <h3 class="payment-title">Paiement sécurisé</h3>
+          <div class="payment-secure-badge">
+            <i class="fas fa-shield-alt"></i> 256-bit SSL sécurisé
+          </div>
+        </div>
+        <div class="payment-progress">
+          <div class="progress-step completed">
+            <span>1</span>
+            <p>Information</p>
+          </div>
+          <div class="progress-step active">
+            <span>2</span>
+            <p>Paiement</p>
+          </div>
+          <div class="progress-step">
+            <span>3</span>
+            <p>Confirmation</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="payment-body">
+        <div *ngIf="paymentSuccess" class="payment-success-alert">
+          <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="success-content">
+            <h4>Payment done !</h4>
+            <p>Your Payement of {{paymentDetails.montant}} USD was successfully done .</p>
+          </div>
+          <div class="success-decoration"></div>
+        </div>
+
+        <form (ngSubmit)="submitPayment()" #paymentForm="ngForm" class="payment-form">
+          <div class="form-section">
+            <div class="section-header">
+              <i class="fas fa-user-circle"></i>
+              <h4>Informations du patient</h4>
+            </div>
+            <div class="form-group floating-label">
+              <input
+                type="text"
+                id="nomPatient"
+                class="form-control"
+                name="nomPatient"
+                [(ngModel)]="paymentDetails.nomPatient"
+                required
+                placeholder=" "
+              />
+              <label for="nomPatient">Nom du patient</label>
+              <i class="fas fa-user form-icon"></i>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-header">
+              <i class="fas fa-money-bill-wave"></i>
+              <h4>Détails du paiement</h4>
+            </div>
+            <div class="form-row">
+              <div class="form-group floating-label amount-input">
+                <input
+                  type="number"
+                  id="montant"
+                  class="form-control"
+                  name="montant"
+                  [(ngModel)]="paymentDetails.montant"
+                  required
+                  min="0.01"
+                  placeholder=" "
+                />
+                <label for="montant">Montant</label>
+                <span class="currency">DT</span>
+                <i class="fas fa-dollar-sign form-icon"></i>
+              </div>
+
+              <div class="form-group floating-label">
+                <input
+                  type="date"
+                  id="datePaiement"
+                  class="form-control"
+                  name="datePaiement"
+                  [(ngModel)]="paymentDetails.datePaiement"
+                  required
+                  placeholder=" "
+                />
+                <label for="datePaiement">Date de paiement</label>
+                <i class="far fa-calendar-alt form-icon"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-header">
+              <i class="fas fa-user-md"></i>
+              <h4>Informations du médecin</h4>
+            </div>
+            <div class="form-group floating-label">
+              <input
+                type="email"
+                id="emailMedecin"
+                class="form-control"
+                name="emailMedecin"
+                [(ngModel)]="paymentDetails.emailMedecin"
+                required
+                placeholder=" "
+              />
+              <label for="emailMedecin">Email du médecin</label>
+              <i class="fas fa-envelope form-icon"></i>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-header">
+              <i class="far fa-credit-card"></i>
+              <h4>Informations de paiement</h4>
+            </div>
+            
+            <div class="card-type-selector">
+              <div class="card-type-label">Type de carte:</div>
+              <div class="card-options">
+                <div class="card-option" [class.selected]="selectedCard === 'visa'" (click)="selectedCard = 'visa'">
+                  <img src="https://img.icons8.com/color/48/visa.png" alt="Visa">
+                  <span>Visa</span>
+                </div>
+                <div class="card-option" [class.selected]="selectedCard === 'mastercard'" (click)="selectedCard = 'mastercard'">
+                  <img src="https://img.icons8.com/color/48/mastercard-logo.png" alt="Mastercard">
+                  <span>Mastercard</span>
+                </div>
+                <div class="card-option" [class.selected]="selectedCard === 'amex'" (click)="selectedCard = 'amex'">
+                  <img src="https://img.icons8.com/color/48/amex.png" alt="Amex">
+                  <span>Amex</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Numéro de carte</label>
+              <div class="card-input-wrapper">
+                <div id="card-element" class="card-element-style"></div>
+                <div class="card-icons">
+                  <i class="fas fa-lock"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="payment-actions">
+            <button type="button" class="btn back-btn">
+              <i class="fas fa-arrow-left"></i> Retour
+            </button>
+            <button
+              type="submit"
+              class="btn submit-btn"
+              [disabled]="!paymentForm.valid || paymentSuccess"
+            >
+
+            <div class="selected-card-preview" *ngIf="selectedCard">
+              <i class="fas fa-credit-card"></i> Carte sélectionnée : {{ selectedCard | titlecase }}
+            </div>
+              <span class="btn-content">
+                <span class="btn-text">Payer {{ paymentDetails.montant }} DT</span>
+                <span class="btn-icon">
+                  <i class="fas fa-lock"></i>
+                  <i class="fas fa-arrow-right"></i>
+                </span>
+              </span>
+              <span class="btn-loader">
+                <i class="fas fa-spinner fa-spin"></i>
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="payment-footer">
+        <div class="security-info">
+          <div class="security-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>Paiement sécurisé</span>
+          </div>
+          <div class="security-item">
+            <i class="fas fa-lock"></i>
+            <span>Chiffrement SSL</span>
+          </div>
+          <div class="security-item">
+            <i class="fas fa-heart"></i>
+            <span>Sans frais cachés</span>
+          </div>
+        </div>
+        <div class="payment-methods">
+          <img src="https://img.icons8.com/color/30/visa.png" alt="Visa">
+          <img src="https://img.icons8.com/color/30/mastercard-logo.png" alt="Mastercard">
+          <img src="https://img.icons8.com/color/30/amex.png" alt="Amex">
+          <img src="https://img.icons8.com/color/30/paypal.png" alt="PayPal">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

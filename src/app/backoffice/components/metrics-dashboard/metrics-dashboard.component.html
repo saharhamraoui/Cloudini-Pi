@@ -1,0 +1,31 @@
+<h2 class="mt-4">📊 Tableau de bord des réclamations</h2>
+
+<div class="mb-4">
+  <p><strong>Total :</strong> {{ total }}</p>
+  <p><strong>Temps moyen de résolution :</strong> {{ avgResolutionTime | number: '1.1-1' }} heures</p>
+</div>
+
+<div class="row">
+  <div class="col-md-6 mb-4">
+    <h5>📂 Catégories</h5>
+    <canvas id="categoryChart"></canvas>
+  </div>
+
+  <div class="col-md-6 mb-4">
+    <h5>📌 Répartition par Statut</h5>
+    <canvas id="statusChart"></canvas>
+  </div>
+</div>
+
+<div class="mb-4">
+  <h5>📅 Activité - 7 derniers jours</h5>
+  <canvas id="activityChart" height="80"></canvas>
+</div>
+
+<div>
+    <h5>🔥 Top 5 Réclamations les plus actives</h5>
+    <ul>
+      <li *ngFor="let r of top5">
+        {{ r?.description || '—' }} ({{ r?.responses?.length || 0 }} réponse{{ r?.responses?.length > 1 ? 's' : '' }})
+      </li>
+    </ul>

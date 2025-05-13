@@ -1,0 +1,70 @@
+<div class="reclamation-wrapper container py-4">
+  <h2 class="mb-4 text-primary">📋 Liste des Réclamations</h2>
+
+  <!-- 🔍 Search Bar -->
+  <div class="input-group mb-3">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="🔍 Rechercher une réclamation..."
+      [(ngModel)]="searchTerm"
+    />
+    <button class="btn btn-outline-secondary" type="button" (click)="searchTerm = ''">❌</button>
+  </div>
+
+  <!-- ⚠ Escalation Button -->
+  <div class="mb-3">
+    <button class="btn btn-outline-warning" (click)="triggerEscalation()">
+      ⚠️ Escalader les réclamations en attente depuis 3 jours
+    </button>
+  </div>
+
+  <!-- 📋 Table -->
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered shadow-sm rounded">
+      <thead class="table-light">
+        <tr>
+          <th>Description</th>
+          <th>Catégorie</th>
+          <th>Confiance IA</th>
+          <th>Statut</th>
+          <th>Émotion détectée</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rec of filteredReclamations()">
+          <td>{{ rec.description }}</td>
+          <td>{{ rec.category || 'Non catégorisé' }}</td>
+          <td>{{ rec.aiConfidence || 0 | number: '1.2-2' }}</td>
+          <td>
+            <span class="badge"
+                  [ngClass]="{
+                    'bg-warning text-dark': rec.status === 'PENDING',
+                    'bg-info text-dark': rec.status === 'IN_PROGRESS',
+                    'bg-success': rec.status === 'RESOLVED',
+                    'bg-secondary': rec.status === 'ESCALATED',
+                    'bg-danger': rec.status === 'CANCELED'
+                  }">
+              {{ rec.status }}
+            </span>
+          </td>
+          <td>{{ rec.emotion || '—' }}</td>
+          <td>
+            <div class="d-flex flex-column gap-2">
+              <button class="btn btn-danger btn-sm mb-1" (click)="deleteReclamation(rec.id!)">
+                🗑 Supprimer
+              </button>
+              <app-response-form [reclamationId]="rec.id!"></app-response-form>
+              <button class="btn btn-success btn-sm"
+                      (click)="markResolved(rec.id!)"
+                      [disabled]="rec.status === 'RESOLVED'">
+                ✔ Marquer comme résolue
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<div class="envelope-container">
+  <div class="envelope">
+    <h2 class="text-center">Orders Validation</h2>
+    
+    <p><strong>ID Order :</strong> {{ commande?.idcommande }}</p>
+    <p><strong>Order Statut :</strong> {{ commande?.status }}</p>
+
+    <div class="buttons">
+      <button class="btn btn-success" (click)="validerCommande('Validée')">Validate</button>
+      <button class="btn btn-primary" (click)="validerCommande('Livrée')">set as Livrée</button>
+    </div>
+  </div>
+</div>

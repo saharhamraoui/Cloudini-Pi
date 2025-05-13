@@ -1,0 +1,187 @@
+
+
+<!-- Template du header.component.html -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">My Blog </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <!-- Autres liens -->
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/blog">All Posts</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="front/my-posts">My Posts</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/profile">Profile</a>
+        </li>
+        <!-- Lien de déconnexion -->
+        <li class="nav-item">
+          <a class="nav-link">Logout</a>
+        </li>
+        <!-- Lien pour les notifications -->
+        <li class="nav-item">
+          <app-notifications></app-notifications>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<section class="blog-header">
+  <div class="overlay text-center">
+    <h1 class="blog-title display-4 fw-bold">Our Blog Magazine</h1>
+  </div>
+</section>
+
+<section class="blog-section bg-light py-5">
+  <div class="container">
+    <div class="row mb-4">
+      <!-- Sidebar Left -->
+      <aside class="col-lg-4">
+        <!-- Tags Section -->
+        <div class="sidebar-widget tags mb-4">
+          <h5>Tags</h5>
+          <div class="tags-container">
+            <button *ngFor="let tag of allTags" class="tag-button pulse-on-hover" (click)="filterByTag(tag.name)">
+              {{ tag.name }}
+            </button>
+          </div>
+        </div>
+      </aside>
+
+
+      <!-- Main Content -->
+      <main class="col-lg-8">
+        <!-- Create Post Button - Moved to top -->
+        <div class="d-flex justify-content-between align-items-center mb-4" *ngIf="isDoctor">
+          <!-- Search Bar -->
+          <div class="search-form-minimal flex-grow-1 me-3">
+            <div class="search-wrapper">
+              <i class="fas fa-search search-icon"></i>
+              <input type="text" [(ngModel)]="searchTerm" class="search-input" placeholder="Search..."
+                (keyup.enter)="performSearch()">
+              <div class="search-border"></div>
+            </div>
+          </div>
+
+          <!-- Button Group -->
+          <div class="button-group">
+            <button class="btn-create-post" (click)="navigateToCreatePost()">
+              <i class="fas fa-plus-circle"></i> Add a New Article
+            </button>
+            <button class="btn-whats-new" (click)="viewSuggestedTopics()" aria-label="View What's New">
+              <i class="fas fa-sparkles"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Articles List -->
+        <div *ngFor="let post of filteredPosts | slice:((currentPage - 1) * 5):(currentPage * 5)"
+          class="post-card mb-4">
+          <div class="post-content">
+            <!-- Post Image -->
+            <div *ngIf="post.imageUrl" class="post-image mb-3">
+              <img [src]="post.imageUrl" alt="{{ post.title }} Image" class="img-fluid rounded"
+                style="max-height: 200px;">
+            </div>
+
+            <h2 class="post-title">{{ post.title }}</h2>
+            <p class="post-meta">
+              Posted by <strong>{{ post.authorFullName }}</strong> on
+              {{ post.createdAt | date:'MMMM dd, yyyy' }} •
+              <span class="comments-count">
+                <i class="far fa-comment"></i> {{ post.comments?.length || 0 }} comments
+              </span>
+
+<span class="likes-count">
+  <i class="fas fa-thumbs-up"></i> {{ likesCount[post.id] || 0 }} likes
+</span>
+            <div class="post-body" [innerHTML]="post.content | slice:0:300"></div>
+
+            <!-- Post Tags -->
+            <div *ngIf="post.tags && post.tags.length > 0" class="post-tags mt-3">
+              <i class="fas fa-tags me-2"></i>
+              <span *ngFor="let tag of post.tags" class="tag-badge me-2">
+                {{ tag.name }}
+              </span>
+            </div>
+<div class="post-actions mt-3">
+  <!-- Bouton Like avec toggle -->
+  <button class="btn-like" (click)="toggleLike(post)" [disabled]="!isDoctor || isTogglingLike[post.id]"
+    [class.liked]="userLikes[post.id]" [attr.data-post-id]="post.id" aria-label="Like Post">
+    <i class="fas fa-thumbs-up like-icon"></i>
+    <span *ngIf="isTogglingLike[post.id]">...</span>
+    <span *ngIf="!isTogglingLike[post.id]">
+      {{ userLikes[post.id] ? 'Liked' : 'Like' }}
+    </span>
+    <span class="likes-count">({{ likesCount[post.id] || 0 }})</span>
+  </button>
+</div>
+
+            <!-- Comment Preview -->
+            <div *ngIf="post.comments && post.comments.length > 0" class="preview-comment">
+              <strong>{{ post.comments[0].author.firstName }} {{ post.comments[0].author.lastName }}</strong>
+            </div>
+
+            <div class="post-footer">
+              <a  class="btn btn-sm btn-outline-primary" (click)="viewPostDetails(post.id!)" aria-label="Read More">
+                <i class="fas fa-arrow-right"></i> Read More
+              </a>
+            </div>
+
+
+            <!-- Add Comment -->
+            <div *ngIf="isDoctor" class="add-comment mt-4">
+              <textarea [(ngModel)]="commentContents[post.id]" class="form-control" rows="2"
+                placeholder="Add your comment..." aria-label="Add Comment"></textarea>
+              <button class="btn btn-primary mt-2" (click)="addComment(post.id)" aria-label="Post Comment">
+                <i class="far fa-paper-plane"></i> Post Comment
+              </button>
+            </div>
+          </div>
+
+        <!-- No Results Message -->
+        <div *ngIf="filteredPosts.length === 0" class="no-results text-center">
+          Aucun résultat trouvé pour "{{ searchTerm }}"
+        </div>
+
+        <!-- Success Notification -->
+        <div class="success-notification text-center" *ngIf="showSuccessMessage">
+          Post créé avec succès!
+        </div>
+
+        <!-- Pagination -->
+        <nav class="pagination py-4" *ngIf="totalPages > 1">
+          <ul class="pagination-list d-flex justify-content-center">
+            <!-- Previous Button -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <button class="page-link" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)"
+                aria-label="Previous Page">
+                <i class="fas fa-chevron-left"></i> Previous
+              </button>
+            </li>
+
+            <!-- Page Numbers -->
+            <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+              <button class="page-link" (click)="changePage(page)" [attr.aria-label]="'Go to Page ' + page">
+                {{ page }}
+              </button>
+            </li>
+
+            <!-- Next Button -->
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <button class="page-link" [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)"
+                aria-label="Next Page">
+                Next <i class="fas fa-chevron-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+    </div>
+

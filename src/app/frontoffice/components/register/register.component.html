@@ -1,0 +1,293 @@
+<div class="register">
+  <div class="container">
+    <div class="row">
+      <!-- Left Sidebar -->
+      <div class="col-lg-4 register-left animate__animated animate__fadeInLeft">
+        <div class="sidebar-content">
+          <h3 class="title"><i class="fas fa-user-plus"></i> Join Our Platform</h3>
+          <p class="subtitle">Register as a Patient, Doctor, or Driver to get started.</p>
+          <button class="login-btn" [routerLink]="['/front/login']">
+            <i class="fas fa-sign-in-alt me-2"></i> Log In
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Form Section -->
+      <div class="col-lg-8 register-right animate__animated animate__fadeInRight">
+        <!-- Role Tabs -->
+        <div class="role-tabs">
+          <button class="tab-btn" [class.active]="isPatient" (click)="selectRole('patient')">
+            <i class="fas fa-procedures"></i> Patient
+          </button>
+          <button class="tab-btn" [class.active]="isMedecin" (click)="selectRole('medecin')">
+            <i class="fas fa-user-md"></i> Doctor
+          </button>
+          <button class="tab-btn" [class.active]="isChauffeur" (click)="selectRole('chauffeur')">
+            <i class="fas fa-car"></i> Driver
+          </button>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card">
+          <h3 class="register-heading">{{role | titlecase}} Registration</h3>
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="animate__animated animate__fadeInUp">
+            <div class="row">
+              <!-- Left Column -->
+              <div class="col-md-6">
+                <!-- Profile Picture -->
+                <div class="form-group mb-4">
+                  <label class="form-label">Profile Picture</label>
+                  <div class="profile-picture-container">
+                    <img [src]="previewPhoto || 'assets/profile.png'" class="profile-img" alt="Profile Picture">
+                    <div class="upload-controls">
+                      <input type="file" id="photoInput" accept="image/*" style="display: none" (change)="onFileSelected($event)">
+                      <button type="button" class="btn btn-outline-primary btn-sm" (click)="changePhoto()">
+                        <i class="fas fa-upload me-1"></i> Upload
+                      </button>
+                      <button *ngIf="selectedFile" type="button" class="btn btn-outline-danger btn-sm ms-2" (click)="removePhoto()">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      <small *ngIf="selectedFile" class="text-muted mt-2 d-block">{{selectedFile.name}}</small>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Common Fields -->
+                <div class="form-group mb-4">
+                  <label class="form-label">First Name <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" formControlName="firstName"
+                         [class.is-invalid]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
+                  <div class="invalid-feedback">First name is required</div>
+                </div>
+
+                <div class="form-group mb-4">
+                  <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" formControlName="lastName"
+                         [class.is-invalid]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
+                  <div class="invalid-feedback">Last name is required</div>
+                </div>
+
+                <div class="form-group mb-4">
+                  <label class="form-label">Email <span class="text-danger">*</span></label>
+                  <input type="email" class="form-control" formControlName="email"
+                         [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+                  <div class="invalid-feedback">Please enter a valid email</div>
+                </div>
+
+                <!-- Enhanced Date Field -->
+                <div class="form-group mb-4 date-picker">
+                  <label class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    <input type="date" class="form-control" formControlName="dateOfBirth"
+                           [class.is-invalid]="registerForm.get('dateOfBirth')?.invalid && registerForm.get('dateOfBirth')?.touched"
+                           placeholder="Select date">
+                  </div>
+                  <div class="invalid-feedback">Date of birth is required</div>
+                </div>
+
+                <!-- Patient Specific -->
+                <div *ngIf="isPatient" class="form-group mb-4">
+                  <label class="form-label">Blood Group <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" formControlName="bloodGroup"
+                         [class.is-invalid]="registerForm.get('bloodGroup')?.invalid && registerForm.get('bloodGroup')?.touched">
+                  <div class="invalid-feedback">Blood group is required</div>
+                </div>
+
+                <!-- Doctor Specific -->
+                <div *ngIf="isMedecin">
+                  <div class="form-group mb-4">
+                    <label class="form-label">Specialty <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" formControlName="speciality"
+                           [class.is-invalid]="registerForm.get('speciality')?.invalid && registerForm.get('speciality')?.touched">
+                    <div class="invalid-feedback">Specialty is required</div>
+                  </div>
+                  <div class="form-group mb-4">
+                    <label class="form-label">License Number <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" formControlName="licenseNumber"
+                           [class.is-invalid]="registerForm.get('licenseNumber')?.invalid && registerForm.get('licenseNumber')?.touched">
+                    <div class="invalid-feedback">License number is required</div>
+                  </div>
+                </div>
+
+                <!-- Driver Specific -->
+                <div *ngIf="isChauffeur" class="form-group mb-4">
+                  <label class="form-label">Driver's License Number <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" formControlName="driverLicenseNumber"
+                         [class.is-invalid]="registerForm.get('driverLicenseNumber')?.invalid && registerForm.get('driverLicenseNumber')?.touched">
+                  <div class="invalid-feedback">Driver's license number is required</div>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="col-md-6">
+                <!-- Password -->
+                <div class="form-group mb-4 position-relative">
+                  <label class="form-label">Password <span class="text-danger">*</span></label>
+                  <input [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="password"
+                         [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+                  <button type="button" class="toggle-password" (click)="togglePasswordVisibility('password')">
+                    <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+                  </button>
+                  <div class="invalid-feedback">Password must be at least 6 characters</div>
+                  <small class="form-text text-muted">At least 6 characters</small>
+                </div>
+
+                <div class="form-group mb-4 position-relative">
+                  <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                  <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control" formControlName="confirmPassword"
+                         [class.is-invalid]="(registerForm.get('confirmPassword')?.invalid || registerForm.hasError('mismatch')) && registerForm.get('confirmPassword')?.touched">
+                  <button type="button" class="toggle-password" (click)="togglePasswordVisibility('confirmPassword')">
+                    <i class="fas" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+                  </button>
+                  <div class="invalid-feedback">
+                    <span *ngIf="registerForm.get('confirmPassword')?.invalid">Confirmation required</span>
+                    <span *ngIf="registerForm.hasError('mismatch')">Passwords do not match</span>
+                  </div>
+                </div>
+
+                <div class="form-group mb-4">
+                  <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" formControlName="phoneNumber"
+                         [class.is-invalid]="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched">
+                  <div class="invalid-feedback">Phone number must be 8 digits</div>
+                </div>
+
+                <div class="form-group mb-4">
+                  <label class="form-label">Address <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" formControlName="address"
+                         [class.is-invalid]="registerForm.get('address')?.invalid && registerForm.get('address')?.touched">
+                  <div class="invalid-feedback">Address is required</div>
+                </div>
+
+                <!-- Patient Specific -->
+                <div *ngIf="isPatient" class="form-group mb-4">
+                  <label class="form-label">Gender <span class="text-danger">*</span></label>
+                  <select class="form-control" formControlName="gender"
+                          [class.is-invalid]="registerForm.get('gender')?.invalid && registerForm.get('gender')?.touched">
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                  </select>
+                  <div class="invalid-feedback">Gender is required</div>
+                </div>
+
+                <!-- Doctor Specific -->
+                <div *ngIf="isMedecin" class="form-group mb-4">
+                  <label class="form-label">Availability <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" formControlName="availability"
+                         [class.is-invalid]="registerForm.get('availability')?.invalid && registerForm.get('availability')?.touched">
+                  <div class="invalid-feedback">Availability is required</div>
+                </div>
+
+                <!-- Driver Specific -->
+                <div *ngIf="isChauffeur" class="form-group mb-4">
+                  <label class="form-label">Availability <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" formControlName="driverAvailability"
+                         [class.is-invalid]="registerForm.get('driverAvailability')?.invalid && registerForm.get('driverAvailability')?.touched">
+                  <div class="invalid-feedback">Availability is required</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Description Section -->
+            <div class="description-card mt-4">
+              <div class="card-header">
+                <h5><i class="fas fa-file-alt"></i> Profile Description</h5>
+              </div>
+              <div class="card-body">
+                <div class="form-group mb-4">
+                  <label class="form-label">Keywords</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" formControlName="keywords" placeholder="e.g., skills, specialties">
+                    <button class="btn btn-outline-primary" type="button" (click)="generateDescription()" [disabled]="isLoading">
+                      <i class="fas fa-magic me-1"></i> Generate
+                    </button>
+                  </div>
+                </div>
+
+                <div *ngIf="generatedDescription" class="form-group mb-4">
+                  <label class="form-label">Generated Description</label>
+                  <textarea class="form-control" formControlName="description" rows="4"></textarea>
+                  <button type="button" class="btn btn-outline-secondary btn-sm mt-2" (click)="downloadDescription()">
+                    <i class="fas fa-download me-1"></i> Download
+                  </button>
+                </div>
+
+                <div class="form-group mb-4">
+                  <label class="form-label">Upload Description (.txt)</label>
+                  <div class="input-group">
+                    <input type="file" class="form-control" accept=".txt" (change)="onDescriptionFileSelected($event)" #descriptionFileInput>
+                    <button class="btn btn-outline-danger" type="button" (click)="clearDescriptionFile()" [disabled]="!uploadedDescription">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                  <div *ngIf="uploadedDescription" class="mt-2">
+                    <textarea class="form-control" formControlName="description" rows="4" readonly></textarea>
+                    <small class="text-muted">{{uploadedDescription.length}} characters</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Face Registration -->
+            <div class="text-center my-4">
+              <button type="button" class="btn btn-outline-primary" (click)="toggleRegistrationMode()">
+                <i class="fas" [class.fa-camera]="!showFaceRegistration" [class.fa-user]="showFaceRegistration"></i>
+                {{showFaceRegistration ? 'Standard Registration' : 'Facial Recognition'}}
+              </button>
+            </div>
+
+            <div *ngIf="showFaceRegistration" class="face-registration-card mt-4 animate__animated animate__fadeIn">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <video #faceRegistrationVideo autoplay playsinline class="video-preview"></video>
+                    <div *ngIf="isCameraLoading" class="loading-overlay">
+                      <div class="spinner-border text-primary"></div>
+                      <p>Loading camera...</p>
+                    </div>
+                    <button *ngIf="!videoStream && !isCameraLoading" type="button" class="btn btn-primary mt-2" (click)="startCamera()">
+                      Start Camera
+                    </button>
+                    <p *ngIf="faceRegistrationSuccess" class="text-success mt-2"><i class="fas fa-check-circle"></i> Face registered!</p>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="alert alert-info">
+                      <h5><i class="fas fa-info-circle"></i> Instructions</h5>
+                      <ol>
+                        <li>Fill all form fields</li>
+                        <li>Allow camera access</li>
+                        <li>Position face in frame</li>
+                        <li>Click "Start Camera"</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Terms -->
+            <div class="form-check mt-4">
+              <input type="checkbox" class="form-check-input" id="terms" required>
+              <label class="form-check-label" for="terms">I accept the <a href="#">terms</a></label>
+            </div>
+
+            <!-- Error Message -->
+            <div *ngIf="errorMessage" class="alert alert-danger mt-3 animate__animated animate__shakeX">
+              <i class="fas fa-exclamation-circle me-1"></i> {{errorMessage}}
+            </div>
+
+            <!-- Submit -->
+            <div class="text-center mt-4">
+              <button type="submit" class="btn btn-primary btn-register" [disabled]="!registerForm.valid || isLoading">
+                <span *ngIf="!isLoading">Register</span>
+                <span *ngIf="isLoading"><i class="fas fa-spinner fa-spin"></i> Registering...</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
