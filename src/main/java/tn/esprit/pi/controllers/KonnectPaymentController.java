@@ -8,7 +8,7 @@ import tn.esprit.pi.services.KonnectPaymentService;
 
 @RestController
 @RequestMapping("/konnect")
-@CrossOrigin(origins = "http://192.168.1.122:32584")
+@CrossOrigin(origins = "http://192.168.1.162:32584")
 public class KonnectPaymentController {
 
     @Autowired

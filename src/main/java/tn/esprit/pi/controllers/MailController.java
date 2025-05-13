@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit.pi.services.MailService;
 
 
-@CrossOrigin(origins = "http://192.168.1.122:32584")
+@CrossOrigin(origins = "http://192.168.1.162:32584")
 @RestController
 @RequestMapping("/mail")
 

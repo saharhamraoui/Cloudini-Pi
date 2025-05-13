@@ -12,7 +12,7 @@ import tn.esprit.pi.services.IConsultationService;
 import java.util.List;
 
 @Tag(name = "Gestion Consultation")
-@CrossOrigin(origins = "http://192.168.1.122:32584")
+@CrossOrigin(origins = "http://192.168.1.162:32584")
 @RestController
 @RequestMapping("/consultation")
 public class ConsultationController {

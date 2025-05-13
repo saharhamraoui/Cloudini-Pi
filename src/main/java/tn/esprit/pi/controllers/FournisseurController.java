@@ -11,7 +11,7 @@ import tn.esprit.pi.entities.Medicament;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = "http://192.168.1.122:32584") // Allow requests from Angular frontend
+//@CrossOrigin(origins = "http://192.168.1.162:32584") // Allow requests from Angular frontend
 @AllArgsConstructor
 @RequestMapping("/Fournisseurs")
 public class FournisseurController {

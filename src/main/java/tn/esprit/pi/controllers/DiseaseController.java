@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 // DiseaseController.java
-@CrossOrigin(origins = "http://192.168.1.122:32584")
+@CrossOrigin(origins = "http://192.168.1.162:32584")
 @RestController
 @RequestMapping("/disease")
 public class DiseaseController {
