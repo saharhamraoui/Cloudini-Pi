@@ -23,12 +23,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/paiements")
-@CrossOrigin(origins = "http://198.162.1.122:32584")
+@CrossOrigin(origins = "http://192.168.1.122:32584")
 public class PaiementController {
     @Autowired
     private IPaiementService paiementService;
 
-    @CrossOrigin(origins = "http://198.162.1.122:32584")
+    @CrossOrigin(origins = "http://192.168.1.122:32584")
     @GetMapping("getPaiements")
     public List<Paiement> getAllPaiements() {
         return paiementService.getAllPaiements();

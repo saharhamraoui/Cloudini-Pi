@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://198.162.1.122:32584") // add this above your controller
+@CrossOrigin(origins = "http://192.168.1.122:32584") // add this above your controller
 @RestController
 @RequestMapping("/Prescription")
 public class PrescriptionController {
@@ -23,7 +23,7 @@ public class PrescriptionController {
         return iPrescriptionService.addPrescription(prescription);
     }
 
-    @CrossOrigin(origins = "http://198.162.1.122:32584") // add this above your controller
+    @CrossOrigin(origins = "http://192.168.1.122:32584") // add this above your controller
     @PutMapping("/updatePrescription")
     Prescription updatePrescription(@RequestBody Prescription prescription){
         return iPrescriptionService.updatePrescription(prescription);
