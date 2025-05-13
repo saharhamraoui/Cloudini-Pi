@@ -1,0 +1,45 @@
+package tn.esprit.pi.repositories;
+
+import tn.esprit.pi.entities.Post;
+import tn.esprit.pi.entities.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import tn.esprit.pi.entities.User;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface PostRepository extends JpaRepository<Post, Long> {
+    List<Post> findByAuthorOrderByCreatedAtDesc(User author);
+
+    Optional<Post> findByTitle(String title); // Utilisez Optional pour gérer le "non trouvé"
+    List<Post> findAllByOrderByCreatedAtDesc(); // Pour getAllPosts()
+    Page<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    List<Post> findByAuthorIdUser(Long authorId);
+
+        @Query("SELECT p FROM Post p JOIN FETCH p.author")
+        List<Post> findAllWithAuthor();
+    @Query("SELECT p.author.idUser FROM Post p WHERE p.id = :postId")
+    Long findAuthorIdByPostId(@Param("postId") Long postId);
+
+    @Query("SELECT p.id, p.title, p.content, p.createdAt, p.updatedAt, " +
+            "CONCAT(u.firstName, ' ', u.lastName) AS authorFullName " +
+            "FROM Post p " +
+            "LEFT JOIN p.author u " +
+            "WHERE p.id = :postId")
+    Object[] findPostWithAuthorName(@Param("postId") Long postId);
+    List<Post> findByTagsContaining(Tag tag);
+  @Modifying
+  @Query("UPDATE Post p SET p.likesCount = p.likesCount + 1 WHERE p.id = :postId")
+  void incrementLikes(@Param("postId") Long postId);
+
+  @Query("SELECT p.likesCount FROM Post p WHERE p.id = :postId")
+  int getLikesCount(@Param("postId") Long postId);
+
+}
