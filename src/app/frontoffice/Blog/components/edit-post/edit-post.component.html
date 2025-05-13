@@ -1,0 +1,28 @@
+<div *ngIf="isLoading" class="loading-message text-center">
+  <p>Loading post for editing...</p>
+</div>
+
+<div *ngIf="errorMessage" class="error-message text-center">
+  <p>Error: {{ errorMessage }}</p>
+</div>
+
+<form *ngIf="post" (ngSubmit)="updatePost()" #editForm="ngForm">
+  <!-- Champ Titre -->
+  <div class="form-group">
+    <label for="title">Titre du Post</label>
+    <input type="text" id="title" name="title" [(ngModel)]="post.title" required placeholder="Entrez le titre du post"
+      class="form-control" />
+  </div>
+
+  <!-- Champ Contenu -->
+  <div class="form-group">
+    <label for="content">Contenu du Post</label>
+    <textarea id="content" name="content" [(ngModel)]="post.content" required rows="6"
+      placeholder="Écrivez le contenu du post ici..." class="form-control"></textarea>
+  </div>
+
+  <!-- Bouton Mettre à Jour -->
+  <button type="submit" class="btn btn-primary btn-block" [disabled]="!editForm.form.valid">
+    Mettre à Jour
+  </button>
+</form>

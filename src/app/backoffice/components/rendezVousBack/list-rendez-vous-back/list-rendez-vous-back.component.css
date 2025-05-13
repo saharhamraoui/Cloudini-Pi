@@ -1,0 +1,216 @@
+/* Style moderne pour le tableau */
+.consultation-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-section {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.divider {
+  height: 3px;
+  width: 80px;
+  background: linear-gradient(to right, #3498db, #2ecc71);
+  border-radius: 3px;
+}
+
+.modern-table-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #333;
+}
+
+.modern-table thead {
+  background: linear-gradient(135deg, #3498db, #2c3e50);
+  color: white;
+}
+
+.modern-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.modern-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.modern-table tr:last-child td {
+  border-bottom: none;
+}
+
+
+
+/* Style des cellules spécifiques */
+.report-cell {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.appointment-badge {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.3rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+.no-appointment {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.diagnosis-tag {
+  background: #e8f5e9;
+  color: #388e3c;
+  padding: 0.3rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+/* Boutons d'action */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-btn, .delete-btn {
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.edit-btn {
+  background: #fff8e1;
+  color: #ffa000;
+}
+
+.delete-btn {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.edit-btn:hover {
+  background: #ffa000;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #d32f2f;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modern-table {
+    display: block;
+  }
+  
+  .modern-table thead {
+    display: none;
+  }
+  
+  .modern-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+  }
+  
+  .modern-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px dotted #ddd;
+  }
+  
+  .modern-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+    margin-right: 1rem;
+  }
+  
+  .action-buttons {
+    justify-content: flex-end;
+  }
+}
+/* Style du bouton Ajouter avec le dégradé bleu comme l'en-tête */
+.add-btn-thead {
+  background: linear-gradient(135deg, #3498db, #2c3e50);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.add-btn-thead:hover {
+  background: linear-gradient(135deg, #2c3e50, #3498db);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.add-btn-thead:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+.add-btn-thead i {
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .add-btn-thead {
+    align-self: flex-end;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}

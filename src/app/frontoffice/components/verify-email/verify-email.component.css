@@ -1,0 +1,138 @@
+/* Import Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Base Styles */
+.verification-container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F7FAFC;
+  padding: 2rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.verification-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+h2 {
+  color: #1A202C;
+  font-weight: 600;
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.input-group {
+  position: relative;
+}
+
+.input-group-text {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border: none;
+  background: transparent;
+  color: #6B7280;
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  z-index: 10;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none;
+}
+
+.required {
+  color: #EF4444;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  background: #3B82F6;
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #2563EB;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.error {
+  color: #EF4444;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate__animated.animate__fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .verification-container {
+    padding: 1rem;
+  }
+
+  .verification-card {
+    padding: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+}

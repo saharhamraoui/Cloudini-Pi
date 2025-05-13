@@ -1,0 +1,60 @@
+<div class="consultation-container">
+  <!-- Titre avec style moderne -->
+  <div class="header-section">
+
+    <h2 class="page-title">List of  Consultations</h2>
+    <div class="divider"></div>
+  </div>
+
+  <!-- Tableau moderne -->
+  <div class="modern-table-container">
+    <table class="modern-table">
+      <thead>
+        <tr>
+
+
+          <th>Report</th>
+          <th>Appointment</th>
+          <th>Diagnostic</th>
+          <th class="actions-header">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let consultation of listConsultation">
+          <td data-label="Rapport" class="report-cell">
+            {{ consultation.rapport ? (consultation.rapport.length > 50 ? (consultation.rapport | slice:0:50) + '...' : consultation.rapport) : '' }}
+          </td>
+          <td data-label="Rendez-vous">
+            <span class="appointment-badge" [class.no-appointment]="!consultation.rendezVous">
+              {{ consultation.rendezVous ? (consultation.rendezVous.dateRendezVous | date:'short') : 'Non défini' }}
+            </span>
+          </td>
+          <td data-label="Diagnostic">
+            <span class="diagnosis-tag">{{ consultation.medicalRecord?.diagnosis || 'Non défini' }}</span>
+          </td>
+          <td class="actions-cell">
+            <div class="action-buttons">
+              <button class="action-btn edit-btn" (click)="modifierConsultation(consultation.idConsultation)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="action-btn delete-btn" (click)="supprimerConsultation(consultation.idConsultation)">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+              <button class="action-btn qr-btn" (click)="toggleQRCode(consultation.idConsultation)" title="Voir QR Code">
+                <i class="fas fa-qrcode"></i>
+              </button>
+            </div>
+            <!-- QR Code display -->
+            <div *ngIf="selectedQRCodeRecordId === consultation.idConsultation" style="margin-top: 10px;">
+              <qrcode
+                [qrdata]="getQRCodeData(consultation)"
+                [width]="220"
+                [errorCorrectionLevel]="'H'">
+              </qrcode>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

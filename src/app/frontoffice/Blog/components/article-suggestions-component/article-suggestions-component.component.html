@@ -1,0 +1,58 @@
+<!-- article-suggestions-component.component.html -->
+<div class="search-container">
+  <header class="search-header">
+    <h1><i class="fas fa-heartbeat"></i> Medical Research Assistant</h1>
+    <p>Find the latest relevant medical publications in your specialty</p>
+  </header>
+
+  <section class="search-form">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="specialty"><i class="fas fa-user-md"></i> Medical Specialty</label>
+        <select id="specialty" [(ngModel)]="specialty">
+          <option value="">Select a specialty...</option>
+          <option *ngFor="let spec of medicalSpecialties" [value]="spec">{{ spec }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="keywords"><i class="fas fa-search"></i> Medical Keywords</label>
+        <input type="text" id="keywords" [(ngModel)]="keywords" placeholder="e.g. cancer, diabetes, surgery..." />
+      </div>
+    </div>
+
+    <button class="search-button" (click)="getSuggestions()" [disabled]="isLoading">
+      <i class="fas" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-search'"></i>
+      {{ isLoading ? 'Searching...' : 'Find Articles' }}
+    </button>
+
+    <div *ngIf="errorMessage" class="error-message">
+      <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+  </section>
+
+  <section *ngIf="suggestions.length > 0" class="results-container">
+    <h2>Recommended Articles</h2>
+    <div class="articles-grid">
+      <div *ngFor="let article of suggestions" class="article-card">
+        <div class="card-header">
+          Article #{{ article.id }} - {{ specialty }}
+        </div>
+        <div class="card-body">
+          <h3>{{ article.title }}</h3>
+          <p>{{ article.summary }}</p>
+
+          <div class="resources-section">
+            <h4><i class="fas fa-book-open"></i> Resources</h4>
+            <div class="resources-grid">
+              <a *ngFor="let resource of article.resources" [href]="resource.url" target="_blank" class="resource-link">
+                <i class="fas {{ resource.icon }}"></i>
+                {{ resource.name }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

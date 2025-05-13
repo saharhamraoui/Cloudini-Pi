@@ -1,0 +1,180 @@
+<div class="container">
+  <!-- Form Section -->
+  <h2>{{ isEditing ? 'Edit Medication' : 'Add new Medication' }}</h2>
+  
+  <form (ngSubmit)="ajouterMedicament()" #medForm="ngForm">
+    <!-- Nom -->
+    <div class="form-group">
+      <label for="nom">Name</label>
+      <input
+        type="text"
+        id="nom"
+        placeholder="Nom du médicament"
+        name="nom"
+        [(ngModel)]="medicament.nom"
+        required
+        #nom="ngModel"
+      />
+      <div *ngIf="nom.invalid && nom.touched" class="error">
+        name required
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+      <label for="description">Description</label>
+      <input
+        type="text"
+        id="description"
+        placeholder="Description du médicament"
+        name="description"
+        [(ngModel)]="medicament.description"
+        required
+        #description="ngModel"
+      />
+      <div *ngIf="description.invalid && description.touched" class="error">
+        description required
+      </div>
+    </div>
+
+    <!-- Quantité -->
+    <div class="form-group">
+      <label for="quantite">Quantity</label>
+      <input
+        type="number"
+        id="quantite"
+        placeholder="Quantité en stock"
+        name="quantite"
+        [(ngModel)]="medicament.quantite"
+        min="0"
+        required
+        #quantite="ngModel"
+      />
+      <div *ngIf="quantite.invalid && quantite.touched" class="error">
+        quantity should not be negative
+      </div>
+    </div>
+
+    <!-- Date d'expiration -->
+    <div class="form-group">
+      <label for="dateExpiration">Expiration Date</label>
+      <input
+        type="date"
+        id="dateExpiration"
+        name="dateExpiration"
+        [(ngModel)]="medicament.dateExpiration"
+        [min]="minDate"
+        required
+        #dateExpiration="ngModel"
+      />
+      <div *ngIf="dateExpiration.invalid && dateExpiration.touched" class="error">
+        expiration date should not be anterieur from today 
+      </div>
+    </div>
+
+    <!-- Prix -->
+    <div class="form-group">
+      <label for="prix">Price (TND)</label>
+      <input
+        type="number"
+        id="prix"
+        placeholder="Prix unitaire"
+        name="prix"
+        [(ngModel)]="medicament.prix"
+        min="0"
+        step="0.01"
+        required
+        #prix="ngModel"
+      />
+      <div *ngIf="prix.invalid && prix.touched" class="error">
+       price should be positive
+      </div>
+    </div>
+
+    <!-- Fournisseur -->
+<div class="form-group">
+  <label for="idfournisseur">Supplier</label>
+
+  <!-- Si ajout -->
+  <select
+    *ngIf="!isEditing"
+    id="idfournisseur"
+    name="idfournisseur"
+    [(ngModel)]="medicament.idfournisseur"
+    required
+    #idfournisseur="ngModel"
+  >
+    <option value="" disabled>-- Select Supplier --</option>
+    <option *ngFor="let f of fournisseurs" [value]="f.idfournisseur">
+      {{ f.nom }}
+    </option>
+  </select>
+
+  <!-- Si édition -->
+  <p *ngIf="isEditing">
+    <strong>{{ getFournisseurName(medicament.idfournisseur) }}</strong>
+  </p>
+
+  <div *ngIf="!medicament.idfournisseur && !isEditing" class="error">
+   select the supplier
+  </div>
+  
+</div>
+
+
+    <!-- Messages -->
+    <div *ngIf="successMessage" class="success-message">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="medForm.invalid" class="btn-submit">
+        {{ isEditing ? 'Update' : 'ADD' }}
+      </button>
+      <button type="button" (click)="resetForm()" class="btn-cancel" *ngIf="isEditing">
+        cancel
+      </button>
+    </div>
+  </form>
+
+  <!-- Medicaments List Section -->
+ <!-- Liste des médicaments -->
+<table class="medicaments-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Expiration Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let med of medicaments">
+      <td>{{ med.nom }}</td>
+      <td>{{ med.description }}</td>
+      <td>{{ med.quantite }}</td>
+      <td>{{ med.prix }} TND</td>
+      <td>{{ med.dateExpiration | date:'shortDate' }}</td>
+      
+      <td class="actions">
+        <button (click)="editMedicament(med)" class="btn-edit">
+          Modifier
+        </button>
+        <button (click)="deleteMedicament(med.idmedicament)" class="btn-delete">
+          Delete
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+  <ng-template #noMedicaments>
+    <p class="no-data">No Meds Available.</p>
+  </ng-template>
+</div>

@@ -1,0 +1,174 @@
+/* Header style glass */
+.header-glass {
+  width: 100vw;
+  background: rgba(14, 85, 81, 0.95);
+  backdrop-filter: blur(8px);
+  padding: 20px 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.btn-accueil {
+  background-color: white;
+  color: #0e5551;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: 0.3s ease;
+  border: none;
+}
+
+.btn-accueil:hover {
+  background-color: #0e5551;
+  color: white;
+}
+
+.welcome {
+  font-size: 14px;
+  color: #e6e6e6;
+}
+
+/* Conteneur de gestion plus large et central */
+.manage-container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 80px auto;
+  padding: 60px 40px;
+  background: #fefefe;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
+  transition: transform 0.3s ease;
+}
+
+.manage-container h2 {
+  font-size: 32px;
+  color: #0e5551;
+  margin-bottom: 40px;
+}
+
+/* Groupe des boutons centré */
+.btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+/* Bouton vert avec texte blanc */
+.btn-green {
+  background-color: #0e5551;
+  color: white;
+  border: none;
+  padding: 14px 30px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-green:hover {
+  background-color: #0b3f3c;
+}
+
+/* Bouton blanc avec texte vert et bordure */
+.btn-outline-green {
+  background-color: white;
+  color: #0e5551;
+  border: 2px solid #0e5551;
+  padding: 14px 30px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-green:hover {
+  background-color: #0e5551;
+  color: white;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  background-color: transparent;
+  color: #0e5551;
+  border: 2px solid #0e5551;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  background-color: #0e5551;
+  color: white;
+}
+
+/* Footer spacing */
+app-footer-back {
+  display: block;
+  margin-top: 100px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .btn-group {
+    flex-direction: column;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .manage-container {
+    margin: 30px 20px;
+    padding: 30px 20px;
+  }
+}

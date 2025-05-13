@@ -1,0 +1,74 @@
+<app-header-back></app-header-back>
+<a routerLink="/back/fournisseur" class="btn btn-sm btn-secondary mb-3">
+  <i class="fa-sharp fa-solid fa-arrow-left"></i>
+</a>
+<h2 class="heading-text">Medications</h2>
+
+<!-- Barre de recherche -->
+<div class="search-bar">
+  <input 
+    type="text" 
+    placeholder="Rechercher un médicament..."
+    [(ngModel)]="searchText"
+    (input)="filtrerMedicaments()" />
+</div>
+
+<!-- Liste des médicaments -->
+<div class="row" *ngIf="filteredMedicaments.length > 0; else noMedicament">
+  <div class="card" id="bloodCards" *ngFor="let medicament of filteredMedicaments">
+
+    <!-- Bloc image -->
+    <div class="img-block">
+      <div class="circle">
+        <img src="assets/images/meds.png" class="bloodimg" alt="Médicament" width="60" height="60">
+      </div>
+    </div>
+
+    <!-- Infos médicament -->
+    <div class="card-block">
+      <p class="text">{{ medicament.nom }}</p>
+      <p>💶 <strong>{{ medicament.prix }}</strong> €</p>
+      <p>
+        📦 Stock : <strong>{{ medicament.quantite }}</strong>
+        <span 
+          class="badge rupture" 
+          *ngIf="medicament.quantite === 0">Rupture</span>
+        <span 
+          class="badge low-stock" 
+          *ngIf="medicament.quantite > 0 && medicament.quantite < 10">Stock faible</span>
+      </p>
+
+      <!-- Bouton Commander -->
+      <div class="status-btn1">
+        <button class="status-btn2" [disabled]="medicament.quantite === 0" (click)="ouvrirFenetreQuantite(medicament)">
+          Order
+        </button>
+      </div>
+
+      <!-- Zone de saisie de quantité -->
+      <div *ngIf="selectedMedicament && selectedMedicament.idmedicament === medicament.idmedicament">
+        <input 
+          type="number" 
+          [(ngModel)]="quantiteCommande" 
+          min="1" 
+          [max]="medicament.quantite" 
+          placeholder="Quantité à commander"
+          class="form-control mt-2"
+          (input)="verifierQuantite(medicament)" />
+
+        <button class="status-btn" style="margin-top: 10px;" (click)="passerCommande(medicament)">
+          Confirmer
+        </button>
+
+        <p *ngIf="quantiteCommande > medicament.quantite" style="color: red; margin-top: 5px;">
+          ❌ Quantité demandée dépasse le stock ({{ medicament.quantite }} disponibles).
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Aucun médicament trouvé -->
+<ng-template #noMedicament>
+  <p class="text" style="text-align: center;">No Meds Available.</p>
+</ng-template>

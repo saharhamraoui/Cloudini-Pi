@@ -1,0 +1,45 @@
+.reclamation-wrapper {
+    padding: 2rem;
+  }
+  
+  .reclamation-wrapper h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #007bff;
+    margin-bottom: 2rem;
+  }
+  
+  .card {
+    border: none;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .card:hover {
+    transform: scale(1.01);
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  .card-title {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+  
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.4em 0.65em;
+    border-radius: 0.4rem;
+    color: #fff;
+  }
+  
+  .list-group-item {
+    font-size: 0.9rem;
+    background-color: #f9f9f9;
+    line-height: 1.6;
+    border: none;
+  }
+  

@@ -1,0 +1,76 @@
+<div class="consultation-container">
+  <!-- Titre avec bouton alignÃ© -->
+  <div class="header-section" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+
+      <h2 class="page-title">List of Appointments</h2>
+      <div class="divider"></div>
+    </div>
+    <button [routerLink]="['/back/addRendezVousBack']" class="add-btn-thead">
+      <i class="fas fa-calendar-plus"></i>
+
+      <span>Add Appointment</span>
+    </button>
+
+  </div>
+
+  <!-- ... (le reste de votre code reste inchangÃ©) ... -->
+
+
+  <!-- Tableau moderne -->
+  <div class="modern-table-container">
+    <table class="modern-table">
+      <thead>
+        <tr>
+
+
+          <th>Date</th>
+          <th>Doctor</th>
+          <th>Patient</th>
+          <th>Statut</th>
+          <th class="actions-header">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rv of rvs">
+
+
+          <td data-label="Date">{{ rv.dateRendezVous | date:'dd MMM yyyy HH:mm' }}</td>
+          <td data-label="MÃ©decin">
+            <span class="doctor-badge">
+              {{ rv.medecin ? (rv.medecin.firstName + ' ' + rv.medecin.lastName) : 'Aucun MÃ©decin' }}
+            </span>
+          </td>
+          <td data-label="Patient">
+            <span class="patient-badge">
+              {{ rv.patient ? (rv.patient.firstName + ' ' + rv.patient.lastName) : 'Aucun Patient' }}
+            </span>
+          </td>
+          <td data-label="Statut">
+            <select class="status-select" [(ngModel)]="rv.status" (change)="changerStatus(rv)">
+              <option value="En attente">En attente</option>
+              <option value="AcceptÃ©">AcceptÃ©</option>
+              <option value="RefusÃ©">RefusÃ©</option>
+            </select>
+          </td>
+          <td class="actions-cell">
+            <div class="action-buttons">
+              <button class="edit-btn" (click)="modifierRendezVous(rv.idRendezVous)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="delete-btn" (click)="supprimerRendezVous(rv.idRendezVous)">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+
+              <button class="btn btn-primary btn-sm mb-2" style="background-color: #0e5551; border-color: #0e5551;" (click)="ajouterConsultation(rv.idRendezVous)">
+                <i class="fa fa-plus"></i> Ajouter Consultation
+                <i class="fa fa-plus"></i> Add Consultation
+              </button>
+
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="bilan-list-wrapper">
+    <div class="bilan-list-container">
+      <h4 class="bilan-list-title">
+        <i class="fas fa-file-medical"></i> Test Results
+      </h4>
+      
+      <div *ngIf="bilans.length === 0" class="no-bilans">
+        <i class="fas fa-file-medical-alt"></i>
+        <p>No test results available for this record</p>
+      </div>
+  
+      <div *ngFor="let bilan of bilans" class="bilan-item">
+        <p><strong>Type:</strong> {{ bilan.type }}</p>
+        <p><strong>Results:</strong> {{ bilan.results }}</p>
+        <p><strong>Date:</strong> {{ bilan.createdAt | date:'mediumDate' }}</p>
+        <a *ngIf="bilan.fileName" 
+           [href]="'data:' + bilan.fileType + ';base64,' + bilan.fileData" 
+           download="{{ bilan.fileName }}"
+           class="download-link">
+          <i class="fas fa-download"></i> Download Report ({{ bilan.fileName }})
+        </a>
+      </div>
+    </div>
+  </div>

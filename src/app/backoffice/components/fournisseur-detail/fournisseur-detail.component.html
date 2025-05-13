@@ -1,0 +1,29 @@
+<app-header-back></app-header-back>
+<div class="container mt-4">
+  <!-- Back Button -->
+  <a routerLink="/back/fournisseur" class="btn btn-sm btn-secondary mb-3">
+    <i class="fa-sharp fa-solid fa-arrow-left"></i>
+  </a>
+  <div class="container mt-4 fournisseur-detail">
+  
+    <h2 class="mb-4">Supplier Détails</h2>
+  
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+  
+    <!-- Fournisseur details -->
+    <div *ngIf="fournisseur" class="card shadow-sm">
+      <div class="card-body">
+        <p><strong>Name:</strong> {{ fournisseur.nom }}</p>
+        <p><strong>Adress :</strong> {{ fournisseur.adresse }}</p>
+        <p><strong>Contact :</strong> {{ fournisseur.contact }}</p>
+  
+  
+       
+      </div>
+    </div>
+  </div>
+  
+  

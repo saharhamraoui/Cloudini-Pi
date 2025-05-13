@@ -1,0 +1,37 @@
+<app-header-back></app-header-back>
+
+
+<div class="heading-text"><b>Suppliers</b></div>
+
+<div class="search-bar" style="text-align: center; margin-bottom: 20px;">
+  <input type="text" [(ngModel)]="searchTerm" (input)="searchFournisseursByMedicament()" 
+         placeholder="Searsh By Lowest Price" 
+         style="padding: 10px; width: 300px; border-radius: 8px; border: 1px solid #ccc;" />
+</div>
+
+<div class="list-container">
+  <ul class="fournisseur-list">
+    <li *ngFor="let item of filteredFournisseurs" class="fournisseur-item">
+      <div class="list-item-content">
+        <div class="list-item-img">
+          <img [src]="'assets/images/supplier.png'" width="60" height="60" alt="Supplier Image" />
+        </div>
+        <div class="list-item-text">
+          <b style="color: #0e5551;">{{ item.nom }}</b><br />
+          <span style="color: #0e5551;">{{ item.adresse }}</span><br />
+          <div *ngIf="searchTerm">
+            <b class="price-indicator" [class.unavailable]="getMedicamentPrice(item) === 'Non disponible'">
+              Price for "{{ searchTerm }}": {{ getMedicamentPrice(item) }}€
+            </b>
+          </div>
+        </div>
+      </div>
+      <div class="status-btn">
+        <button class="btn btn-success" [routerLink]="['/back/medicaments', item.idfournisseur]">see Meds</button>
+        <button class="btn btn-primary" [routerLink]="['/back/fournisseur', item.idfournisseur]">Détails</button>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<br><br><br>

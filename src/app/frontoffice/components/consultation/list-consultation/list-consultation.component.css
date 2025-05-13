@@ -1,0 +1,171 @@
+/* ======== SECTION PRINCIPALE ======== */
+.rendezvous-section {
+    padding: 60px 20px;
+    background: #f4f7fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* ======== CONTENEUR DE TABLE ======== */
+  .rendezvous-section .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* ======== TABLE STYLE ======== */
+  .table-rdv {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table-rdv thead {
+    background-color: #3498db;
+    color: white;
+    text-align: left;
+  }
+  
+  .table-rdv th, .table-rdv td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 15px;
+  }
+  
+  .table-rdv tbody tr:hover {
+    background-color: #f1f9ff;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* ======== STATUS ======== */
+  .table-rdv td:nth-child(5) {
+    font-weight: bold;
+    color: #2c3e50;
+  }
+  
+  /* ======== GROUPES DE BOUTONS ======== */
+  .btn-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* ======== BOUTONS ICONES GÉNÉRAUX ======== */
+  .icon-btn {
+    position: relative;
+    background-color: #ffffff;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    padding: 12px;
+    font-size: 18px;
+    color: #555;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .icon-btn:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .icon-btn:active {
+    transform: scale(0.95);
+  }
+  
+  /* ======== MODIFIER ======== */
+  .btn-modifier {
+    color: #f39c12;
+    border-color: #f39c12;
+  }
+  
+  .btn-modifier:hover {
+    background-color: #fef5e7;
+    color: #e67e22;
+  }
+  
+  /* ======== SUPPRIMER ======== */
+  .btn-supprimer {
+    color: #e74c3c;
+    border-color: #e74c3c;
+  }
+  
+  .btn-supprimer:hover {
+    background-color: #fdecea;
+    color: #c0392b;
+  }
+  
+  /* ======== TOOLTIP ======== */
+  .icon-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+    z-index: 10;
+  }
+  
+  .icon-btn:hover::after {
+    opacity: 1;
+  }
+  
+  /* ======== RESPONSIVE ======== */
+  @media (max-width: 768px) {
+    .table-rdv th, .table-rdv td {
+      padding: 12px 10px;
+      font-size: 13px;
+    }
+  
+    .btn-group {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .icon-btn {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .appointment .btn-primary {
+        background-color: #007bff;
+        border: none;
+        font-weight: 500;
+        border-radius: 0.5rem;
+      }
+      
+      .appointment .btn-primary:disabled {
+        background-color: #aaa;
+      }
+
+      .btn-suggestion {
+        background-color: #17a2b8;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-suggestion:hover {
+        background-color: #138496;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    
+  }
+  

@@ -1,0 +1,122 @@
+<div class="container mt-4">
+  
+
+  <div class="kpi-card critical">
+    <div class="kpi-card success fade-in">
+   <!-- KPI Cards -->
+  <div class="row mb-4">
+    <!-- Carte Nombre de médicaments -->
+    <div class="col-md-3">
+      <div class="card kpi-card">
+        <div class="card-body">
+          <h5 class="card-title">Total Meds</h5>
+          <h2 class="card-value">{{ stockList.length }}</h2>
+          <i class="fas fa-pills icon"></i>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Carte Stock faible -->
+    <div class="col-md-3">
+      <div class="card kpi-card">
+        <div class="card-body">
+          <h5 class="card-title">Stock Faible</h5>
+          <h2 class="card-value">{{ getLowStockCount() }}</h2>
+          <i class="fas fa-exclamation-triangle icon warning"></i>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Carte Proche expiration -->
+    <div class="col-md-3">
+      <div class="card kpi-card">
+        <div class="card-body">
+          <h5 class="card-title">Proche Expiration</h5>
+          <h2 class="card-value">{{ expirationAlertes.length }}</h2>
+          <i class="fas fa-clock icon danger"></i>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Carte Valeur totale -->
+    <div class="col-md-3">
+      <div class="card kpi-card">
+        <div class="card-body">
+          <h5 class="card-title">Valeur Totale</h5>
+          <h2 class="card-value">{{ getTotalValue() | currency:'TND':'symbol' }}</h2>
+          <i class="fas fa-coins icon success"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+  <!-- Charts -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Stock State</h5>
+          <canvas id="stockStatusChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock List -->
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Stocks</h5>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Expiration</th>
+              <th>Seuil</th>
+              <th>Supplier</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stock of stockList" [class.table-warning]="stock.quantiteEnStock < stock.seuilAlerte" [class.table-danger]="isExpire(stock.medicament.dateExpiration)">
+              <td>{{ stock.medicament.nom }}</td>
+              <td>{{ stock.medicament.description }}</td>
+              <td [ngClass]="{ 'text-danger': stock.quantiteEnStock < stock.seuilAlerte }">
+                {{ stock.quantiteEnStock }}
+              </td>
+              <td>{{ stock.medicament.prix | currency:'TND':'symbol' }}</td>
+              <td [ngClass]="{ 'text-danger': isExpire(stock.medicament.dateExpiration) }">
+                {{ stock.medicament.dateExpiration | date:'shortDate' }}
+                <span *ngIf="isExpire(stock.medicament.dateExpiration)" class="badge bg-danger ms-2">Expiré</span>
+              </td>
+              <td>{{ stock.seuilAlerte }}</td>
+              <td>{{ stock.medicament.fournisseur.nom }}</td>
+              <td>
+                <button *ngIf="shouldShowCommanderButton(stock)" 
+                        class="btn btn-sm btn-primary"
+                        (click)="commanderChezFournisseur(stock.medicament.fournisseur.idfournisseur)">
+                  Order
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expiration Alerts -->
+  <div *ngIf="expirationAlertes.length > 0" class="alert alert-warning mt-3">
+    <h5><i class="bi bi-exclamation-triangle"></i> Médicaments proches de l'expiration</h5>
+    <ul>
+      <li *ngFor="let med of expirationAlertes">
+        {{ med.medicament.nom }} - {{ med.medicament.dateExpiration | date:'shortDate' }}
+        <span *ngIf="isExpire(med.medicament.dateExpiration)" class="text-danger"> (Expiré)</span>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,364 @@
+<div class="admin-container">
+  <div class="dashboard-wrapper">
+    <!-- Statistics Cards -->
+    <div class="stats-cards animate-fade-in">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-eye"></i></div>
+        <div class="stat-content">
+          <h3>{{dataMap['users'].current.length}}</h3>
+          <p>Total Users</p>
+          <span class="stat-trend up"><i class="fas fa-arrow-up"></i> 70.5%</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-content">
+          <h3>{{dataMap['patients'].current.length}}</h3>
+          <p>Total Patients</p>
+          <span class="stat-trend down"><i class="fas fa-arrow-down"></i> 27.4%</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-user-md"></i></div>
+        <div class="stat-content">
+          <h3>{{dataMap['medecins'].current.length}}</h3>
+          <p>Total Doctors</p>
+          <span class="stat-trend down"><i class="fas fa-arrow-down"></i> 27.4%</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-car"></i></div>
+        <div class="stat-content">
+          <h3>{{dataMap['chauffeurs'].current.length}}</h3>
+          <p>Total Drivers</p>
+          <span class="stat-trend down"><i class="fas fa-arrow-down"></i> 27.4%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="dashboard-header">
+      <div class="header-content">
+        <h1><i class="fas fa-users-cog"></i> Gestion des Utilisateurs</h1>
+        <div class="header-actions">
+          <div class="search-bar">
+            <div class="input-group animate-slide-in">
+              <input type="text" class="form-control" [(ngModel)]="searchTerm" 
+                     (input)="search()" placeholder="Rechercher par nom, email, rôle...">
+              <button class="btn btn-outline-secondary" (click)="resetSearch()">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <button class="btn btn-info" (click)="runSentimentAnalysis()" [disabled]="isAnalyzing">
+            <i class="fas fa-brain"></i> 
+            {{ isAnalyzing ? 'Analyse en cours...' : 'Analyser les Sentiments' }}
+          </button>
+          <div class="export-buttons animate-slide-in">
+            <button class="btn btn-primary" (click)="exportToPDF()" title="Exporter en PDF">
+              <i class="fas fa-file-pdf"></i> PDF
+            </button>
+            <button class="btn btn-success" (click)="exportToExcel()" title="Exporter en Excel">
+              <i class="fas fa-file-excel"></i> Excel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Tabs -->
+      <div class="admin-tabs animate-fade-in">
+        <button [ngClass]="{'active': currentTab === 'users'}" (click)="changeTab('users')">
+          <i class="fas fa-users"></i> Tous les utilisateurs
+        </button>
+        <button [ngClass]="{'active': currentTab === 'patients'}" (click)="changeTab('patients')">
+          <i class="fas fa-procedures"></i> Patients
+        </button>
+        <button [ngClass]="{'active': currentTab === 'medecins'}" (click)="changeTab('medecins')">
+          <i class="fas fa-user-md"></i> Médecins
+        </button>
+        <button [ngClass]="{'active': currentTab === 'chauffeurs'}" (click)="changeTab('chauffeurs')">
+          <i class="fas fa-car"></i> Chauffeurs
+        </button>
+      </div>
+
+      <!-- Loading Message -->
+      <div *ngIf="isLoading" class="loading-message animate-fade-in">
+        <i class="fas fa-spinner fa-spin"></i> Chargement des données...
+      </div>
+
+      <!-- Tables -->
+      <div *ngIf="!isLoading" class="table-responsive animate-fade-in">
+        <!-- Users Table -->
+        <div *ngIf="currentTab === 'users'">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th (click)="sort('lastName')">Nom <i class="fas {{getSortIcon('lastName')}}"></i></th>
+                <th (click)="sort('firstName')">Prénom <i class="fas {{getSortIcon('firstName')}}"></i></th>
+                <th (click)="sort('email')">Email <i class="fas {{getSortIcon('email')}}"></i></th>
+                <th (click)="sort('role')">Rôle <i class="fas {{getSortIcon('role')}}"></i></th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of dataMap['users'].displayed; trackBy: trackById">
+                <td>{{ user.lastName }}</td>
+                <td>{{ user.firstName }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td>
+                  <span class="badge" [ngClass]="user.banned ? 'badge-danger' : 'badge-success'">
+                    {{ user.banned ? 'Banni' : 'Actif' }}
+                  </span>
+                </td>
+                <td class="action-buttons">
+                  <button class="btn-action edit" (click)="editUser(user)" title="Modifier">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn-action ban" (click)="toggleBan(user.idUser, user.banned)" 
+                          title="{{ user.banned ? 'Débannir' : 'Bannir' }}">
+                    <i class="fas" [ngClass]="user.banned ? 'fa-check-circle' : 'fa-ban'"></i>
+                  </button>
+                  <button class="btn-action delete" (click)="deleteUser(user.idUser)" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="dataMap['users'].current.length === 0" class="no-data">
+            Aucun utilisateur trouvé
+          </div>
+          
+        </div>
+
+        <!-- Patients Table -->
+        <div *ngIf="currentTab === 'patients'">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th (click)="sort('lastName')">Nom <i class="fas {{getSortIcon('lastName')}}"></i></th>
+                <th (click)="sort('firstName')">Prénom <i class="fas {{getSortIcon('firstName')}}"></i></th>
+                <th (click)="sort('email')">Email <i class="fas {{getSortIcon('email')}}"></i></th>
+                <th (click)="sort('healthInsuranceNumber')">N° Assurance <i class="fas {{getSortIcon('healthInsuranceNumber')}}"></i></th>
+                <th>Dossier Médical</th>
+                <th>Groupe Sanguin</th>
+                <th (click)="sort('gender')">Genre <i class="fas {{getSortIcon('gender')}}"></i></th>
+                <th (click)="sort('dateOfBirth')">Date Naissance <i class="fas {{getSortIcon('dateOfBirth')}}"></i></th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let patient of dataMap['patients'].displayed; trackBy: trackById">
+                <td>{{ patient.lastName }}</td>
+                <td>{{ patient.firstName }}</td>
+                <td>{{ patient.email }}</td>
+                <td>{{ patient.healthInsuranceNumber || '-' }}</td>
+                <td>{{ patient.medicalRecordNumber || '-' }}</td>
+                <td>{{ patient.bloodGroup || '-' }}</td>
+                <td>{{ patient.gender === 'M' ? 'M' : patient.gender === 'F' ? 'F' : 'Autre' }}</td>
+                <td>{{ patient.dateOfBirth | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="patient.banned ? 'badge-danger' : 'badge-success'">
+                    {{ patient.banned ? 'Banni' : 'Actif' }}
+                  </span>
+                </td>
+                <td class="action-buttons">
+                  <button class="btn-action edit" (click)="editUser(patient)" title="Modifier">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn-action ban" (click)="toggleBan(patient.idUser, patient.banned)" 
+                          title="{{ patient.banned ? 'Débannir' : 'Bannir' }}">
+                    <i class="fas" [ngClass]="patient.banned ? 'fa-check-circle' : 'fa-ban'"></i>
+                  </button>
+                  <button class="btn-action delete" (click)="deleteUser(patient.idUser)" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="dataMap['patients'].current.length === 0" class="no-data">
+            Aucun patient trouvé
+          </div>
+         
+        </div>
+
+        <!-- Médecins Table -->
+        <div *ngIf="currentTab === 'medecins'">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th (click)="sort('lastName')">Nom <i class="fas {{getSortIcon('lastName')}}"></i></th>
+                <th (click)="sort('firstName')">Prénom <i class="fas {{getSortIcon('firstName')}}"></i></th>
+                <th (click)="sort('email')">Email <i class="fas {{getSortIcon('email')}}"></i></th>
+                <th (click)="sort('speciality')">Spécialité <i class="fas {{getSortIcon('speciality')}}"></i></th>
+                <th (click)="sort('licenseNumber')">N° Licence <i class="fas {{getSortIcon('licenseNumber')}}"></i></th>
+                <th>Disponibilité</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let medecin of dataMap['medecins'].displayed; trackBy: trackById">
+                <td>{{ medecin.lastName }}</td>
+                <td>{{ medecin.firstName }}</td>
+                <td>{{ medecin.email }}</td>
+                <td>{{ medecin.speciality || '-' }}</td>
+                <td>{{ medecin.licenseNumber || '-' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'badge-success': medecin.availability === 'AVAILABLE',
+                    'badge-warning': medecin.availability === 'ON_VACATION',
+                    'badge-danger': medecin.availability === 'UNAVAILABLE'
+                  }">
+                    {{ medecin.availability === 'AVAILABLE' ? 'Disponible' : 
+                       medecin.availability === 'ON_VACATION' ? 'En vacances' : 'Indisponible' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="medecin.banned ? 'badge-danger' : 'badge-success'">
+                    {{ medecin.banned ? 'Banni' : 'Actif' }}
+                  </span>
+                </td>
+                <td class="action-buttons">
+                  <button class="btn-action edit" (click)="editUser(medecin)" title="Modifier">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn-action ban" (click)="toggleBan(medecin.idUser, medecin.banned)" 
+                          title="{{ medecin.banned ? 'Débannir' : 'Bannir' }}">
+                    <i class="fas" [ngClass]="medecin.banned ? 'fa-check-circle' : 'fa-ban'"></i>
+                  </button>
+                  <button class="btn-action delete" (click)="deleteUser(medecin.idUser)" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="dataMap['medecins'].current.length === 0" class="no-data">
+            Aucun médecin trouvé
+          </div>
+          
+        </div>
+
+        <!-- Chauffeurs Table -->
+        <div *ngIf="currentTab === 'chauffeurs'">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th (click)="sort('lastName')">Nom <i class="fas {{getSortIcon('lastName')}}"></i></th>
+                <th (click)="sort('firstName')">Prénom <i class="fas {{getSortIcon('firstName')}}"></i></th>
+                <th (click)="sort('email')">Email <i class="fas {{getSortIcon('email')}}"></i></th>
+                <th (click)="sort('driverLicenseNumber')">N° Permis <i class="fas {{getSortIcon('driverLicenseNumber')}}"></i></th>
+                <th>Disponibilité</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let chauffeur of dataMap['chauffeurs'].displayed; trackBy: trackById">
+                <td>{{ chauffeur.lastName }}</td>
+                <td>{{ chauffeur.firstName }}</td>
+                <td>{{ chauffeur.email }}</td>
+                <td>{{ chauffeur.driverLicenseNumber || '-' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'badge-success': chauffeur.driverAvailability === 'AVAILABLE',
+                    'badge-warning': chauffeur.driverAvailability === 'ON_MISSION',
+                    'badge-danger': chauffeur.driverAvailability === 'UNAVAILABLE'
+                  }">
+                    {{ chauffeur.driverAvailability === 'AVAILABLE' ? 'Disponible' : 
+                       chauffeur.driverAvailability === 'ON_MISSION' ? 'En mission' : 'Indisponible' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="chauffeur.banned ? 'badge-danger' : 'badge-success'">
+                    {{ chauffeur.banned ? 'Banni' : 'Actif' }}
+                  </span>
+                </td>
+                <td class="action-buttons">
+                  <button class="btn-action edit" (click)="editUser(chauffeur)" title="Modifier">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn-action ban" (click)="toggleBan(chauffeur.idUser, chauffeur.banned)" 
+                          title="{{ chauffeur.banned ? 'Débannir' : 'Bannir' }}">
+                    <i class="fas" [ngClass]="chauffeur.banned ? 'fa-check-circle' : 'fa-ban'"></i>
+                  </button>
+                  <button class="btn-action delete" (click)="deleteUser(chauffeur.idUser)" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="dataMap['chauffeurs'].current.length === 0" class="no-data">
+            Aucun chauffeur trouvé
+          </div>
+         
+        </div>
+      </div>
+
+      <!-- Sentiment Analysis -->
+      <div *ngIf="sentimentData" class="sentiment-analysis animate-fade-in">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="fas fa-chart-pie"></i> Analyse des Sentiments des Profils</h5>
+          </div>
+          <div class="card-body">
+            <div class="sentiment-cards">
+              <div class="sentiment-card positive">
+                <div class="icon"><i class="fas fa-smile"></i></div>
+                <div class="count">{{ sentimentData.positive }}</div>
+                <div class="label">Positifs</div>
+              </div>
+              <div class="sentiment-card neutral">
+                <div class="icon"><i class="fas fa-meh"></i></div>
+                <div class="count">{{ sentimentData.neutral }}</div>
+                <div class="label">Neutres</div>
+              </div>
+              <div class="sentiment-card negative">
+                <div class="icon"><i class="fas fa-frown"></i></div>
+                <div class="count">{{ sentimentData.negative }}</div>
+                <div class="label">Négatifs</div>
+              </div>
+            </div>
+            <div class="insights">
+              <div class="alert alert-info">
+                <i class="fas fa-lightbulb"></i>
+                <span *ngIf="sentimentData.positive > sentimentData.negative">
+                  La majorité des utilisateurs ont des descriptions positives !
+                </span>
+                <span *ngIf="sentimentData.negative > sentimentData.positive">
+                  Attention : Plusieurs utilisateurs ont des descriptions négatives
+                </span>
+                <span *ngIf="sentimentData.negative === sentimentData.positive">
+                  Équilibre entre descriptions positives et négatives
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="charts-section animate-fade-in">
+        <div class="chart-card">
+          <h3>Users Activity</h3>
+          <p>Placeholder for a line chart showing user activity over time.</p>
+          <!-- Add a chart library like Chart.js here if you have data -->
+        </div>
+        <div class="chart-card">
+          <h3>Weekly Statistics</h3>
+          <p>Placeholder for a bar chart showing weekly statistics.</p>
+          <!-- Add a chart library like Chart.js here if you have data -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

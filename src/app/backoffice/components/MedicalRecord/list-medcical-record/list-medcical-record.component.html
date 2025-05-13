@@ -1,0 +1,516 @@
+<div class="medical-records-dashboard">
+  <div class="premium-header medical-records-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1><i class="fas fa-file-medical"></i> Medical Records Management</h1>
+        <p>Manage patient medical records efficiently with our secure platform</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-import glass-effect" (click)="openImportModal()">
+          <i class="fas fa-file-import"></i> Import
+        </button>
+        <button class="new-payment-btn glass-effect" (click)="onShowAddForm()">
+          <i class="fas fa-plus-circle"></i> New Record
+        </button>
+      </div>
+    </div>
+    <div class="header-decoration">
+      <div class="decoration-circle"></div>
+      <div class="decoration-wave"></div>
+      <div class="floating-icons">
+        <i class="fas fa-stethoscope"></i>
+        <i class="fas fa-prescription-bottle-alt"></i>
+        <i class="fas fa-heartbeat"></i>
+        <i class="fas fa-file-alt"></i>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Import Modal -->
+  <div class="modal-overlay" *ngIf="isImportModalVisible">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3><i class="fas fa-file-import"></i> Import Medical Records</h3>
+        <button class="btn-close" (click)="closeImportModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="file-import-container">
+          <div class="import-card">
+            <div class="import-body">
+              <div class="drag-drop-area" 
+                   (dragover)="onDragOver($event)" 
+                   (dragleave)="onDragLeave($event)" 
+                   (drop)="onDrop($event)"
+                   [class.drag-over]="isDragOver">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drag & drop your file here</p>
+                <span class="or-text">or</span>
+                <label for="file-upload" class="btn-browse">
+                  Browse Files
+                  <input id="file-upload" type="file" (change)="onFileSelected($event)" accept=".json,.txt" class="file-input">
+                </label>
+              </div>
+              <div class="supported-formats">
+                <p>Supported formats: <span>.json</span>, <span>.txt</span></p>
+              </div>
+              <div class="import-progress" *ngIf="importProgress > 0">
+                <div class="progress-bar" [style.width.%]="importProgress"></div>
+                <span>{{ importProgress }}%</span>
+              </div>
+            </div>
+            <div class="import-footer">
+              <i class="fas fa-info-circle"></i>
+              <p>Files should contain diagnosis, notes, and allergies information</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+    <!-- Visual Statistics Section -->
+<div class="visual-stats-container">
+  <div class="chart-card">
+    <h3><i class="fas fa-chart-pie"></i> Records Overview</h3>
+    <div class="chart-container">
+      <canvas id="medicalRecordStatsChart"></canvas>
+    </div>
+  </div>
+  
+  <div class="chart-card">
+    <h3><i class="fas fa-chart-line"></i> Records Timeline</h3>
+    <div class="chart-container">
+      <canvas id="recordsTrendChart"></canvas>
+    </div>
+  </div>
+  
+  <div class="chart-card">
+    <h3><i class="fas fa-diagnoses"></i> Top Diagnoses</h3>
+    <div class="chart-container">
+      <canvas id="diagnosesChart"></canvas>
+    </div>
+  </div>
+</div>
+    
+
+  <!-- Stats Cards -->
+  <div class="stats-container">
+    <div class="stat-card stat-primary">
+      <div class="stat-icon">
+        <i class="fas fa-file-medical-alt"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{medicalRecords.length}}</h3>
+        <p>Total Records</p>
+      </div>
+    </div>
+    <div class="stat-card stat-success">
+      <div class="stat-icon">
+        <i class="fas fa-heartbeat"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{getRecordsWithDiagnosis()}}</h3>
+        <p>With Diagnosis</p>
+      </div>
+    </div>
+    <div class="stat-card stat-warning">
+      <div class="stat-icon">
+        <i class="fas fa-allergies"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{getRecordsWithAllergies()}}</h3>
+        <p>With Allergies</p>
+      </div>
+    </div>
+    <div class="stat-card stat-danger">
+      <div class="stat-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{getRecentRecords()}}</h3>
+        <p>Recent (7 days)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Search and Filter -->
+    <div class="toolbar">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Search records...">
+      </div>
+      <div class="filters">
+        <select [(ngModel)]="dateFilter" (change)="applyFilters()">
+          <option value="">All Dates</option>
+          <option value="today">Today</option>
+          <option value="week">This Week</option>
+          <option value="month">This Month</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Records Table -->
+    <div class="card table-card">
+      <div class="table-responsive">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>ID <i class="fas fa-sort" (click)="sort('idMedicalRecord')"></i></th>
+              <th>Diagnosis <i class="fas fa-sort" (click)="sort('diagnosis')"></i></th>
+              <th>Notes</th>
+              <th>Allergies</th>
+              <th>Date <i class="fas fa-sort" (click)="sort('createdAt')"></i></th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let record of filteredRecords | slice:(currentPage-1)*itemsPerPage:currentPage*itemsPerPage">
+              <td>#{{record.idMedicalRecord}}</td>
+              <td>
+                <div class="diagnosis-info">
+                  <span class="diagnosis-text">{{record.diagnosis || 'No diagnosis'}}</span>
+                </div>
+              </td>
+              <td>
+                <div class="notes-preview">
+                  {{record.notes }}
+                </div>
+              </td>
+              <td>
+                <div class="allergies-info">
+                  <span *ngIf="record.allergies" class="allergies-badge">{{record.allergies}}</span>
+                  <span *ngIf="!record.allergies" class="no-allergies">None</span>
+                </div>
+              </td>
+              <td>{{record.createdAt | date:'mediumDate'}}</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-action btn-qr" (click)="toggleQRCode(record.idMedicalRecord)">
+                    <i class="fas fa-qrcode"></i>
+                  </button>
+                  <button class="btn-action btn-view" (click)="viewDetails(record)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn-action btn-edit" (click)="onUpdate(record)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn-action btn-print" (click)="downloadPDF(record)">
+                    <i class="fas fa-file-pdf"></i>
+                  </button>
+                  <button class="btn-action btn-delete" (click)="onDelete(record.idMedicalRecord!)">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+
+                  <!-- In your table's action buttons column -->
+                   <button class="btn-action btn-prescriptions" (click)="showPrescriptions(record)">
+                    <i class="fas fa-prescription"></i>
+                    </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- QR Code Modal -->
+      <div *ngIf="selectedQRCodeRecordId" class="qr-modal">
+        <div class="qr-modal-content">
+          <button class="btn-close" (click)="selectedQRCodeRecordId = null">
+            <i class="fas fa-times"></i>
+          </button>
+          <h4>Medical Record QR Code</h4>
+          <div class="qr-code-container">
+            <ng-container *ngIf="getRecordById(selectedQRCodeRecordId) as record">
+              <qrcode
+                [qrdata]="getQRCodeData(record)"
+                [width]="220"
+                [errorCorrectionLevel]="'H'">
+              </qrcode>
+            </ng-container>
+            
+          </div>
+          <p>Scan this code to access the medical record</p>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredRecords.length === 0" class="empty-state">
+        <i class="fas fa-file-medical"></i>
+        <h4>No medical records found</h4>
+        <p>Try adjusting your search or filters</p>
+        <button class="btn-primary" (click)="resetFilters()">Reset Filters</button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <div class="pagination-info">
+        Showing {{(currentPage-1)*itemsPerPage + 1}} to {{currentPage*itemsPerPage > filteredRecords.length ? filteredRecords.length : currentPage*itemsPerPage}} of {{filteredRecords.length}} entries
+      </div>
+      <div class="pagination-controls">
+        <select [(ngModel)]="itemsPerPage" (change)="currentPage = 1">
+          <option value="5">5 per page</option>
+          <option value="10">10 per page</option>
+          <option value="25">25 per page</option>
+          <option value="50">50 per page</option>
+        </select>
+        <button class="btn-pagination" (click)="firstPage()" [disabled]="currentPage === 1">
+          <i class="fas fa-angle-double-left"></i>
+        </button>
+        <button class="btn-pagination" (click)="previousPage()" [disabled]="currentPage === 1">
+          <i class="fas fa-angle-left"></i>
+        </button>
+        <div class="page-numbers">
+          <button *ngFor="let page of getPageNumbers()" 
+                  class="btn-page" 
+                  [class.active]="page === currentPage"
+                  (click)="changePage(page)">
+            {{page}}
+          </button>
+        </div>
+        <button class="btn-pagination" (click)="nextPage()" [disabled]="currentPage === totalPages">
+          <i class="fas fa-angle-right"></i>
+        </button>
+        <button class="btn-pagination" (click)="lastPage()" [disabled]="currentPage === totalPages">
+          <i class="fas fa-angle-double-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enhanced Add Record Modal -->
+<div class="modal-overlay" *ngIf="isAddFormVisible">
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-icon">
+        <i class="fas fa-file-medical"></i>
+      </div>
+      <h3>Create New Medical Record</h3>
+      <button class="btn-close" (click)="closeAddForm()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form (ngSubmit)="addRecord()" #addRecordForm="ngForm">
+        <div class="form-section">
+          <div class="section-header">
+            <i class="fas fa-diagnoses"></i>
+            <h4>Diagnosis Information</h4>
+          </div>
+          <div class="form-group">
+            <label>Diagnosis*</label>
+            <div class="input-with-icon">
+              <i class="fas fa-stethoscope"></i>
+              <input type="text" [(ngModel)]="newRecord.diagnosis" name="diagnosis" required placeholder="Enter diagnosis">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-header">
+            <i class="fas fa-notes-medical"></i>
+            <h4>Clinical Notes</h4>
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <div class="rich-text-container">
+              <textarea [(ngModel)]="newRecord.notes" name="notes" rows="4" placeholder="Enter clinical notes..."></textarea>
+              <div class="formatting-tools">
+                <button type="button" (click)="formatText('bold')"><i class="fas fa-bold"></i></button>
+                <button type="button" (click)="formatText('italic')"><i class="fas fa-italic"></i></button>
+                <button type="button" (click)="formatText('underline')"><i class="fas fa-underline"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-header">
+            <i class="fas fa-allergies"></i>
+            <h4>Allergies & Sensitivities</h4>
+          </div>
+          <div class="form-group">
+            <label>Allergies</label>
+            <div class="input-with-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+              <input type="text" [(ngModel)]="newRecord.allergies" name="allergies" placeholder="List any allergies">
+            </div>
+          </div>
+          <div class="allergy-tags" *ngIf="newRecord.allergies">
+            <span class="allergy-tag" *ngFor="let allergy of newRecord.allergies.split(',')">
+              {{ allergy.trim() }}
+              <i class="fas fa-times" (click)="removeAllergy(allergy)"></i>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeAddForm()">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="!addRecordForm.valid">
+            <i class="fas fa-save"></i> Save Record
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+  <!-- Edit Record Modal -->
+  <div class="modal-overlay" *ngIf="selectedRecord">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Edit Medical Record #{{selectedRecord.idMedicalRecord}}</h3>
+        <button class="btn-close" (click)="cancelUpdate()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="submitUpdate()" #updateForm="ngForm">
+          <div class="form-group">
+            <label>Diagnosis*</label>
+            <input type="text" [(ngModel)]="selectedRecord.diagnosis" name="diagnosis" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea [(ngModel)]="selectedRecord.notes" name="notes" rows="4"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>Allergies</label>
+            <input type="text" [(ngModel)]="selectedRecord.allergies" name="allergies">
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="cancelUpdate()">Cancel</button>
+            <button type="submit" class="btn-primary">Update Record</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Record Detail Modal -->
+  <div class="modal-overlay" *ngIf="viewedRecord">
+    <div class="modal-container wide">
+      <div class="modal-header">
+        <h3>Medical Record Details #{{viewedRecord.idMedicalRecord}}</h3>
+        <button class="btn-close" (click)="viewedRecord = null">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="record-detail">
+          <div class="detail-header">
+            <div class="header-left">
+              <h4>Patient Medical Record</h4>
+              <span class="status-badge">
+                Created: {{viewedRecord.createdAt | date:'mediumDate'}}
+              </span>
+            </div>
+            <div class="header-right">
+              <button class="btn-secondary" (click)="downloadPDF(viewedRecord)">
+                <i class="fas fa-file-pdf"></i> Export as PDF
+              </button>
+            </div>
+          </div>
+          
+          <div class="detail-section">
+            <div class="detail-row">
+              <div class="detail-item">
+                <span class="detail-label">Record ID</span>
+                <span class="detail-value">#{{viewedRecord.idMedicalRecord}}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Created Date</span>
+                <span class="detail-value">{{viewedRecord.createdAt | date:'mediumDate'}}</span>
+              </div>
+            </div>
+            
+            <div class="detail-item full">
+              <span class="detail-label">Diagnosis</span>
+              <p class="detail-value">{{viewedRecord.diagnosis || 'No diagnosis provided'}}</p>
+            </div>
+            
+            <div class="detail-item full">
+              <span class="detail-label">Notes</span>
+              <p class="detail-value">{{viewedRecord.notes || 'No notes provided'}}</p>
+            </div>
+            
+            <div class="detail-item full">
+              <span class="detail-label">Allergies</span>
+              <p class="detail-value">{{viewedRecord.allergies || 'No known allergies'}}</p>
+            </div>
+          </div>
+          
+          <div class="detail-actions">
+            <button class="btn-primary" (click)="onPrint(viewedRecord)">
+              <i class="fas fa-print"></i> Print Record
+            </button>
+            <button class="btn-secondary" (click)="toggleQRCode(viewedRecord.idMedicalRecord)">
+              <i class="fas fa-qrcode"></i> Show QR Code
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prescriptions Modal -->
+<div class="modal-overlay" *ngIf="isPrescriptionsModalVisible">
+  <div class="modal-container wide">
+    <div class="modal-header">
+      <h3>Prescriptions for Record #{{selectedRecordForPrescriptions?.idMedicalRecord}}</h3>
+      <button class="btn-close" (click)="closePrescriptionsModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="prescriptions-list">
+        <div *ngIf="selectedPrescriptions.length === 0" class="empty-state">
+          <i class="fas fa-prescription"></i>
+          <h4>No prescriptions found</h4>
+          <p>This medical record has no prescriptions</p>
+        </div>
+
+        <div *ngIf="selectedPrescriptions.length > 0" class="table-responsive">
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Medication</th>
+                <th>Dosage</th>
+                <th>Instructions</th>
+                <th>Issue Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let prescription of selectedPrescriptions">
+                <td>{{prescription.medication}}</td>
+                <td>{{prescription.dosage}}</td>
+                <td>{{prescription.instructions}}</td>
+                <td>{{prescription.issueDate | date:'shortDate'}}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="{
+                    'status-active': prescription.status === 'ACTIVE',
+                    'status-completed': prescription.status === 'COMPLETED',
+                    'status-expired': prescription.status === 'EXPIRED',
+                    'status-pending': prescription.status === 'PENDING'
+                  }">
+                    {{prescription.status}}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  

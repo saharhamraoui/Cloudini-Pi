@@ -1,0 +1,53 @@
+/* bilan-list.component.css */
+.bilan-list-container {
+    margin-top: 1rem;
+  }
+  
+  .bilan-list-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1rem;
+  }
+  
+  .bilan-item {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #4299e1;
+  }
+  
+  .bilan-item p {
+    margin: 0.25rem 0;
+    color: #4a5568;
+  }
+  
+  .bilan-item strong {
+    color: #2d3748;
+    font-weight: 600;
+  }
+  
+  .download-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #4299e1;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  
+  .download-link:hover {
+    color: #3182ce;
+    text-decoration: underline;
+  }
+  
+  .no-bilans {
+    text-align: center;
+    padding: 1.5rem;
+    color: #718096;
+    background-color: #f7fafc;
+    border-radius: 0.5rem;
+    border: 1px dashed #cbd5e0;
+  }

@@ -1,0 +1,47 @@
+
+<!-- Modifier Rendez-vous Section -->
+<section id="modifier-rendezvous" class="appointment section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+      <div class="container section-title">
+        <h2>EDIT APPOINTMENT</h2>
+      </div>
+
+      <form [formGroup]="rendezVousForm" (ngSubmit)="update()" class="php-email-form appointment-form">
+
+        <!-- Date et Heure -->
+        <div class="row">
+          <div class="col-md-6 form-group mt-3">
+            <label for="dateRendezVous" class="form-label">Date and Time</label>
+            <input type="datetime-local" id="dateRendezVous" formControlName="dateRendezVous" class="form-control" />
+            <div *ngIf="rendezVousForm.get('dateRendezVous')?.invalid && rendezVousForm.get('dateRendezVous')?.touched" class="text-danger">
+                Date is required.
+            </div>
+          </div>
+
+          <!-- Médecin -->
+          <div class="col-md-6 form-group mt-3">
+            <label for="medecin" class="form-label">Doctor</label>
+            <select id="medecin" formControlName="medecin" class="form-select">
+              <option value="">Select a doctor</option>
+              <option *ngFor="let medecin of medecins" [value]="medecin.idUser">{{ medecin.firstName }}</option>
+            </select>
+            <div *ngIf="rendezVousForm.get('medecin')?.invalid && rendezVousForm.get('medecin')?.touched" class="text-danger">
+                Doctor is required.
+            </div>
+          </div>
+        </div>
+
+        <!-- Bouton Modifier -->
+        <div class="text-center mt-4">
+          <button type="submit" class="btn btn-primary px-4 py-2"
+            style="background: #3498db; border: none; color: white; padding: 10px 20px; border-radius: 50px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px;"
+            [disabled]="rendezVousForm.invalid">
+            Update Appointment
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+

@@ -1,0 +1,460 @@
+<div class="payment-dashboard premium-theme">
+  <!-- Premium Header Section -->
+  <div class="premium-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1><i class="fas fa-credit-card"></i> Payment Dashboard</h1>
+        <p>Manage all your transactions with our intuitive payment system</p>
+        <div class="header-stats">
+          <div class="stat-item">
+            <i class="fas fa-calendar-check"></i>
+            <span>{{filteredPayments.length}} Payments</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-user-md"></i>
+            <span>{{doctors.length}} Doctors</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="new-payment-btn glass-effect" (click)="initiateNewPayment()">
+          <i class="fas fa-plus-circle"></i> New Payment
+        </button>
+        <button class="refresh-btn glass-effect" (click)="refreshPayments()">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+    </div>
+    <div class="header-decoration">
+      <div class="decoration-circle"></div>
+      <div class="decoration-wave"></div>
+      <div class="floating-icons">
+        <i class="fas fa-coins"></i>
+        <i class="fas fa-credit-card"></i>
+        <i class="fas fa-wallet"></i>
+        <i class="fas fa-money-bill-wave"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards with Enhanced Animation -->
+  <div class="summary-section">
+    <div class="summary-card paid" [@cardAnimation]="'in'">
+      <div class="card-bg-pattern"></div>
+      <div class="card-content">
+        <div class="card-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="card-text">
+          <h3>{{totalPaid | currency:'USD':'symbol':'1.2-2'}}</h3>
+          <p>Total Paid</p>
+          <div class="trend-indicator positive">
+            <i class="fas fa-arrow-up"></i> 12.5%
+          </div>
+        </div>
+        <div class="card-progress">
+          <div class="progress-bar" [style.width.%]="(totalPaid / (totalPaid + totalPending + totalPartial)) * 100"></div>
+        </div>
+      </div>
+      <div class="card-wave"></div>
+      <div class="card-sparkles"></div>
+    </div>
+
+    <div class="summary-card pending" [@cardAnimation]="'in'">
+      <div class="card-bg-pattern"></div>
+      <div class="card-content">
+        <div class="card-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="card-text">
+          <h3>{{totalPending | currency:'USD':'symbol':'1.2-2'}}</h3>
+          <p>Pending Payments</p>
+          <div class="trend-indicator negative">
+            <i class="fas fa-arrow-down"></i> 8.3%
+          </div>
+        </div>
+        <div class="card-progress">
+          <div class="progress-bar" [style.width.%]="(totalPending / (totalPaid + totalPending + totalPartial)) * 100"></div>
+        </div>
+      </div>
+      <div class="card-wave"></div>
+      <div class="card-sparkles"></div>
+    </div>
+
+    <div class="summary-card partial" [@cardAnimation]="'in'">
+      <div class="card-bg-pattern"></div>
+      <div class="card-content">
+        <div class="card-icon">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <div class="card-text">
+          <h3>{{totalPartial | currency:'USD':'symbol':'1.2-2'}}</h3>
+          <p>Partial Payments</p>
+          <div class="trend-indicator neutral">
+            <i class="fas fa-equals"></i> 0.5%
+          </div>
+        </div>
+        <div class="card-progress">
+          <div class="progress-bar" [style.width.%]="(totalPartial / (totalPaid + totalPending + totalPartial)) * 100"></div>
+        </div>
+      </div>
+      <div class="card-wave"></div>
+      <div class="card-sparkles"></div>
+    </div>
+  </div>
+
+  <!-- Enhanced Filter Section -->
+  <div class="filter-section glass-effect">
+    <div class="filter-container">
+      <div class="filter-group">
+        <label for="status-filter"><i class="fas fa-filter"></i> Status</label>
+        <div class="select-wrapper">
+          <select id="status-filter" [(ngModel)]="statusFilter" (change)="filterPayments()">
+            <option value="all">All Statuses</option>
+            <option [value]="PaymentStatus.Paid">Paid</option>
+            <option [value]="PaymentStatus.Unpaid">Unpaid</option>
+            <option [value]="PaymentStatus.Partial">Partial</option>
+          </select>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+      </div>
+      
+      <div class="filter-group">
+        <label for="date-filter"><i class="fas fa-calendar-alt"></i> Period</label>
+        <div class="select-wrapper">
+          <select id="date-filter" [(ngModel)]="dateFilter" (change)="filterPayments()">
+            <option value="all">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="year">This Year</option>
+            <option value="custom">Custom Range</option>
+          </select>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+      </div>
+      
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search payments..." [(ngModel)]="searchQuery" (input)="filterPayments()">
+        <button class="search-btn" (click)="filterPayments()">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+      
+      <button class="export-btn glass-effect" (click)="exportPayments()">
+        <i class="fas fa-file-export"></i> Export
+      </button>
+    </div>
+  </div>
+
+  <!-- Premium Payment Cards Grid -->
+  <div class="payment-cards-container glass-effect">
+    <div class="list-header">
+      <h3>Recent Transactions</h3>
+      <div class="results-count">
+        Showing {{(currentPage-1)*itemsPerPage + 1}}-{{Math.min(currentPage*itemsPerPage, filteredPayments.length)}} of {{filteredPayments.length}} payments
+      </div>
+    </div>
+
+    <div *ngIf="filteredPayments.length === 0" class="no-results">
+      <div class="no-results-icon">
+        <i class="fas fa-search-dollar"></i>
+      </div>
+      <h3>No payments found</h3>
+      <p>Try adjusting your search criteria</p>
+      <button class="clear-filters glass-effect" (click)="clearFilters()">
+        <i class="fas fa-times"></i> Clear Filters
+      </button>
+    </div>
+
+    <div class="payment-cards-grid">
+      <div *ngFor="let payment of filteredPayments | slice:(currentPage-1)*itemsPerPage:currentPage*itemsPerPage" 
+           class="payment-card glass-effect"
+           [ngClass]="{
+             'paid': payment.statut === PaymentStatus.Paid,
+             'unpaid': payment.statut === PaymentStatus.Unpaid,
+             'partial': payment.statut === PaymentStatus.Partial
+           }"
+           [@cardAnimation]="'in'">
+        
+        <div class="card-header">
+          <div class="payment-date">
+            <span class="date-day">{{payment.datePaiement | date:'dd'}}</span>
+            <div class="date-month-year">
+              <span class="date-month">{{payment.datePaiement | date:'MMM'}}</span>
+              <span class="date-year">{{payment.datePaiement | date:'yyyy'}}</span>
+            </div>
+          </div>
+          <div class="payment-status">
+            <span class="status-badge" [ngClass]="{
+              'paid': payment.statut === PaymentStatus.Paid,
+              'unpaid': payment.statut === PaymentStatus.Unpaid,
+              'partial': payment.statut === PaymentStatus.Partial
+            }">
+              <i class="fas fa-circle"></i> {{getStatusDisplay(payment.statut)}}
+            </span>
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <div class="payment-amount">
+            <h3>{{payment.montant | currency:'USD':'symbol':'1.2-2'}}</h3>
+            <div *ngIf="payment.statut === PaymentStatus.Partial" class="partial-details">
+              <div class="partial-progress">
+                <div class="progress-track">
+                  <div class="progress-thumb" 
+                       [style.width.%]="(payment.montantPaye! / payment.montant) * 100"></div>
+                </div>
+                <span class="progress-text">{{(payment.montantPaye! / payment.montant) * 100 | number:'1.0-0'}}% Paid</span>
+              </div>
+              <div class="amount-details">
+                <span class="paid-amount">Paid: {{payment.montantPaye | currency:'USD':'symbol':'1.2-2'}}</span>
+                <span class="remaining-amount">Remaining: {{payment.montant - payment.montantPaye! | currency:'USD':'symbol':'1.2-2'}}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="payment-meta">
+            <div class="doctor-info">
+              <div class="doctor-avatar">
+                <img [src]="getDoctorAvatar(payment.medecinNom)" alt="Doctor Avatar">
+              </div>
+              <div class="doctor-details">
+                <h4>Dr. {{payment.medecinNom}}</h4>
+                <p>{{payment.medecinSpecialite}}</p>
+                <div class="patient-info">
+                  <i class="fas fa-user"></i> {{payment.nomPatient}}
+                </div>
+              </div>
+            </div>
+            
+            <div class="payment-method">
+              <div class="method-icon">
+                <i *ngIf="payment.modeDePaiement === 'Carte Bancaire'" class="far fa-credit-card"></i>
+                <i *ngIf="payment.modeDePaiement === 'Espèces'" class="fas fa-money-bill-wave"></i>
+                <i *ngIf="payment.modeDePaiement === 'Virement'" class="fas fa-university"></i>
+              </div>
+              <span class="method-name">{{payment.modeDePaiement}}</span>
+              <div *ngIf="payment.typeCarte" class="card-type">
+                <img [src]="getCardTypeIcon(payment.typeCarte)" [alt]="payment.typeCarte">
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <div class="payment-actions">
+            <button *ngIf="payment.statut !== PaymentStatus.Paid" 
+                    class="pay-button" 
+                    (click)="goToPaiement(payment.id!)"
+                    [ngClass]="{'partial-btn': payment.statut === PaymentStatus.Partial}">
+              <i class="fas fa-wallet"></i> 
+              {{payment.statut === PaymentStatus.Partial ? 'Pay Remainder' : 'Pay Now'}}
+            </button>
+            <button *ngIf="payment.statut !== PaymentStatus.Paid" 
+            class="pay-button" 
+            (click)="payTND(payment!)"
+            [ngClass]="{'partial-btn': payment.statut === PaymentStatus.Partial}">
+      <i class="fas fa-wallet"></i> 
+      {{payment.statut === PaymentStatus.Partial ? 'Pay Remainder' : 'Pay With D17'}}
+    </button>
+          
+            <button class="details-button" (click)="viewDetails(payment)">
+              <i class="fas fa-ellipsis-h"></i> Details
+            </button>
+            <button class="download-button" *ngIf="payment.statut === PaymentStatus.Paid" (click)="downloadReceipt(payment)">
+              <i class="fas fa-download"></i> Receipt
+            </button>
+          </div>
+        </div>
+        
+        <div *ngIf="payment.statut === PaymentStatus.Paid" class="paid-ribbon">
+          <i class="fas fa-check"></i> Paid
+        </div>
+        <div class="card-corner"></div>
+      </div>
+    </div>
+    
+    <!-- Enhanced Pagination -->
+    <div class="pagination-container" *ngIf="filteredPayments.length > itemsPerPage">
+      <div class="pagination-controls">
+        <button [disabled]="currentPage === 1" (click)="prevPage()" class="pagination-button prev">
+          <i class="fas fa-chevron-left"></i> Previous
+        </button>
+        
+        <div class="page-numbers">
+          <span *ngIf="getPageNumbers()[0] > 1" 
+                (click)="goToPage(1)"
+                [class.active]="1 === currentPage">
+            1
+          </span>
+          
+          <span *ngIf="getPageNumbers()[0] > 2" class="ellipsis">...</span>
+          
+          <span *ngFor="let page of getPageNumbers()" 
+                (click)="goToPage(page)"
+                [class.active]="page === currentPage">
+            {{page}}
+          </span>
+          
+          <span *ngIf="getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1" class="ellipsis">...</span>
+          
+          <span *ngIf="getPageNumbers()[getPageNumbers().length - 1] < totalPages" 
+                (click)="goToPage(totalPages)"
+                [class.active]="totalPages === currentPage">
+            {{totalPages}}
+          </span>
+        </div>
+        
+        <button [disabled]="currentPage === totalPages" (click)="nextPage()" class="pagination-button next">
+          Next <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="items-per-page">
+        <label>Items per page:</label>
+        <select [(ngModel)]="itemsPerPage" (change)="itemsPerPageChanged()">
+          <option value="6">6</option>
+          <option value="12">12</option>
+          <option value="18">18</option>
+          <option value="24">24</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Detail Modal -->
+  <div *ngIf="selectedPayment" class="payment-modal-overlay" (click)="closeModal($event)">
+    <div class="payment-modal glass-effect">
+      <div class="modal-header">
+        <h3>Payment Details</h3>
+        <button class="close-modal" (click)="closeModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="payment-details">
+          <div class="detail-row">
+            <span class="detail-label">Payment ID:</span>
+            <span class="detail-value">{{selectedPayment.id}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Date:</span>
+            <span class="detail-value">{{selectedPayment.datePaiement | date:'mediumDate'}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Amount:</span>
+            <span class="detail-value">{{selectedPayment.montant | currency:'USD':'symbol':'1.2-2'}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value status-badge" [ngClass]="{
+              'paid': selectedPayment.statut === PaymentStatus.Paid,
+              'unpaid': selectedPayment.statut === PaymentStatus.Unpaid,
+              'partial': selectedPayment.statut === PaymentStatus.Partial
+            }">
+              <i class="fas fa-circle"></i> {{getStatusDisplay(selectedPayment.statut)}}
+            </span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Payment Method:</span>
+            <span class="detail-value">{{selectedPayment.modeDePaiement}}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Doctor:</span>
+            <span class="detail-value">Dr. {{selectedPayment.medecinNom}} ({{selectedPayment.medecinSpecialite}})</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Patient:</span>
+            <span class="detail-value">{{selectedPayment.nomPatient}}</span>
+          </div>
+          <div *ngIf="selectedPayment.statut === PaymentStatus.Partial" class="detail-row">
+            <span class="detail-label">Amount Paid:</span>
+            <span class="detail-value">{{selectedPayment.montantPaye | currency:'USD':'symbol':'1.2-2'}}</span>
+          </div>
+          <div *ngIf="selectedPayment.statut === PaymentStatus.Partial || selectedPayment.statut === PaymentStatus.Unpaid" class="detail-row">
+            <span class="detail-label">Remaining Amount:</span>
+            <span class="detail-value">
+              {{(selectedPayment.montant - (selectedPayment.montantPaye || 0)) | currency:'USD':'symbol':'1.2-2'}}
+            </span>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <button class="discount-button" (click)="requestDiscount(selectedPayment.id!)">
+            <i class="fas fa-tag"></i> Request Discount
+          </button>
+          <button class="download-button" *ngIf="selectedPayment.statut === PaymentStatus.Paid" (click)="downloadReceipt(selectedPayment)">
+            <i class="fas fa-download"></i> Download Receipt
+          </button>
+          <div class="voice-actions">
+            <button class="action-btn tts" (click)="readPayment(selectedPayment, 'en')">
+              <i class="fas fa-volume-up"></i> Read (EN)
+            </button>
+            <button class="action-btn tts" (click)="readPayment(selectedPayment, 'fr')">
+              <i class="fas fa-volume-up"></i> Lire (FR)
+            </button>
+            <button class="action-btn tts stop" (click)="stopReading()">
+              <i class="fas fa-stop"></i> Stop
+            </button>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Add Payment Modal -->
+<div *ngIf="showAddPaymentModal" class="modal-overlay" (click)="closeAddPaymentModal($event)">
+  <div class="add-payment-modal baby-blue-theme" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3><i class="fas fa-plus-circle"></i> Add New Payment</h3>
+      <button class="close-btn" (click)="closeAddPaymentModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <form #paymentForm="ngForm" (ngSubmit)="submitPayment()">
+        <div class="form-group">
+          <label for="patient"><i class="fas fa-user"></i> Patient</label>
+          <select id="patient" [(ngModel)]="newPayment.nomPatient" name="patient" required>
+            <option *ngFor="let patient of patients" [value]="patient.name">{{patient.name}}</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="doctor"><i class="fas fa-user-md"></i> Doctor</label>
+          <select id="doctor" [(ngModel)]="newPayment.emailMedecin" name="doctor" required>
+            <option *ngFor="let doctor of doctors" [value]="doctor.specialty">{{doctor.name}} ({{doctor.specialty}})</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="amount"><i class="fas fa-money-bill-wave"></i> Amount</label>
+          <input type="number" id="amount" [(ngModel)]="newPayment.montant" name="amount" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="paymentMethod"><i class="fas fa-credit-card"></i> Payment Method</label>
+          <select id="paymentMethod" [(ngModel)]="newPayment.modeDePaiement" name="paymentMethod" required>
+            <option value="Carte Bancaire">Credit Card</option>
+            <option value="Espèces">Cash</option>
+            <option value="Virement">Bank Transfer</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="paymentDate"><i class="fas fa-calendar"></i> Payment Date</label>
+          <input type="date" id="paymentDate" [(ngModel)]="newPayment.datePaiement" name="paymentDate" required>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="closeAddPaymentModal()">Cancel</button>
+          <button type="submit" class="submit-btn" [disabled]="!paymentForm.valid">Add Payment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+  
+</div>

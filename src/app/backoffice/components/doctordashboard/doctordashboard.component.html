@@ -1,0 +1,69 @@
+<div class="dashboard-container">
+  <h1 class="dashboard-title">Welcome to the Healthcare Management System Physician Dashboard</h1>
+
+  <div class="cards-container">
+    <!-- Carte Ordonnances -->
+    <div class="modern-card" style="--card-color: #2980b9;">
+      <div class="card-icon">
+        <i class="fas fa-prescription-bottle-alt"></i>
+      </div>
+      <div class="card-content">
+        <h3>Ordonnances</h3>
+        <div *ngFor="let prescription of prescriptions | async" class="card-value">
+          {{ prescription }} médicaments
+        </div>
+      </div>
+    </div>
+
+    <!-- Carte Médecins -->
+    <div class="modern-card" style="--card-color: #27ae60;">
+      <div class="card-icon">
+        <i class="fas fa-user-md"></i>
+      </div>
+      <div class="card-content">
+        <h3>Médecins</h3>
+        <div *ngFor="let doctor of doctors | async" class="card-value">
+          {{ doctor }} médecins
+        </div>
+      </div>
+    </div>
+
+    <!-- Carte Patients -->
+    <div class="modern-card" style="--card-color: #e74c3c;">
+      <div class="card-icon">
+        <i class="fas fa-user-injured"></i>
+      </div>
+      <div class="card-content">
+        <h3>Patients</h3>
+        <div *ngFor="let patient of patients | async" class="card-value">
+          {{ patient }} patients
+        </div>
+      </div>
+    </div>
+
+    <!-- Carte Créneaux -->
+    <div class="modern-card" style="--card-color: #f39c12;">
+      <div class="card-icon">
+        <i class="fas fa-calendar-alt"></i>
+      </div>
+      <div class="card-content">
+        <h3>Creneaux</h3>
+        <div *ngFor="let slot of slots | async" class="card-value">
+          {{ slot }} créneaux
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- <div *ngIf="upcomingMeetings.length > 0" class="notification">
+    <h3>⚡ Rappels de rendez-vous :</h3>
+    <ul>
+      <li *ngFor="let meeting of upcomingMeetings">
+        📅 {{ meeting.title }} à {{ meeting.startTime | date:'shortTime' }}
+        <a [href]="meeting.meetLink" target="_blank"> Rejoindre le Meet</a>
+      </li>
+    </ul>
+  </div> -->
+
+</div>

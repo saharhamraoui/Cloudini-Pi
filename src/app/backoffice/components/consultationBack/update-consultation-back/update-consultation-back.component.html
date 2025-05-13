@@ -1,0 +1,55 @@
+<div class="consultation-form-container">
+
+  <!-- En-tête stylisée -->
+  <div class="form-header">
+    <h1 class="form-title">Modify a  Consultation</h1>
+    <div class="title-divider"></div>
+  </div>
+
+  <!-- Carte de formulaire moderne -->
+  <div class="form-card">
+    <form [formGroup]="consultationForm" (ngSubmit)="update()">
+
+      <!-- Champ : Date de consultation -->
+      <div class="form-field">
+        <label for="dateConsultation" class="field-label">
+          <i class="far fa-calendar-alt"></i> Date of Consultation <span class="required-asterisk">*</span>
+        </label>
+        <input type="datetime-local"
+               id="dateConsultation"
+               formControlName="dateConsultation"
+               class="form-input"
+               [ngClass]="{'input-error': consultationForm.get('dateConsultation')?.invalid && consultationForm.get('dateConsultation')?.touched}" />
+        <div class="error-message"
+             *ngIf="consultationForm.get('dateConsultation')?.invalid && consultationForm.get('dateConsultation')?.touched">
+          <i class="fas fa-exclamation-circle"></i> Ce champ est requis
+        </div>
+      </div>
+
+      <!-- Champ : Rapport -->
+      <div class="form-field">
+        <label for="rapport" class="field-label">
+          <i class="fas fa-notes-medical"></i> Report <span class="required-asterisk">*</span>
+        </label>
+        <textarea id="rapport"
+                  formControlName="rapport"
+                  rows="4"
+                  class="form-input"
+                  placeholder="Entrez le rapport..."
+                  [ngClass]="{'input-error': consultationForm.get('rapport')?.invalid && consultationForm.get('rapport')?.touched}"></textarea>
+        <div class="error-message"
+             *ngIf="consultationForm.get('rapport')?.invalid && consultationForm.get('rapport')?.touched">
+          <i class="fas fa-exclamation-circle"></i> Selection required
+        </div>
+      </div>
+
+      <!-- Bouton de soumission -->
+      <button type="submit"
+              class="submit-btn-thead"
+              [disabled]="consultationForm.invalid">
+        <i class="fas fa-edit"></i> Modify the Consultation
+      </button>
+
+    </form>
+  </div>
+</div>

@@ -1,0 +1,140 @@
+<aside class="sidebar">
+  <div class="image-container">
+    <!-- Optional: <img src="assets/backoffice/sidebar-image.png" class="sidebar-image"> -->
+  </div>
+  <nav class="menu">
+    <!-- Avatar Section -->
+    <div class="avatar-container">
+      <div class="avatar-circle">
+        {{ getAvatarInitials() }}
+      </div>
+      <div class="user-name">
+        {{ currentUser.firstName }} {{ currentUser.lastName }}
+      </div>
+    </div>
+
+    <ul>
+      <li>
+        <a [routerLink]="['/editdoctorprofile']" routerLinkActive="active">
+          <i class="fas fa-user-circle"></i> <!-- Profile icon -->
+          <span> Profile</span>
+        </a>
+      </li>
+      <li>
+        <a [routerLink]="['/back/doctordashboard']" routerLinkActive="active">
+          <i class="fas fa-sliders-h"></i> <!-- ContrÃ´les de paramÃ¨tres -->
+          <span> Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a [routerLink]="['/back/DashboardStock']" routerLinkActive="active">
+          <i class="fas fa-sliders-h icon-spaced"></i>
+          <span>Stock Dashboard</span>
+        </a>
+      </li>
+      
+        <li>
+          <a [routerLink]="['/back/list-rendez-vous-back']" routerLinkActive="active"> 
+             <i class="fa fa-calendar" aria-hidden="true"></i>
+            <label style="cursor: pointer"> list des Rendez-vous</label>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['/back/list-consultation-Back']" routerLinkActive="active">
+            <i class="fa fa-calendar" aria-hidden="true"></i>
+            <label style="cursor: pointer"> list des Consultation</label>
+          </a>
+        </li>
+        
+        <li>
+          <a [routerLink]="['/back/crudmed']" routerLinkActive="active">
+            <i class="fa fa-pills icon-spaced"></i>
+            <label>Medications</label>
+          </a>
+        </li>
+  
+        <li>
+          <a [routerLink]="['/back/stock']" routerLinkActive="active">
+            <i class="fa fa-boxes icon-spaced"></i>
+            <label>Stock</label>
+          </a>
+        </li>
+  
+        <li>
+          <a [routerLink]="['/back/commandes']" routerLinkActive="active">
+            <i class="fa fa-file-invoice icon-spaced"></i>
+            <label>Orders</label>
+          </a>
+        </li>
+  
+        <li>
+          <a [routerLink]="['/back/verifcommandes']" routerLinkActive="active">
+            <i class="fa fa-tasks icon-spaced"></i>
+            <label>Orders Confirmation</label>
+          </a>
+        </li>
+  
+        <li>
+          <a [routerLink]="['/back/fournisseur']" routerLinkActive="active">
+            <i class="fa fa-truck icon-spaced"></i>
+            <label>Providers List</label>
+          </a>
+        </li>
+  
+        <li>
+          <a [routerLink]="['/back/crudfournisseur']" routerLinkActive="active">
+            <i class="fa fa-industry icon-spaced"></i>
+            <label>Providers</label>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['/back/listPrescription']" routerLinkActive="active">
+            <i class="fa fa-file-prescription icon-spaced"></i>
+            <label>Prescription List</label>
+          </a>
+        </li>
+        
+        <li>
+          <a [routerLink]="['/back/listPaiement']" routerLinkActive="active">
+            <i class="fa fa-money-bill-wave icon-spaced"></i>
+            <label>Payment List</label>
+          </a>
+        </li>
+        
+        <li>
+          <a [routerLink]="['/back/listMedicalRecord']" routerLinkActive="active">
+            <i class="fa fa-file-medical icon-spaced"></i>
+            <label>Medical Record List</label>
+          </a>
+        </li>
+        
+        <li>
+          <a [routerLink]="['/back/addLeaveRequest']" routerLinkActive="active">
+            <i class="fa fa-plus-circle icon-spaced"></i>
+            <label>Add Leave Request</label>
+          </a>
+        </li>
+        
+        <li>
+          <a [routerLink]="['/back/listLeaveRequest']" routerLinkActive="active">
+            <i class="fa fa-list-alt icon-spaced"></i>
+            <label>Leave Request List</label>
+          </a>
+        </li>
+        <li><a [routerLink]="['/back/admin/dashboard']"><i class="fa fa-comments"></i><label> Gérer les dashboard</label></a></li>
+
+        <li><a [routerLink]="['/back/reclamations']"><i class="fa fa-comments"></i><label> Gérer les réclamations</label></a></li>
+        <li><a [routerLink]="['/back/metrics']"><i class="fa fa-bar-chart"></i><label> Statistiques des réclamations</label></a></li>
+        <li>
+          <a [routerLink]="['/']">
+            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+            <label style="cursor: pointer"> Log out</label>
+          </a>
+        </li>
+       
+    </ul>
+  </nav>
+</aside>
+
+       
+

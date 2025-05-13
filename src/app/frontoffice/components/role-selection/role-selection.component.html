@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="role-selection-card animate__animated animate__fadeIn">
+    <h2><i class="fas fa-users me-2"></i> Select Your Role</h2>
+    <div class="role-buttons">
+      <button class="btn-role btn-patient" (click)="selectRole('patient')">
+        <i class="fas fa-user-injured"></i>
+        <span>Patient</span>
+      </button>
+      <button class="btn-role btn-doctor" (click)="selectRole('medecin')">
+        <i class="fas fa-user-md"></i>
+        <span>Doctor</span>
+      </button>
+      <button class="btn-role btn-driver" (click)="selectRole('chauffeur')">
+        <i class="fas fa-taxi"></i>
+        <span>Driver</span>
+      </button>
+    </div>
+  </div>
+</div>

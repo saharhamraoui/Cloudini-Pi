@@ -1,0 +1,126 @@
+<div class="chat-container" [class.dark-mode]="isDarkMode" *ngIf="chatVisible">
+  <!-- Header with gradient and wave divider -->
+  <div class="chat-header">
+    <div class="header-content">
+      <div class="avatar">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+        </svg>
+      </div>
+      <div class="header-text">
+        <h3>AI Assistant</h3>
+        <p class="status">
+          <span class="status-dot active"></span>
+          {{ isTyping ? 'Typing...' : 'Online' }}
+        </p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="mic-btn" (click)="startListening()" [class.listening]="isListening" matTooltip="Voice Input">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/>
+        </svg>
+      </button>
+      <button class="close-btn" (click)="closeChat()" matTooltip="Close">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="wave-divider">
+    <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="currentColor"></path>
+    </svg>
+  </div>
+
+  <!-- Chat Box -->
+  <div class="chat-box" #chatBox>
+    <!-- Welcome Message -->
+    <div class="welcome-message" *ngIf="chatHistory.length === 0">
+      <div class="welcome-content">
+        <div class="welcome-avatar">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+          </svg>
+        </div>
+        <h3>Hello! 👋</h3>
+        <p>I'm your AI assistant. How can I help you today?</p>
+      </div>
+    </div>
+    
+    <!-- Messages -->
+    <div *ngFor="let chat of chatHistory" class="message-wrapper" [ngClass]="chat.sender">
+      <div class="message-bubble">
+        <div class="message-content">
+          <span class="message-text">{{ chat.message }}</span>
+          <span class="timestamp">{{ chat.timestamp }}
+            <span class="status" *ngIf="chat.sender === 'user' && chat.read">✓✓</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typing Indicator -->
+    <div class="message-wrapper bot" *ngIf="isTyping">
+      <div class="message-bubble">
+        <div class="typing-indicator">
+          <div class="typing-dot" style="animation-delay: 0s"></div>
+          <div class="typing-dot" style="animation-delay: 0.2s"></div>
+          <div class="typing-dot" style="animation-delay: 0.4s"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Replies -->
+  <div class="quick-replies" *ngIf="showQuickReplies">
+    <button *ngFor="let reply of quickReplies" 
+            (click)="sendQuickReply(reply.text)"
+            [disabled]="isTyping">
+      {{ reply.emoji }} {{ reply.text }}
+    </button>
+  </div>
+
+  <!-- Footer with File Upload -->
+  <div class="chat-footer">
+    <div class="input-container">
+      <label for="file-upload" class="upload-btn" matTooltip="Attach File">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/>
+        </svg>
+      </label>
+      <input type="file" id="file-upload" (change)="handleUpload($event)" hidden>
+      
+      <input
+        type="text"
+        [(ngModel)]="userMessage"
+        placeholder="Type your message..."
+        (keyup.enter)="sendMessage()"
+        class="chat-input"
+      />
+      
+      <div class="footer-actions">
+        <button (click)="stopSpeaking()" class="stop-btn" matTooltip="Stop Speaking">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 6h12v12H6z"/>
+          </svg>
+        </button>
+        <button (click)="sendMessage()" class="send-btn" [disabled]="!userMessage.trim() || isTyping" matTooltip="Send">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Chat Button -->
+<button *ngIf="!chatVisible" class="chat-open-btn" (click)="openChat()">
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+  </svg>
+  <span class="pulse-dot"></span>
+</button>
