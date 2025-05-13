@@ -7,7 +7,7 @@ import tn.esprit.pi.services.ResponseService;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://198.162.1.122:30596")
+@CrossOrigin(origins = "http://198.162.1.122:32584")
 @RestController
 @RequestMapping("/api/responses")
 public class ResponseController {

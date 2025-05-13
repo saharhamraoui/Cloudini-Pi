@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-@CrossOrigin(origins = "http://198.162.1.122:30596")
+@CrossOrigin(origins = "http://198.162.1.122:32584")
 
 @RestController
 @RequestMapping("/api/v1/notifications")

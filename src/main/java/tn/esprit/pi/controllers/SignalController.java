@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.pi.services.SignalService;
 
-@CrossOrigin(origins = "http://198.162.1.122:30596")
+@CrossOrigin(origins = "http://198.162.1.122:32584")
 @RestController
 @RequestMapping("/signal")
 

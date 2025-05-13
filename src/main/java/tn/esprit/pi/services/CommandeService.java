@@ -104,7 +104,7 @@ public class CommandeService implements ICommandeService{
         // ✅ Envoyer le mail au fournisseur
         String to = fournisseur.getContact(); // Contact = email du fournisseur
         String subject = "Nouvelle commande #" + commande.getIdcommande();
-        String urlValidation = "http://198.162.1.122:30596/back/commande/valider/" + commande.getIdcommande(); // 🔗 lien vers page Angular pour valider
+        String urlValidation = "http://198.162.1.122:32584/back/commande/valider/" + commande.getIdcommande(); // 🔗 lien vers page Angular pour valider
         String body = "Bonjour " + fournisseur.getNom() + ",\n\n" +
                 "Vous avez reçu une nouvelle commande de médicaments. Voici les détails :\n" +
                 "- ID Commande : " + commande.getIdcommande() + "\n" +

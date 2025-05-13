@@ -26,7 +26,7 @@ public class BilanController {
     @Autowired
     private MedicalRecordRepository medicalRecordRepository;
 
-    @CrossOrigin(origins = "http://198.162.1.122:30596",
+    @CrossOrigin(origins = "http://198.162.1.122:32584",
             allowedHeaders = "*",
             exposedHeaders = "Content-Disposition")
     @GetMapping("/medicalRecord/{medicalRecordId}")

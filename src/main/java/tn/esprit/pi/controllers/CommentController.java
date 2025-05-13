@@ -20,7 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/comments")
 @Tag(name = "Comment Management", description = "Endpoints for managing comments")
-@CrossOrigin(origins = "http://198.162.1.122:30596")
+@CrossOrigin(origins = "http://198.162.1.122:32584")
 
 public class CommentController {
 

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@CrossOrigin(origins = "http://198.162.1.122:30596") // add this above your controller
+@CrossOrigin(origins = "http://198.162.1.122:32584") // add this above your controller
 @RestController
 @RequestMapping("/medicalRecord")
 public class MedicalRecordController {

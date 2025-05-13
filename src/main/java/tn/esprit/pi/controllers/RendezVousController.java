@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Tag(name = "Gestion RendezVous")
-@CrossOrigin(origins = "http://198.162.1.122:30596")
+@CrossOrigin(origins = "http://198.162.1.122:32584")
 @RestController
 @RequestMapping("/rendezVous")
 

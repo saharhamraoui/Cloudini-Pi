@@ -17,7 +17,7 @@ import tn.esprit.pi.entities.Medicament;
 import tn.esprit.pi.entities.Status;
 
 import java.util.List;
-@CrossOrigin(origins = "http://198.162.1.122:30596") // Allow requests from Angular frontend
+@CrossOrigin(origins = "http://198.162.1.122:32584") // Allow requests from Angular frontend
 
 @AllArgsConstructor
 @RestController
