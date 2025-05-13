@@ -9,7 +9,7 @@ import tn.esprit.pi.services.ReclamationService;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://198.162.1.118:32584")
+@CrossOrigin(origins = "http://198.162.1.122:30596")
 @RestController
 @RequestMapping("/api/reclamations")
 public class ReclamationController {

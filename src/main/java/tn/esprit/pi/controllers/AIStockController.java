@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://198.162.1.118:32584") // Allow requests from Angular frontend
+@CrossOrigin(origins = "http://198.162.1.122:30596") // Allow requests from Angular frontend
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/chatbot")

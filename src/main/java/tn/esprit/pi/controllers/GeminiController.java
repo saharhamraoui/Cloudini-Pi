@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ai")
-@CrossOrigin(origins = "http://198.162.1.118:32584")
+@CrossOrigin(origins = "http://198.162.1.122:30596")
 public class GeminiController {
 
     @Value("${gemini.api.key}")
