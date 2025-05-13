@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class MetricsService {
-  private apiUrl = 'http://192.168.1.122:30596/Pi/api/metrics';
+  private apiUrl = 'http://192.168.1.162:30596/Pi/api/metrics';
 
   constructor(private http: HttpClient) {}
 

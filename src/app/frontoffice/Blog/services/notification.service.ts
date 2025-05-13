@@ -7,7 +7,7 @@ import { Notification } from '../models/notification.model';
   providedIn: 'root',
 })
 export class NotificationService {
-  private baseUrl = 'http://192.168.1.122:30596/pi/notifs'; // Changement de port et de chemin
+  private baseUrl = 'http://192.168.1.162:30596/pi/notifs'; // Changement de port et de chemin
 
   constructor(private http: HttpClient) {}
 
