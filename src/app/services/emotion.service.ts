@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class EmotionService {
-  private categorizeUrl = 'http://192.168.1.122:32584/Pi/api/reclamations/categorize';
-  private emotionUrl = 'http://192.168.1.122:32584/Pi/api/categorize/detect-emotion';
+  private categorizeUrl = 'http://192.168.1.122:30596/Pi/api/reclamations/categorize';
+  private emotionUrl = 'http://192.168.1.122:30596/Pi/api/categorize/detect-emotion';
 
   constructor(private http: HttpClient) {}
 

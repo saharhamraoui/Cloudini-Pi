@@ -5,7 +5,7 @@ import { ResponseModel } from '../model/response.model';
 
 @Injectable({ providedIn: 'root' })
 export class ResponseService {
-  private apiUrl = 'http://192.168.1.122:32584/Pi/api/responses';
+  private apiUrl = 'http://192.168.1.122:30596/Pi/api/responses';
 
   constructor(private http: HttpClient) {}
 

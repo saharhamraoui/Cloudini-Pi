@@ -13,10 +13,10 @@ import { User } from 'src/app/model/user.model';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://192.168.1.122:32584/Pi/api/auth';
-  private apiUrl2 = 'http://192.168.1.122:32584/Pi/api';
-  private apiUrl3 = 'http://192.168.1.122:32584/Pi/api/face-auth';
-  private flaskApiUrl = 'http://192.168.1.122:32584';
+  private apiUrl = 'http://192.168.1.122:30596/Pi/api/auth';
+  private apiUrl2 = 'http://192.168.1.122:30596/Pi/api';
+  private apiUrl3 = 'http://192.168.1.122:30596/Pi/api/face-auth';
+  private flaskApiUrl = 'http://192.168.1.122:30596';
 
   constructor(private http: HttpClient) { }
 
